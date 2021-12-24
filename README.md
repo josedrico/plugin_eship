@@ -1,2 +1,3 @@
-# plugin_eship
-Plugin para eship
+# Eship Admin Plugin
+
+This is plugin to woocomerce and wordpress
