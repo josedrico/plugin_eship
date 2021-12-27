@@ -1,5 +1,7 @@
 <?php
-# TODO Idea Uninstall plugin
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    exit;
+    exit();
 }
+
+# TODO FIXME ingresar todos lo que necesitamos desinstalar
+
