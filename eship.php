@@ -8,4 +8,14 @@ Author:      Segmail
 Author URI:  https://segmail.co/
 */
 
-# TODO Idea Instalación
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+if (in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ))) {
+    require plugin_dir_path( __FILE__ ) .  'plugin/bootstrap.php';
+} else {
+    exit;
+}
+
+
