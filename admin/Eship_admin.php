@@ -3,29 +3,22 @@ namespace Eship\Admin;
 
 class Eship_Admin {
 
-	private $plugin;
-
-	private $ver;
-
-	public function __construct( $name, $version ) 
+	public function enqueue_styles($plugin, $file, $ver)
     {
-
-		$this->plugin = $name;
-		$this->ver = $version;
+		wp_enqueue_style( $plugin, plugin_dir_url( dirname(__FILE__) ). 'public/css/' . $file, array(), $ver, 'all' );
 
 	}
 
-	public function enqueue_styles()
+	public function enqueue_scripts($plugin, $file, $ver, $in_footer = FALSE)
     {
-        var_dump(plugin_dir_url( __FILE__ ));
-		//wp_enqueue_style( $this->plugin,  . 'css/plugin-name-admin.css', array(), $this->ver, 'all' );
+		wp_enqueue_script( $plugin, plugin_dir_url( dirname(__FILE__) ). 'public/js/' . $file, array(), $ver, $in_footer );
 
 	}
 
-	public function enqueue_scripts() 
+    public function check_capabilities()
     {
-		wp_enqueue_script( $this->plugin, plugin_dir_url( __FILE__ ) . 'js/plugin-name-admin.js', array( 'jquery' ), $this->ver, false );
-
-	}
-
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+    }
 }
