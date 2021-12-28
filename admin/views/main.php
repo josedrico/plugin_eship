@@ -41,19 +41,19 @@ function eShip_menu_page() {
 
 function add_submenus_page($submenus)
 {
-        if (is_array($submenus)) {
-            for ($i = 0; $i < count($submenus); $i++) {
-                return add_submenu_page(
-                    $submenus[$i]['parent_slug'],
-                    $submenus[$i]['page_title'],
-                    $submenus[$i]['menu_title'],
-                    $submenus[$i]['capability'],
-                    $submenus[$i]['menu_slug'],
-                    $submenus[$i]['function_name']
-                );
-            }
+    if (is_array($submenus)) {
+        for ($i = 0; $i < count($submenus); $i++) {
+            add_submenu_page(
+                $submenus[$i]['parent_slug'],
+                $submenus[$i]['page_title'],
+                $submenus[$i]['menu_title'],
+                $submenus[$i]['capability'],
+                $submenus[$i]['menu_slug'],
+                $submenus[$i]['function_name']
+            );
         }
     }
+}
 
 function eShip_menu_page_display(){
     require_once dirname(__FILE__) . "/dashboard.php";
