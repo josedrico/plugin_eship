@@ -64,11 +64,11 @@ function eShip_submenu_configuration_page() {
 }
 
 function eShip_submenu_tracking_guide_page() {
-    require_once dirname(__FILE__. "/tracking_guide.php");
+    require_once dirname(__FILE__) . "/tracking_guide.php";
 }
 
 function eShip_submenu_quote_page() {
-    require_once dirname(__FILE__. "/quote.php");
+    require_once dirname(__FILE__) . "/quote.php";
 }
 
 add_action( 'admin_menu', 'eShip_menu_page' );
