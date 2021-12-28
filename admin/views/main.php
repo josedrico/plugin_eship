@@ -1,5 +1,4 @@
 <?php
-
 function eShip_menu_page() {
     add_menu_page(
         'Eship',
@@ -22,67 +21,54 @@ function eShip_menu_page() {
         ),
         array(
             'parent_slug'   => 'Eship',
-            'page_title'    => 'Guías',
-            'menu_title'    => 'Guias',
+            'page_title'    => 'Tracking Guide',
+            'menu_title'    => 'Tracking Guide',
             'capability'    => 'manage_options',
-            'menu_slug'     => 'eship_guias',
-            'function_name' => 'eShip_submenu_guide_page'
+            'menu_slug'     => 'eship_tracking_guide',
+            'function_name' => 'eShip_submenu_tracking_guide_page'
         ),
         array(
             'parent_slug'   => 'Eship',
-            'page_title'    => 'Catización',
-            'menu_title'    => 'Cotización',
+            'page_title'    => 'Quote',
+            'menu_title'    => 'Quote',
             'capability'    => 'manage_options',
-            'menu_slug'     => 'eship_cotizacion',
-            'function_name' => 'eShip_submenu_cotizacion_page'
-        ),
+            'menu_slug'     => 'eship_quote',
+            'function_name' => 'eShip_submenu_quote_page'
+        )
     );
-
-    addSubmenusPage($submenus);
+    add_submenus_page($submenus);
 }
 
-function eShip_menu_page_display(){
-    require_once dirname(__FILE__) . "/index.php";
-}
-
-function addSubmenusPage($submenus)
+function add_submenus_page($submenus)
 {
-    if (is_array($submenus)) {
-        for ($i = 0; $i < count($submenus); $i++) {
-            add_submenu_page(
-                $submenus[$i]['parent_slug'],
-                $submenus[$i]['page_title'],
-                $submenus[$i]['menu_title'],
-                $submenus[$i]['capability'],
-                $submenus[$i]['menu_slug'],
-                $submenus[$i]['function_name']
-            );
+        if (is_array($submenus)) {
+            for ($i = 0; $i < count($submenus); $i++) {
+                return add_submenu_page(
+                    $submenus[$i]['parent_slug'],
+                    $submenus[$i]['page_title'],
+                    $submenus[$i]['menu_title'],
+                    $submenus[$i]['capability'],
+                    $submenus[$i]['menu_slug'],
+                    $submenus[$i]['function_name']
+                );
+            }
         }
     }
+
+function eShip_menu_page_display(){
+    require_once dirname(__FILE__) . "/dashboard.php";
 }
 
 function eShip_submenu_configuration_page() {
-    ?>
-    <div class="wrap">
-        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-    </div>
-    <?php
+    require_once dirname(__FILE__) . "/configuration.php";
 }
 
-function eShip_submenu_guide_page() {
-    ?>
-    <div class="wrap">
-        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-    </div>
-    <?php
+function eShip_submenu_tracking_guide_page() {
+    require_once dirname(__FILE__. "/tracking_guide.php");
 }
 
-function eShip_submenu_cotizacion_page() {
-    ?>
-    <div class="wrap">
-        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-    </div>
-    <?php
+function eShip_submenu_quote_page() {
+    require_once dirname(__FILE__. "/quote.php");
 }
 
 add_action( 'admin_menu', 'eShip_menu_page' );

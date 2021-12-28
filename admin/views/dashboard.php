@@ -36,12 +36,7 @@
         </div>
     </nav>
 </header>
-<?php
-// check user capabilities
-if ( ! current_user_can( 'manage_options' ) ) {
-    return;
-}
-?>
+
 <div class="container">
     <h1 class="text-center"><?php echo esc_html( get_admin_page_title() ); ?> Connect</h1>
     <h5>Connections with e-commerce platform.</h5>
