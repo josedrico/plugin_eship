@@ -1,2 +1,5 @@
 #IDE
 .idea/*
+
+#SO
+.DS_store
