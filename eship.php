@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if (in_array( 'woocommerce/woocommerce.php', get_option( 'active_plugins' ))) {
-    //require plugin_dir_path( __FILE__ ) .  'plugin/bootstrap.php';
+    define('__URL_SITE__', plugins_url( '/', __FILE__ ));
     if (is_admin()) {
         require __DIR__ . '/admin/load_admin.php';
     } else  {
