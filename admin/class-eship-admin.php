@@ -25,19 +25,17 @@
     class ESHIP_Admin {
         
         private $plugin_name;
-        
         private $version;
-        
         private $build_menupage;
         
 
         public function __construct( $plugin_name, $version ) 
         {
-            
             $this->plugin_name = $plugin_name;
             $this->version = $version;
             $this->build_menupage = new ESHIP_Build_Menupage();
-            
+            global $wpdb;
+            $this->db = $wpdb;
         }
 
         public function enqueue_styles($hook) 
@@ -83,7 +81,15 @@
              */
             wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', true );
 
-            wp_enqueue_script( 'eship_admin_js', ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, true );
+            /**
+             * Library Visualization  Graphs
+             * https://echarts.apache.org/en/index.html
+             * Apache ECharts
+             */
+            wp_enqueue_script( 'eship_echart_admin_js', 'https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.js', array(), '', TRUE );
+
+
+            wp_enqueue_script( 'eship_admin_js', ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, TRUE );
             
         }
         
@@ -130,12 +136,22 @@
 
         public function controlador_display_menu() 
         {
+            #TODO FIXME checar conexión 
             //https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
-            $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/eship-dashboard.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+            $wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
+            $menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
+
+            $check_token_eship = FALSE;
+            if ($check_token_eship) {
+                $menu_title  = 'Connection';
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+            } else {
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+            } 
         }
 
         public function controlador_display_submenu_quotes() 

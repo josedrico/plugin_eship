@@ -11,3 +11,10 @@
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
+
+/*
+ * Deleted table
+ * */
+global $wpdb;
+$sql = "DROP TABLE IF EXISTS {$wpdb->prefix}eship_data";
+$wpdb->query($sql);

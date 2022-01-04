@@ -20,3 +20,7 @@
 #app-eship .bg-img-header {
     background-color: #1f61ad;
 }
+
+#app-eship .card {
+    max-width: 100% !important;
+}

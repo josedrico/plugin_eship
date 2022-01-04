@@ -1,10 +1,7 @@
 <?php
 /**
- * El archivo que define la clase del cerebro principal del plugin
+ * Clase que administra y controla las cargas de las demás clases
  *
- * Una definición de clase que incluye atributos y funciones que se 
- * utilizan tanto del lado del público como del área de administración.
- * 
  * @link       https://eship.com
  * @since      1.0.0
  *
@@ -13,21 +10,19 @@
  */
 
 /**
- * También mantiene el identificador único de este complemento,
- * así como la versión actual del plugin.
  *
  * @since      1.0.0
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal <jleal@segmail.co>
  * 
- * @property object $cargador
+ * @property object $loader
  * @property string $plugin_name
  * @property string $version
  */
 class ESHIP_Master {
     
-    protected $cargador;
+    protected $loader;
     
     protected $plugin_name;
     
@@ -38,19 +33,19 @@ class ESHIP_Master {
         $this->plugin_name = 'ESHIP';
         $this->version = '1.0.0';
         
-        $this->cargar_dependencias();
-        $this->cargar_instancias();
-        $this->set_idiomas();
+        $this->load_class();
+        $this->load_instances();
+        $this->set_language();
         $this->definir_admin_hooks();
         
     }
     
-    private function cargar_dependencias() {
+    private function load_class() {
         
         /**
 		 * La clase responsable de iterar las acciones y filtros del núcleo del plugin.
 		 */
-        require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-cargador.php';
+        require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-loader.php';
         
         /**
 		 * La clase responsable de definir la funcionalidad de la
@@ -73,40 +68,40 @@ class ESHIP_Master {
         
     }
     
-    private function set_idiomas() {
+    private function set_language() {
         
         //$eship_i18n = new ESHIP_i18n();
-        //  $this->cargador->add_action( 'plugins_loaded', $eship_i18n, 'load_plugin_textdomain' );        
+        //  $this->loader->add_action( 'plugins_loaded', $eship_i18n, 'load_plugin_textdomain' );        
         
     }
     
-    private function cargar_instancias() {
+    private function load_instances() {
         
         // Cree una instancia del cargador que se utilizará para registrar los ganchos con WordPress.
-        $this->cargador     = new ESHIP_cargador;
-        $this->eship_admin   = new ESHIP_Admin( $this->get_plugin_name(), $this->get_version() );
+        $this->loader       = new ESHIP_Loader;
+        $this->eship_admin  = new ESHIP_Admin( $this->get_plugin_name(), $this->get_version() );
         
     }
     
     private function definir_admin_hooks() {
         
-        $this->cargador->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_styles' );
-        $this->cargador->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_scripts' );
+        $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_styles' );
+        $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_scripts' );
         
-        $this->cargador->add_action( 'admin_menu', $this->eship_admin, 'add_menu' );
+        $this->loader->add_action( 'admin_menu', $this->eship_admin, 'add_menu' );
         
     }
     
     public function run() {
-        $this->cargador->run();
+        $this->loader->run();
     }
     
 	public function get_plugin_name() {
 		return $this->plugin_name;
 	}
 
-	public function get_cargador() {
-		return $this->cargador;
+	public function get_load() {
+		return $this->loader;
 	}
 
 	public function get_version() {
