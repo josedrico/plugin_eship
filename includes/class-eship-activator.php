@@ -22,8 +22,17 @@ class ESHIP_Activator {
 
 	public static function activate() 
     {
-        
-        // Create table to database
+        global $wpdb;
+
+        $sql = "CREATE TABLE IF NOT EXISTS " . ESHIP_TB . "(
+            id int(11) NOT NULL AUTO_INCREMENT,
+            email varchar(255) NOT NULL,
+            token_eship varchar(100) NOT NULL,
+            data longtext,
+            PRIMARY KEY (id)
+        );";
+
+        $wpdb->query( $sql );
         
 	}
 
