@@ -2,36 +2,25 @@
     <div class="mt-5 mb-5">
         <h5>Connections with e-commerce platform.</h5>
         <div class="row">
+            <?php
+            //echo "<pre>";
+            //var_dump(gettype($res_quotation));
+                //var_dump($res_quotation['body']);
+            //var_dump(gettype($list_orders));
+            //var_dump($list_orders);
+            //echo "</pre>";
+            ?>
             <div class="col-12">
                 <div class="col-12">
-                    <table id="quotes" class="table">
+                    <table id="quotes" class="table" data-url="<?php echo $json;?>">
                         <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">First</th>
-                            <th scope="col">Last</th>
-                            <th scope="col">Handle</th>
+                            <th data-field="id">ID</th>
+                            <th data-field="status">status</th>
+                            <th data-field="currency">currency</th>
+                            <th data-field="date_created">date_created</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                        </tbody>
                     </table>
                 </div>
             </div>
