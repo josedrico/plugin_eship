@@ -1,8 +1,9 @@
 eshipBtTableQuote();
 eshipBtTableTrackingGuide();
 eshipEchartOne();
+modalInsertToken();
 
-console.log(jQuery.fn.jquery);
+//console.log(jQuery.fn.jquery);
 
 function eshipBtTableQuote() {
     jQuery('#quotes').bootstrapTable({
@@ -19,7 +20,7 @@ function eshipBtTableQuote() {
         pagination: true,
         pageList: "[25, 50, 100, ALL]",
         pageSize: "25",
-       //data: arrContent
+        //data: arrContent
     });
 }
 
@@ -44,30 +45,84 @@ function eshipBtTableTrackingGuide() {
 
 function eshipEchartOne(){
     // Initialize the echarts instance based on the prepared dom
-    let myChart = echarts.init(document.getElementById('chart-one'));
+    if ( jQuery('#chart-one').length > 0) {
+        let myChart = echarts.init(document.getElementById('chart-one'));
 
-    // Specify the configuration items and data for the chart
-    let option = {
-        title: {
-            text: 'ECharts Getting Started Example'
-        },
-        tooltip: {},
-        legend: {
-            data: ['sales']
-        },
-        xAxis: {
-            data: ['Shirts', 'Cardigans', 'Chiffons', 'Pants', 'Heels', 'Socks']
-        },
-        yAxis: {},
-        series: [
-            {
-                name: 'sales',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
+        // Specify the configuration items and data for the chart
+        let option = {
+            title: {
+                text: 'ECharts Getting Started Example'
+            },
+            tooltip: {},
+            legend: {
+                data: ['sales']
+            },
+            xAxis: {
+                data: ['Shirts', 'Cardigans', 'Chiffons', 'Pants', 'Heels', 'Socks']
+            },
+            yAxis: {},
+            series: [
+                {
+                    name: 'sales',
+                    type: 'bar',
+                    data: [5, 20, 36, 10, 10, 20]
+                }
+            ]
+        };
+
+        // Display the chart using the configuration items and data just specified.
+        myChart.setOption(option);
+    }
+}
+
+function modalInsertToken() {
+    jQuery('#tokenEshipModalBtn').on('click', function (e) {
+        e.preventDefault();
+        console.log(eshipData);
+        let formData = jQuery('#token-input-eship').val();
+        if(formData != '') {
+            console.log(formData);
+
+            let $data = {
+                method: 'POST',
+                url: eshipData.url,
+                content: {
+                    action: 'insert_token_eship',
+                    nonce: eshipData.security,
+                    token: formData,
+                    typeAction: 'add_token'
+                },
+                type: 'json'
+            };
+
+            ajaxEship($data);
+        }
+    });
+}
+
+function ajaxEship($data) {
+    jQuery.ajax({
+        method: $data.method,
+        url: $data.url,
+        data: $data.content,
+        dataType: $data.type,
+        success: function (data) {
+            if (data.error == false) {
+                console.log('success', data);
+                //reload
+                if(data.redirect != undefined ) {
+                    setTimeout(function () {
+                        location.href = data.redirect
+                    }, 1300);
+                }
+            } else {
+                console.log('error datos', data);
             }
-        ]
-    };
-
-    // Display the chart using the configuration items and data just specified.
-    myChart.setOption(option);
+        },
+        error: function(d, x, v) {
+            console.error('d', d);
+            console.error('x', x);
+            console.error('v', v);
+        }
+    });
 }
