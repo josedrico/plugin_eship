@@ -4,9 +4,8 @@ eshipEchartOne();
 modalInsertToken();
 
 //console.log(jQuery.fn.jquery);
-
-function eshipBtTableQuote() {
-    jQuery('#quotes').bootstrapTable({
+function bsTb(id, data){
+    jQuery(`${id}`).bootstrapTable({
         toggle: 'table',
         search: true,
         searchHighlight: true,
@@ -18,9 +17,37 @@ function eshipBtTableQuote() {
         },
         searchAlign: 'left',
         pagination: true,
+        sidePagination: "server",
         pageList: "[25, 50, 100, ALL]",
         pageSize: "25",
-        //data: arrContent
+        data: data
+    });
+}
+
+function eshipBtTableQuote() {
+    jQuery.ajax({
+        url: '/wp-admin/admin-ajax.php?action=get_orders_wc_eship',
+    }).done(function (data) {
+        if (!data.error) {
+            let newOrders = [];
+            jQuery.each(data.result, (index, object) => {
+                console.log(object);
+                newOrders.push({
+                    orderDate: `${object.number} <br> ${object.date_created}`,
+                    client: `${object.billing.first_name} ${object.billing.last_name}`,
+                    items: object.line_items,
+                    shipment: object.shipping,
+                    paid: object.status,
+                    fulfilled: object.fulfilled,
+                    label: ``
+                });
+            });
+            bsTb('#orders', newOrders);
+        } else {
+            bsTb('#orders', false);
+        }
+    }).fail( function (data) {
+        bsTb('#quotes', false);
     });
 }
 
@@ -78,10 +105,9 @@ function eshipEchartOne(){
 function modalInsertToken() {
     jQuery('#tokenEshipModalBtn').on('click', function (e) {
         e.preventDefault();
-        console.log(eshipData);
         let formData = jQuery('#token-input-eship').val();
+
         if(formData != '') {
-            console.log(formData);
 
             let $data = {
                 method: 'POST',
@@ -114,6 +140,8 @@ function ajaxEship($data) {
                     setTimeout(function () {
                         location.href = data.redirect
                     }, 1300);
+                } else {
+                    return data;
                 }
             } else {
                 console.log('error datos', data);
