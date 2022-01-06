@@ -110,11 +110,11 @@
                 )
             );
         }
-        
+
         public function add_menu() {
             
             $this->build_menupage->add_menu_page(
-                'Dashboard',//__( 'ESHIP', 'eship-textdomain' ),
+                'orders',//__( 'ESHIP', 'eship-textdomain' ),
                 'eship',//__( 'ESHIP', 'eship-textdomain' ),
                 'manage_options',
                 'eship_dashboard',
@@ -159,13 +159,6 @@
             $menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
 
             if (empty($this->get_token_eship())) {
-                /*$token_data = array(
-                    'email'         => '',
-                    'token_eship'   => '',
-                    'data'          => ''
-                );
-
-                $insert_db  = $this->insert_token_eship($token_data);*/
                 $menu_title = 'Connection';
 
                 require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
@@ -180,21 +173,31 @@
 
         public function controlador_display_submenu_quotes() 
         {
-            $list_orders = $this->woocommerce_conn_eship('list_orders');
-            $new_list_orders = array();
-            foreach ($list_orders as $key_orders) {
-                //var_dump($key_orders);
-                array_push($new_list_orders, array(
-                    'id' => $key_orders->id,
-                    'status' => $key_orders->status,
-                    'currency' => $key_orders->currency,
-                    'date_created' => $key_orders->date_created
-                ));
-                //die();
-            }
-
-            $json = json_encode($new_list_orders);
             $res_quotation = wp_remote_get( 'https://api.myeship.co/rest/quotation', array(
+                'headers' => array(
+                    'content-Type' => 'Application/json',
+                    'api-key' => 'eship_prod_835261c341f8465b2'
+                )
+            ));
+            $res_shipment = wp_remote_get( 'https://api.myeship.co/rest/shipment', array(
+                'headers' => array(
+                    'content-Type' => 'Application/json',
+                    'api-key' => 'eship_prod_835261c341f8465b2'
+                )
+            ));
+            $res_batch_shipment = wp_remote_get( 'https://api.myeship.co/rest/batch_shipment', array(
+                'headers' => array(
+                    'content-Type' => 'Application/json',
+                    'api-key' => 'eship_prod_835261c341f8465b2'
+                )
+            ));
+            $res_label_settings = wp_remote_get( 'https://api.myeship.co/rest/label_settings', array(
+                'headers' => array(
+                    'content-Type' => 'Application/json',
+                    'api-key' => 'eship_prod_835261c341f8465b2'
+                )
+            ));
+            $res_pickup = wp_remote_get( 'https://api.myeship.co/rest/pickup', array(
                 'headers' => array(
                     'content-Type' => 'Application/json',
                     'api-key' => 'eship_prod_835261c341f8465b2'
@@ -226,14 +229,94 @@
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
         }
 
-        private function get_token_eship()
-        {
-            $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB . ";", OBJECT );
-            if ((count($results) > 0) && (isset($results[0]->token_eship)) && (! is_null($results[0]->token_eship))) {
-                return $results[0]->token_eship;
-            } else  {
-                return '';
+        public function get_orders_wc_eship() {
+            $list_orders = $this->woocommerce_conn_eship('list_orders');
+            $new_list_orders = array();
+
+            if (! empty($list_orders)) {
+                foreach ($list_orders as $key_orders) {
+                    $shipping = '';
+                    $line_items = '';
+                    if(isset($key_orders->shipping->first_name) && !empty($key_orders->shipping->first_name)) {
+                        $shipping .= $key_orders->shipping->first_name . " ";
+                    }
+
+                    if (isset($key_orders->shipping->last_name) && !empty($key_orders->shipping->last_name)) {
+                        $shipping .= $key_orders->shipping->first_name . " ";
+                    }
+
+                    if (isset($key_orders->shipping->company) && !empty($key_orders->shipping->company)) {
+                        $shipping .= $key_orders->shipping->company . " ";
+                    }
+
+                    if (isset($key_orders->shipping->address_1) && !empty($key_orders->shipping->address_1)) {
+                        $shipping .= $key_orders->shipping->address_1 . " ";
+                    }
+
+                    if (isset($key_orders->shipping->address_1) && !empty($key_orders->shipping->address_1)) {
+                        $shipping .= $key_orders->shipping->address_1 . " ";
+                    }
+
+                    if (isset($key_orders->shipping->address_2) && !empty($key_orders->shipping->address_2)) {
+                        $shipping .= $key_orders->shipping->address_2 . " ";
+                    }
+
+                    if (isset($key_orders->shipping->city) && !empty($key_orders->shipping->city)) {
+                        $shipping .= $key_orders->shipping->city . " ";
+                    }
+
+                    if (isset($key_orders->shipping->state) && !empty($key_orders->shipping->state)) {
+                        $shipping .= $key_orders->shipping->state . " ";
+                    }
+
+                    if (isset($key_orders->shipping->postcode) && !empty($key_orders->shipping->postcode)) {
+                        $shipping .= $key_orders->shipping->postcode . " ";
+                    }
+
+                    if (isset($key_orders->shipping->country) && !empty($key_orders->shipping->country)) {
+                        $shipping .= $key_orders->shipping->country . " ";
+                    }
+
+                    if (isset($key_orders->line_items) && !empty($key_orders->line_items)) {
+                        foreach ($key_orders->line_items as $item) {
+                            //var_dump($item);
+                            $line_items .= $item->name . ' ';
+                            $line_items .= (!empty($line_items))? $item->quantity . ' ' : '';
+                            $line_items .= (!empty($line_items))? $item->total . ' ' : '';
+                            $line_items .= (!empty($line_items))? ' ' : '';
+                        }
+                    }
+
+                    $arr =  array(
+                        'id'                => $key_orders->id,
+                        'status'            => $key_orders->status,
+                        'number'            => $key_orders->number,
+                        'shipping_total'    => $key_orders->shipping_total,
+                        'billing'           => $key_orders->billing,
+                        'shipping_tax'      => $key_orders->shipping_tax,
+                        'total'             => $key_orders->total,
+                        'shipping'          => (!empty($shipping))? $shipping : ''  ,
+                        'currency'          => $key_orders->currency,
+                        'line_items'        => $line_items,
+                        'date_created'      => $key_orders->date_created
+                    );
+                    array_push($new_list_orders, $arr);
+                }
+
+                $response = array(
+                    'result'    => $new_list_orders,
+                    'error'     => FALSE,
+                    'code'      => 202
+                );
+            } else {
+                $response = array(
+                    'result'    => $new_list_orders,
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
             }
+
+            wp_send_json($response);
         }
 
         public function insert_token_eship()
@@ -282,7 +365,6 @@
             
         }
 
-
         public function woocommerce_conn_eship($type, $format = FALSE) {
             $woocommerce = new Client(
                 'http://18.191.235.204/wp-plugin-eship',
@@ -299,6 +381,16 @@
                     return $woocommerce->get('orders');
                 default:
                     return $woocommerce->get('');
+            }
+        }
+
+        private function get_token_eship()
+        {
+            $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB . ";", OBJECT );
+            if ((count($results) > 0) && (isset($results[0]->token_eship)) && (! is_null($results[0]->token_eship))) {
+                return $results[0]->token_eship;
+            } else  {
+                return '';
             }
         }
     }
