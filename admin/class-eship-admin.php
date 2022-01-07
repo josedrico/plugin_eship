@@ -125,15 +125,6 @@
 
             $this->build_menupage->add_submenu_page(
                 'eship_dashboard',
-                'Quotes',
-                'quotes',
-                'manage_options',
-                'eship_quotes',
-                [ $this, 'controlador_display_submenu_quotes' ]
-            );
-
-            $this->build_menupage->add_submenu_page(
-                'eship_dashboard',
                 'configuration',
                 'configuration',
                 'manage_options',
@@ -158,6 +149,7 @@
             $wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
             $menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
 
+            //var_dump($_GET);
             if (empty($this->get_token_eship())) {
                 $menu_title = 'Connection';
 
@@ -165,10 +157,21 @@
                 require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
                 require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
             } else {
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+                if(isset($_GET['quotes']) && ($_GET['quotes'] != 0 || $_GET['quotes'] == 0)) {
+                    $quotes_id      = $_GET['quotes'];
+                    $menu_title     = 'Quotes';
+                    $redirect_url   = 'admin.php?page=eship_dashboard';
+    
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/quotes/quotes.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+                } else {
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';   
+                }
             } 
+            
         }
 
         public function controlador_display_submenu_quotes() 
@@ -203,12 +206,6 @@
                     'api-key' => 'eship_prod_835261c341f8465b2'
                 )
             ));
-
-            $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/quotes/quotes.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
         }
 
         public function controlador_display_submenu_configuration() 
