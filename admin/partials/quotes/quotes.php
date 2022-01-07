@@ -55,9 +55,8 @@
                         <div class="col-12 col-md-3">
                             <select class="form-select" aria-label="Default select example">
                                 <option selected>Select Units</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <option value="cm">cm</option>
+                                <option value="in">in</option>
                             </select>
                         </div>
                     </div>
