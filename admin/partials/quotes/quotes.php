@@ -2,17 +2,9 @@
     <div class="mt-5 mb-5">
         <h5>Connections with e-commerce platform.</h5>
         <div class="row">
-            <?php
-            //echo "<pre>";
-            //var_dump(gettype($res_quotation));
-                //var_dump($res_quotation['body']);
-            //var_dump(gettype($list_orders));
-            //var_dump($list_orders);
-            //echo "</pre>";
-            ?>
             <div class="col-12">
                 <div class="col-12">
-                    <table id="quotes" class="table" data-url="<?php echo $json;?>">
+                    <table id="quotes" class="table">
                         <thead>
                         <tr>
                             <th data-field="id">ID</th>
