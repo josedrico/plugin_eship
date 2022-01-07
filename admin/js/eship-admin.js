@@ -49,7 +49,7 @@ function eshipBtTableQuote() {
                     paid: object.status,
                     fulfilled: object.fulfilled,
                     label: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id, 'secondary', 'Ship Now', ' mb-1')}
-                            ${redirectQuotesEship('eship_dashboard&label_quotes=' + object.id, 'info', 'View Label')}`
+                            ${redirectQuotesEship('eship_tracking_guide&label_quotes=' + object.id, 'info', 'View Label')}`
                 });
             });
             bsTb('#orders', newOrders);

@@ -176,10 +176,8 @@
                                 <div class="col-12 col-sm-8">
                                     <h5>Order # Items</h5>
                                 </div>
-                                <div class="col-12 col-sm-4">
-                                    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#orderModal">
-                                        Edit
-                                    </button>
+                                <div class="col-12 col-sm-4 text-end">
+                                    <a class="btn btn-light w-100" data-bs-toggle="modal" href="#orderModalToggle" role="button">Edit</a>
                                 </div>
                             </div>
                             <div class="row">
@@ -378,53 +376,6 @@
     </div>
 </div>
 
-<!-- Modal Order-->
-<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered ">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="orderModalLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <nav>
-                    <div class="nav nav-tabs" id="nav-tabOrder" role="tablist">
-                        <button class="nav-link active" id="nav-shipnow-tab" data-bs-toggle="tab" data-bs-target="#nav-shipnow" type="button" role="tab" aria-controls="nav-shipnow" aria-selected="true">
-                            Ship Now
-                        </button>
-                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Profile</button>
-                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
-                    </div>
-                </nav>
-                <div class="tab-content" id="nav-tabOrderContent">
-                    <div class="tab-pane fade show active" id="nav-shipnow" role="tabpanel" aria-labelledby="nav-shipnow-tab">
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <h4>In this shipment</h4>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur corporis dignissimos,
-                                odit officiis porro quisquam quo tenetur ullam. Blanditiis dolor doloremque exercitationem magni,
-                                nam odio omnis vel! Culpa, dolorem nemo.
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <h4>Send later</h4>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur corporis dignissimos,
-                                odit officiis porro quisquam quo tenetur ullam. Blanditiis dolor doloremque exercitationem magni,
-                                nam odio omnis vel! Culpa, dolorem nemo.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal Destination-->
 <div class="modal fade" id="destinationModal" tabindex="-1" aria-labelledby="destinationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered ">
@@ -458,6 +409,82 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Order-->
+<div class="modal fade" id="orderModalToggle" aria-hidden="true" aria-labelledby="orderModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalToggleLabel">
+                    Order # Items
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2">
+                    <div class="col-12 col-md-6">
+                        <h3>Ship Now</h3>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <button class="btn btn-light" data-bs-target="#orderModalToggle2" data-bs-toggle="modal">Edit</button>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <button class="btn btn-light" data-bs-target="#orderModalToggle3" data-bs-toggle="modal">Add</button>
+                    </div>
+                </div>
+                <div class="row mt-2 mb-2">
+                    <div class="col-12 col-md-6">
+                        <h4>In this shipment</h4>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur corporis dignissimos,
+                        odit officiis porro quisquam quo tenetur ullam. Blanditiis dolor doloremque exercitationem magni,
+                        nam odio omnis vel! Culpa, dolorem nemo.
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <h4>Send later</h4>
+                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur corporis dignissimos,
+                        odit officiis porro quisquam quo tenetur ullam. Blanditiis dolor doloremque exercitationem magni,
+                        nam odio omnis vel! Culpa, dolorem nemo.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="orderModalToggle2" aria-hidden="true" aria-labelledby="orderModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalToggleLabel2">Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hide this modal and show the first with the button below.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#orderModalToggle" data-bs-toggle="modal">Back to first</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="orderModalToggle3" aria-hidden="true" aria-labelledby="orderModalToggleLabel3" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderModalToggleLabel3">Add</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hide this modal and show the first with the button below.
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#orderModalToggle" data-bs-toggle="modal">Finish</button>
             </div>
         </div>
     </div>

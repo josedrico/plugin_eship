@@ -112,7 +112,6 @@
         }
 
         public function add_menu() {
-            
             $this->build_menupage->add_menu_page(
                 'orders',//__( 'ESHIP', 'eship-textdomain' ),
                 'eship',//__( 'ESHIP', 'eship-textdomain' ),
@@ -123,23 +122,26 @@
                 65
             );
 
-            $this->build_menupage->add_submenu_page(
-                'eship_dashboard',
-                'configuration',
-                'configuration',
-                'manage_options',
-                'eship_configuration',
-                [ $this, 'controlador_display_submenu_configuration' ]
-            );
+            if (! empty($this->get_token_eship())) {
+                $this->build_menupage->add_submenu_page(
+                    'eship_dashboard',
+                    'configuration',
+                    'configuration',
+                    'manage_options',
+                    'eship_configuration',
+                    [ $this, 'controlador_display_submenu_configuration' ]
+                );
 
-            $this->build_menupage->add_submenu_page(
-                'eship_dashboard',
-                'Tracking Guide',
-                'tracking guide',
-                'manage_options',
-                'eship_tracking_guide',
-                [ $this, 'controlador_display_submenu_tracking_guide' ]
-            );
+                $this->build_menupage->add_submenu_page(
+                    'eship_dashboard',
+                    'Tracking Guide',
+                    'tracking guide',
+                    'manage_options',
+                    'eship_tracking_guide',
+                    [ $this, 'controlador_display_submenu_tracking_guide' ]
+                );
+            }
+
             $this->build_menupage->run();
         }
 
@@ -219,11 +221,24 @@
 
         public function controlador_display_submenu_tracking_guide() 
         {
-            $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+            if (empty($this->get_token_eship())) {
+                $this->controlador_display_menu();
+            } else {
+                $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
+                $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
+                if(isset($_GET['label_quotes']) && $_GET['label_quotes'] != 0) {
+                    $menu_title = 'PDF';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/breadcums.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide_pdf.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+                } else {
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide.php';
+                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
+                }
+
+            }
         }
 
         public function get_orders_wc_eship() {

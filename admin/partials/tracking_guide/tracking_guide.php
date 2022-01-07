@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="mt-5 mb-5">
+    <div class="mt-2 mb-5">
         <h5>Connections with e-commerce platform.</h5>
         <div class="row">
             <div class="col-12">
