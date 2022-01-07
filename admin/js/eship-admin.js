@@ -2,6 +2,7 @@ eshipBtTableQuote();
 eshipBtTableTrackingGuide();
 eshipEchartOne();
 modalInsertToken();
+selectElement();
 
 //console.log(jQuery.fn.jquery);
 function bsTb(id, data) {
@@ -24,11 +25,10 @@ function bsTb(id, data) {
     });
 }
 
-function redirectQuotesEship(href) {
-    let html = `<a class="btn btn-secondary" href="/wp-admin/admin.php?page=${href}">
-                    Ship Now
-                </a>
-                `;
+function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
+    let html = `<a class="btn btn-${btnClass}${moreClass} w-100" href="/wp-admin/admin.php?page=${href}">
+                    ${contentText}
+                </a>`;
 
     return html;
 }
@@ -40,7 +40,7 @@ function eshipBtTableQuote() {
         if (!data.error) {
             let newOrders = [];
             jQuery.each(data.result, (index, object) => {
-                console.log(object);
+                //console.log(object);
                 newOrders.push({
                     orderDate: `${object.number} <br> ${object.date_created}`,
                     client: `${object.billing.first_name} ${object.billing.last_name}`,
@@ -48,7 +48,8 @@ function eshipBtTableQuote() {
                     shipment: object.shipping,
                     paid: object.status,
                     fulfilled: object.fulfilled,
-                    label: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id)}`
+                    label: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id, 'secondary', 'Ship Now', ' mb-1')}
+                            ${redirectQuotesEship('eship_dashboard&label_quotes=' + object.id, 'info', 'View Label')}`
                 });
             });
             bsTb('#orders', newOrders);
@@ -162,4 +163,43 @@ function ajaxEship($data) {
             console.error('v', v);
         }
     });
+}
+
+function selectElement() {
+    if (jQuery('#template') && jQuery('.card').hasClass('show-quotes')) {
+        jQuery('#template').show();
+    }
+
+    if (jQuery('#custom')) {
+        jQuery('#custom').hide();
+    }
+    if (jQuery('#multipiece')) {
+        jQuery('#multipiece').hide();
+    }
+    if (jQuery('section')) {
+        //console.log(select);
+        jQuery('section').click(function(){
+            switch (jQuery(this).data('select')) {
+                case 'template':
+                    jQuery('#template').removeClass('show-quotes');
+                    jQuery('#template').show();
+                    jQuery('#custom').hide();
+                    jQuery('#multipiece').hide();
+                    break;
+                case 'custom':
+                    jQuery('#template').hide();
+                    jQuery('#custom').show();
+                    jQuery('#multipiece').hide();
+                    break;
+                case 'multipiece':
+                    jQuery('#template').hide();
+                    jQuery('#custom').hide();
+                    jQuery('#multipiece').show();
+                    break;
+                default:
+                    console.log('sin section');
+                    break;
+            }
+        });
+    }
 }
