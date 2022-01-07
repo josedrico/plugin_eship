@@ -4,7 +4,7 @@ eshipEchartOne();
 modalInsertToken();
 
 //console.log(jQuery.fn.jquery);
-function bsTb(id, data){
+function bsTb(id, data) {
     jQuery(`${id}`).bootstrapTable({
         toggle: 'table',
         search: true,
@@ -24,6 +24,15 @@ function bsTb(id, data){
     });
 }
 
+function redirectQuotesEship(href) {
+    let html = `<a class="btn btn-secondary" href="/wp-admin/admin.php?page=${href}">
+                    Ship Now
+                </a>
+                `;
+
+    return html;
+}
+
 function eshipBtTableQuote() {
     jQuery.ajax({
         url: '/wp-admin/admin-ajax.php?action=get_orders_wc_eship',
@@ -39,14 +48,14 @@ function eshipBtTableQuote() {
                     shipment: object.shipping,
                     paid: object.status,
                     fulfilled: object.fulfilled,
-                    label: ``
+                    label: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id)}`
                 });
             });
             bsTb('#orders', newOrders);
         } else {
             bsTb('#orders', false);
         }
-    }).fail( function (data) {
+    }).fail(function (data) {
         bsTb('#quotes', false);
     });
 }
@@ -70,9 +79,9 @@ function eshipBtTableTrackingGuide() {
     });
 }
 
-function eshipEchartOne(){
+function eshipEchartOne() {
     // Initialize the echarts instance based on the prepared dom
-    if ( jQuery('#chart-one').length > 0) {
+    if (jQuery('#chart-one').length > 0) {
         let myChart = echarts.init(document.getElementById('chart-one'));
 
         // Specify the configuration items and data for the chart
@@ -107,7 +116,7 @@ function modalInsertToken() {
         e.preventDefault();
         let formData = jQuery('#token-input-eship').val();
 
-        if(formData != '') {
+        if (formData != '') {
 
             let $data = {
                 method: 'POST',
@@ -136,7 +145,7 @@ function ajaxEship($data) {
             if (data.error == false) {
                 console.log('success', data);
                 //reload
-                if(data.redirect != undefined ) {
+                if (data.redirect != undefined) {
                     setTimeout(function () {
                         location.href = data.redirect
                     }, 1300);
@@ -147,7 +156,7 @@ function ajaxEship($data) {
                 console.log('error datos', data);
             }
         },
-        error: function(d, x, v) {
+        error: function (d, x, v) {
             console.error('d', d);
             console.error('x', x);
             console.error('v', v);
