@@ -59,16 +59,20 @@
              * https://getbootstrap.com/
              * Bootstrap
              */
-            wp_enqueue_style( 'eship_bootstrap_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/css/bootstrap.min.css', array(), '5.1.3', 'all' );
+            wp_enqueue_style( 'eship_bootstrap_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/css/bootstrap.min.css', array(), '5.1.3', '' );
 
             /**
              * eship-admin.css
              * Archivo de hojas de estilos principales
              * de la administración
              */
-            wp_enqueue_style( 'eship_bootstrap_table_admin_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/css/bootstrap-table.min.css', array(), '1.19.1', 'all' );
-            
-            wp_enqueue_style( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/css/eship-admin.css', array(), $this->version, 'all' );
+            wp_enqueue_style( 'eship_datepicker_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.css', array(), '', '' );
+            wp_enqueue_style( 'eship_datepicker_structure_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.structure.css', array(), '', '' );
+            wp_enqueue_style( 'eship_custom_datepicker_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.theme.css', array(), '', '' );
+
+            wp_enqueue_style( 'eship_bootstrap_table_admin_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/css/bootstrap-table.min.css', array(), '1.19.1', '' );
+
+            wp_enqueue_style( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/css/eship-admin.css', array(), $this->version, '' );
         }
         
         public function enqueue_scripts($hook) 
@@ -82,22 +86,24 @@
              * https://getbootstrap.com/
              * Bootstrap
              */
-            wp_enqueue_script( 'eship_bootstrap_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/js/bootstrap.min.js', array(), '5.1.3', true );
+            wp_enqueue_script( 'eship_bootstrap_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/js/bootstrap.min.js', array(), '5.1.3', TRUE );
+
+            wp_enqueue_script( 'eship_datepicker_js',  ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.js', array('jquery'), 'v1.13.0' );
+
 
             /**
              * Extension Bootstrap Table
              * https://bootstrap-table.com/
              * Bootstrap Table
              */
-            wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', true );
+            wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', TRUE );
 
             /**
              * Library Visualization  Graphs
              * https://echarts.apache.org/en/index.html
              * Apache ECharts
              */
-            wp_enqueue_script( 'eship_echart_admin_js', 'https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.js', array(), '', TRUE );
-
+            wp_enqueue_script( 'eship_echart_admin_js', 'helpers/echarts-apache/js/echarts.js', array(), '', TRUE );
 
             wp_enqueue_script( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, TRUE );
             
