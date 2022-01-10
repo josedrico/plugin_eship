@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="orders-list">
     <div class="mt-5 mb-5">
         <div class="row">
             <div class="col-12 col-md-6">
@@ -19,37 +19,66 @@
                     <div class="row">
                         <div class="col-12 col-sm-4">
                             <section class="card show-quotes" data-select="template">
-                                Template
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="dashicons dashicons-media-document"></span>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        Template
+                                    </div>
+                                </div>
                             </section>
                         </div>
                         <div class="col-12 col-sm-4">
                             <section class="card" data-select="custom">
-                                Custom
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="dashicons dashicons-image-crop"></span>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        Custom
+                                    </div>
+                                </div>
                             </section>
                         </div>
                         <div class="col-12 col-sm-4">
                             <section class="card" data-select="multipiece">
-                                Multi-piece
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="dashicons dashicons-archive"></span>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        Multi-piece
+                                    </div>
+                                </div>
                             </section>
                         </div>
                     </div>
-                    <div class="row mt-2" id="template">
+                    <div class="row mt-2" id="template-orders">
                         <div class="col-12 col-sm-4">
                             <a href="#" class="card">
-                                Letter Envelope
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="dashicons dashicons-email"></span>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        Example Letter Envelope
+                                    </div>
+                                </div>
                             </a>
                         </div>
-                        <div class="col-12 col-sm-4">
+                        <div class="col-12 col-sm-4 pt-5">
                             <!-- Button trigger modal -->
-                            <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
-                                Add Template
+                            <a class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addTemplateModal">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <span class="dashicons dashicons-welcome-add-page"></span>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        Add Template
+                                    </div>
+                                </div>
                             </a>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <div class="input-group input-group-sm mt-3 mb-3">
-                                <span class="input-group-text" id="inputGroup-sizing-sm">Length</span>
-                                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
                         </div>
                     </div>
                     <div class="row mt-2" id="custom">
@@ -165,6 +194,46 @@
                                 <option value="lb">lb</option>
                             </select>
                         </div>
+                    </div>
+
+                    <div class="row pt-5">
+                        <div class="col-12">
+                            <h3 id="icon-add-options">
+                                <span class="dashicons dashicons-insert"></span> Additional options
+                            </h3>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-text">
+                                        <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input"> Shipping date
+                                    </div>
+                                    <input type="text" class="form-control" aria-label="Text input with checkbox" id="datepicker">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12 col-md-8">
+                                    <div class="form-check">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-text">
+                                                <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input"> Additional insurance
+                                            </div>
+                                            <input type="text" class="form-control" aria-label="Text input with checkbox" id="datepicker">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <select class="form-select" aria-label="Default select example">
+                                        <option selected>Select Money Format</option>
+                                        <option value="1">MXN</option>
+                                        <option value="2">US</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
