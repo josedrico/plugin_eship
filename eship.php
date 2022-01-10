@@ -67,7 +67,13 @@ function run_eship_master() {
     $eship_master->run();
 }
 
-run_eship_master();
+/*
+ * Check that exist woocommerce
+ * */
+if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+    run_eship_master();
+}
+
 
 
 
