@@ -3,35 +3,39 @@
 */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 
-#app-eship {
+.app-eship {
     color: #1f61ad;
     background-color: #f4f8f6;
     font-family: 'Open Sans', sans-serif;
 }
 
-#app-eship p {
+.app-eship p {
     color: #333333;
 }
 
-#app-eship h1,h2,h3,h4,h5,h6 {
+.app-eship h1,h2,h3,h4,h5,h6 {
     color: #1f61ad;
 }
 
-#app-eship .bg-img-header {
+.app-eship .bg-img-header {
     background-color: #1f61ad;
 }
 
-#app-eship .card {
+.app-eship .card {
     max-width: 100% !important;
 }
 
-#orders-list .dashicons{
-    font-size: 500%;
-    width: 100%;
-    height: 100%;
+.app-eship .modal{
+   z-index: 100000;
 }
 
-#orders-list .form-check .form-check-input {
+#orders-list .dashicons{
+    /*font-size: 500%;
+    width: 100%;
+    height: 100%;*/
+}
+
+#dashBoardEshipModalToggle2 .form-check .form-check-input, #myEshipOrderTabContent .form-check .form-check-input{
     margin-left: 0px;
 }
 
@@ -40,3 +44,5 @@
     width: auto;
     height: auto;
 }
+
+
