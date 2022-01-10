@@ -3,6 +3,7 @@ eshipBtTableTrackingGuide();
 eshipEchartOne();
 modalInsertToken();
 selectElement();
+quotesInputsConfig();
 
 //console.log(jQuery.fn.jquery);
 function bsTb(id, data) {
@@ -166,8 +167,8 @@ function ajaxEship($data) {
 }
 
 function selectElement() {
-    if (jQuery('#template') && jQuery('.card').hasClass('show-quotes')) {
-        jQuery('#template').show();
+    if (jQuery('#template-orders') && jQuery('.card').hasClass('show-quotes')) {
+        jQuery('#template-orders').show();
     }
 
     if (jQuery('#custom')) {
@@ -180,19 +181,19 @@ function selectElement() {
         //console.log(select);
         jQuery('section').click(function(){
             switch (jQuery(this).data('select')) {
-                case 'template':
-                    jQuery('#template').removeClass('show-quotes');
-                    jQuery('#template').show();
+                case 'template-orders':
+                    jQuery('#template-orders').removeClass('show-quotes');
+                    jQuery('#template-orders').show();
                     jQuery('#custom').hide();
                     jQuery('#multipiece').hide();
                     break;
                 case 'custom':
-                    jQuery('#template').hide();
+                    jQuery('#template-orders').hide();
                     jQuery('#custom').show();
                     jQuery('#multipiece').hide();
                     break;
                 case 'multipiece':
-                    jQuery('#template').hide();
+                    jQuery('#template-orders').hide();
                     jQuery('#custom').hide();
                     jQuery('#multipiece').show();
                     break;
@@ -202,4 +203,10 @@ function selectElement() {
             }
         });
     }
+}
+
+function quotesInputsConfig() {
+    jQuery( "#datepicker" ).datepicker({
+        dateFormat:"dd-mm-yy"
+    });
 }
