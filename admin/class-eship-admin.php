@@ -151,35 +151,58 @@
             $this->build_menupage->run();
         }
 
+        public function add_metabox_register_eship(){
+            $register = '';
+            if (empty($this->get_token_eship())) {
+                $register_view = [$this, 'controlador_display_menu'];
+                $register_title = 'ESHIP - Register';
+            }  else {
+                $register_view = [$this, 'controlador_display_menu'];
+                $register_title = 'ESHIP - Orders';
+            }
+
+            add_meta_box(
+                'woocommerce-order-eship',
+                __($register_title, 'woocommerce'),
+                $register_view,
+                'shop_order',
+                'side',
+                'high'
+            );
+        }
+
+        public function add_metabox_tracking_guide_eship(){
+
+            add_meta_box(
+                'woocommerce-tracking-eship',
+                __('ESHIP - Tracking Guide', 'woocommerce'),
+                [$this, 'controlador_display_metra_tracking_eship'],
+                'shop_order',
+                'side',
+                'high'
+            );
+        }
+
         public function controlador_display_menu() 
         {
             //https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
-            $wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            $menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
+            //$wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
+            //$menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
 
-            //var_dump($_GET);
             if (empty($this->get_token_eship())) {
-                $menu_title = 'Connection';
-
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
                 require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
             } else {
-                if(isset($_GET['quotes']) && ($_GET['quotes'] != 0 || $_GET['quotes'] == 0)) {
-                    $quotes_id      = $_GET['quotes'];
-                    $menu_title     = 'Quotes';
-                    $redirect_url   = 'admin.php?page=eship_dashboard';
-    
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/quotes/quotes.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
-                } else {
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';   
-                }
-            } 
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
+            }
             
+        }
+
+        public function controlador_display_metra_tracking_eship()
+        {
+            //https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
+            //$wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
+            //$menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide_pdf.php';
         }
 
         public function controlador_display_submenu_quotes() 
@@ -216,16 +239,7 @@
             ));
         }
 
-        public function controlador_display_submenu_configuration() 
-        {
-            $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/configuration/configuration.php';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
-        }
-
-        public function controlador_display_submenu_tracking_guide() 
+        public function controlador_display_submenu_tracking_guide()
         {
             if (empty($this->get_token_eship())) {
                 $this->controlador_display_menu();
