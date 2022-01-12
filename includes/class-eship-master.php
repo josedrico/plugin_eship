@@ -90,8 +90,7 @@ class ESHIP_Master {
 
         $this->loader->add_action( 'wp_ajax_insert_token_eship', $this->eship_admin, 'insert_token_eship' );
         $this->loader->add_action( 'wp_ajax_get_orders_wc_eship', $this->eship_admin, 'get_orders_wc_eship' );
-        $this->loader->add_action( 'add_meta_boxes', $this->eship_admin, 'add_metabox_register_eship' );
-        $this->loader->add_action( 'add_meta_boxes', $this->eship_admin, 'add_metabox_tracking_guide_eship' );
+        $this->loader->add_action( 'add_meta_boxes', $this->eship_admin, 'add_metabox_eship' );
     }
     
     public function run() {
