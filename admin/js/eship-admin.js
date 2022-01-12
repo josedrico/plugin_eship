@@ -1,11 +1,7 @@
-eshipBtTableQuote();
-eshipBtTableTrackingGuide();
-eshipEchartOne();
+eshipBtTbCustomOrder();
 modalInsertToken();
 selectElement();
-quotesInputsConfig();
 
-//console.log(jQuery.fn.jquery);
 function bsTb(id, data) {
     jQuery(`${id}`).bootstrapTable({
         toggle: 'table',
@@ -34,7 +30,7 @@ function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
     return html;
 }
 
-function eshipBtTableQuote() {
+function eshipBtTbCustomOrder() {
     jQuery.ajax({
         url: '/wp-admin/admin-ajax.php?action=get_orders_wc_eship',
     }).done(function (data) {
@@ -43,13 +39,10 @@ function eshipBtTableQuote() {
             jQuery.each(data.result, (index, object) => {
                 //console.log(object);
                 newOrders.push({
-                    orderDate: `${object.number} <br> ${object.date_created}`,
-                    client: `${object.billing.first_name} ${object.billing.last_name}`,
-                    items: object.line_items,
-                    shipment: object.shipping,
-                    paid: object.status,
-                    fulfilled: object.fulfilled,
-                    label: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id, 'secondary', 'Ship Now', ' mb-1')}
+                    carrier: `${object.number} <br> ${object.date_created}`,
+                    services: `${object.billing.first_name} ${object.billing.last_name}`,
+                    shipDate: object.line_items,
+                    actions: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id, 'secondary', 'Ship Now', ' mb-1')}
                             ${redirectQuotesEship('eship_tracking_guide&label_quotes=' + object.id, 'info', 'View Label')}`
                 });
             });
@@ -60,57 +53,6 @@ function eshipBtTableQuote() {
     }).fail(function (data) {
         bsTb('#quotes', false);
     });
-}
-
-function eshipBtTableTrackingGuide() {
-    jQuery('#tracking-guide').bootstrapTable({
-        toggle: 'table',
-        search: true,
-        searchHighlight: true,
-        searchOnEnterKey: true,
-        showSearchButton: true,
-        iconsPrefix: 'dashicons',
-        icons: {
-            search: 'dashicons-search'
-        },
-        searchAlign: 'left',
-        pagination: true,
-        pageList: "[25, 50, 100, ALL]",
-        pageSize: "25",
-        //data: arrContent
-    });
-}
-
-function eshipEchartOne() {
-    // Initialize the echarts instance based on the prepared dom
-    if (jQuery('#chart-one').length > 0) {
-        let myChart = echarts.init(document.getElementById('chart-one'));
-
-        // Specify the configuration items and data for the chart
-        let option = {
-            title: {
-                text: 'ECharts Getting Started Example'
-            },
-            tooltip: {},
-            legend: {
-                data: ['sales']
-            },
-            xAxis: {
-                data: ['Shirts', 'Cardigans', 'Chiffons', 'Pants', 'Heels', 'Socks']
-            },
-            yAxis: {},
-            series: [
-                {
-                    name: 'sales',
-                    type: 'bar',
-                    data: [5, 20, 36, 10, 10, 20]
-                }
-            ]
-        };
-
-        // Display the chart using the configuration items and data just specified.
-        myChart.setOption(option);
-    }
 }
 
 function modalInsertToken() {
@@ -203,10 +145,4 @@ function selectElement() {
             }
         });
     }
-}
-
-function quotesInputsConfig() {
-    jQuery( "#datepicker" ).datepicker({
-        dateFormat:"dd-mm-yy"
-    });
 }
