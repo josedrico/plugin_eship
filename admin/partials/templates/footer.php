@@ -1,8 +1,0 @@
-<footer class="container">
-    <div class="row">
-        <div class="col-12">
-            Footer
-        </div>
-    </div>
-</footer>
-</div>
