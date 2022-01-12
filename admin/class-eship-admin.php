@@ -61,17 +61,16 @@
              */
             wp_enqueue_style( 'eship_bootstrap_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/css/bootstrap.min.css', array(), '5.1.3', '' );
 
+            wp_enqueue_style( 'eship_fontawesome_free_css', ESHIP_PLUGIN_DIR_URL . 'helpers/fontawesome-free-5.15.4-web/css/all.min.css', array(), '5.15.4', '' );
+
+            wp_enqueue_style( 'eship_bootstrap_table_admin_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/css/bootstrap-table.min.css', array(), '1.19.1', '' );
+
+
             /**
              * eship-admin.css
              * Archivo de hojas de estilos principales
              * de la administración
              */
-            wp_enqueue_style( 'eship_datepicker_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.css', array(), '', '' );
-            wp_enqueue_style( 'eship_datepicker_structure_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.structure.css', array(), '', '' );
-            wp_enqueue_style( 'eship_custom_datepicker_css', ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.theme.css', array(), '', '' );
-
-            wp_enqueue_style( 'eship_bootstrap_table_admin_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/css/bootstrap-table.min.css', array(), '1.19.1', '' );
-
             wp_enqueue_style( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/css/eship-admin.css', array(), $this->version, '' );
         }
         
@@ -88,8 +87,7 @@
              */
             wp_enqueue_script( 'eship_bootstrap_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/js/bootstrap.min.js', array(), '5.1.3', TRUE );
 
-            wp_enqueue_script( 'eship_datepicker_js',  ESHIP_PLUGIN_DIR_URL . 'helpers/jquery-ui-1.13.0.custom/jquery-ui.js', array('jquery'), 'v1.13.0' );
-
+            wp_enqueue_script( 'eship_fontawesome_free_js', ESHIP_PLUGIN_DIR_URL . 'helpers/fontawesome-free-5.15.4-web/js/all.min.js', array(), '5.15.3', TRUE );
 
             /**
              * Extension Bootstrap Table
@@ -97,13 +95,6 @@
              * Bootstrap Table
              */
             wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', TRUE );
-
-            /**
-             * Library Visualization  Graphs
-             * https://echarts.apache.org/en/index.html
-             * Apache ECharts
-             */
-            wp_enqueue_script( 'eship_echart_admin_js', 'helpers/echarts-apache/js/echarts.js', array(), '', TRUE );
 
             wp_enqueue_script( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, TRUE );
             
@@ -151,14 +142,13 @@
             $this->build_menupage->run();
         }
 
-        public function add_metabox_register_eship(){
-            $register = '';
+        public function add_metabox_eship(){
             if (empty($this->get_token_eship())) {
-                $register_view = [$this, 'controlador_display_menu'];
-                $register_title = 'ESHIP - Register';
+                $register_view = [$this, 'view_register_eship'];
+                $register_title = "<img src='" .ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png' . "' class='w-30 h-30'>";
             }  else {
-                $register_view = [$this, 'controlador_display_menu'];
-                $register_title = 'ESHIP - Orders';
+                $register_view = [$this, 'view_buttons_eship'];
+                $register_title = "<img class='img-thumbnail' style='background-color: #1f61ad; width:80%;' src='" .ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png' . "'>";
             }
 
             add_meta_box(
@@ -171,38 +161,70 @@
             );
         }
 
-        public function add_metabox_tracking_guide_eship(){
-
-            add_meta_box(
-                'woocommerce-tracking-eship',
-                __('ESHIP - Tracking Guide', 'woocommerce'),
-                [$this, 'controlador_display_metra_tracking_eship'],
-                'shop_order',
-                'side',
-                'high'
-            );
-        }
-
-        public function controlador_display_menu() 
+        public function view_buttons_eship()
         {
-            //https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
-            //$wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            //$menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-
-            if (empty($this->get_token_eship())) {
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
-            } else {
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/dashboard/dashboard.php';
+            $post   = '';
+            $res_wc = FALSE;
+            $res_wc_settings = FALSE;
+            if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                $post   = $_GET['post'];
+                $parameters = array(
+                    'id' => $post
+                );
+                $res_wc = $this->woocommerce_conn_eship('order_get', $parameters);
+                $res_wc_settings = $this->wc_settings_eship();
             }
-            
+
+            $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
-        public function controlador_display_metra_tracking_eship()
+        private function wc_settings_eship()
         {
-            //https://woocommerce.github.io/woocommerce-rest-api-docs/#introduction
-            //$wc_img         = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-            //$menu_header    = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide_pdf.php';
+            $res_wc_settings = $this->woocommerce_conn_eship('settings_general');
+            $data = array();
+            foreach ($res_wc_settings as $key) {
+                $address = FALSE;
+                if ($key->id  == 'woocommerce_store_address') {
+                    $address = $key->value;
+                }
+
+                $address_2 = FALSE;
+                if ($key->id == 'woocommerce_store_address_2') {
+                    $address_2 = $key->value;
+                }
+
+                $city = FALSE;
+                if ($key->id == 'woocommerce_store_city') {
+                    $city = $key->value;
+                }
+
+                $postcode = FALSE;
+                if ($key->id == 'woocommerce_store_postcode') {
+                    $postcode = $key->value;
+                }
+
+                $country = FALSE;
+                if ($key->id == 'woocommerce_default_country') {
+                    $country = $key->value;
+                }
+
+                $new_wc_data = array(
+                    'address'   => $address,
+                    'address2'  => $address_2,
+                    'city'      => $city,
+                    'postcode'  => $postcode,
+                    'country'   => $country,
+                );
+                array_push($data, $new_wc_data);
+
+            }
+            return $data;
+        }
+
+        private function view_register_eship()
+        {
+            return ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
         public function controlador_display_submenu_quotes() 
@@ -237,28 +259,6 @@
                     'api-key' => 'eship_prod_835261c341f8465b2'
                 )
             ));
-        }
-
-        public function controlador_display_submenu_tracking_guide()
-        {
-            if (empty($this->get_token_eship())) {
-                $this->controlador_display_menu();
-            } else {
-                $wc_img = ESHIP_PLUGIN_DIR_URL . 'admin/img/woocommerce.png';
-                $menu_header = ESHIP_PLUGIN_DIR_URL . 'admin/img/eshipw.png';
-                if(isset($_GET['label_quotes']) && $_GET['label_quotes'] != 0) {
-                    $menu_title = 'PDF';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/breadcums.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide_pdf.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
-                } else {
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/navbar.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/tracking_guide/tracking_guide.php';
-                    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/templates/footer.php';
-                }
-
-            }
         }
 
         public function get_orders_wc_eship() {
@@ -397,8 +397,10 @@
             
         }
 
-        public function woocommerce_conn_eship($type, $format = FALSE) {
+        public function woocommerce_conn_eship($type, $parameters = FALSE) {
             $woocommerce = new Client(
+                //Page principal
+                /*
                 'http://18.191.235.204/wp-plugin-eship',
                 'ck_e1e2f573ca6d3237a02a7442952fa37806ef47ea',
                 'cs_fc047f331954ffa83623ed0f47c927afee406438',
@@ -406,11 +408,25 @@
                     'wp_api' => true,
                     'version' => 'wc/v3'
                 ]
+                */
+                // Sitio de pruebas
+                'http://wp.eship.mylocal:8888',
+                'ck_8fc0c1a4fbc9fd2137a6b75c2728908f9346eb15',
+                'cs_46c0207837b87425d850fff14656ffef0621b4bc',
+                [
+                    'wp_api' => true,
+                    'version' => 'wc/v3'
+                ]
             );
 
+            //https://github.com/woocommerce/wc-api-php
             switch($type) {
+                case 'settings_general':
+                    return $woocommerce->get('settings/general');
                 case 'list_orders':
                     return $woocommerce->get('orders');
+                case 'order_get':
+                    return $woocommerce->get('orders', $parameters);
                 default:
                     return $woocommerce->get('');
             }
