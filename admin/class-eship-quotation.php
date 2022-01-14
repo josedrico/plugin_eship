@@ -26,20 +26,6 @@ class ESHIP_Quotation {
         $this->eship_api        = new ESHIP_Api();
     }
 
-    private function quotation_api_eship($type, $uri, $body)
-    {
-        $api        = "https://api.myeship.co/rest/";
-        $api_key    = 'eship_prod_835261c341f8465b2';
-
-        switch ($type) {
-            case 'quotation_post':
-                return $this->wp_api_post_eship($api, $api_key, $uri, $body);
-            default:
-                break;
-        }
-    }
-    //mover arriba a clase eship api
-
     private function req_quotation_api_eship()
     {
         $eship_api = array(
@@ -121,33 +107,17 @@ class ESHIP_Quotation {
         );
     }
 
-    public function create_quotation_api_eship()
+    public function create($id)
     {
-        $arr = array();
-        if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-            $order          = $this->get_order_wc_eship($_GET['post']);
-            $lines_items    = $this->get_line_items_wc_eship($order);
-            $data           = array();
+        $address_store      = $this->woocommerce_api->getStoreAddressApi();
+        $order              = $this->woocommerce_api->getOrderApi($id);
+        $address_shipping   = $order[0]['shipping'];
+        $line_items         = $order[0]['line_items'];
+        //$shipping_lines     = $order[0]['shipping_lines'];
+        $products           = $this->woocommerce_api->getProductApi($line_items[0]->product_id);
+        $weigth             = $products['weight'];
+        $dimensions         = $products['dimensions'];
 
-            if (is_array($lines_items[0])) {
-                foreach ($lines_items[0] as $item) {
-                    $weight     = $this->get_product_data_wc_eship($item->product_id, 'weight');
-                    $dimensions = $this->get_product_data_wc_eship($item->product_id, 'dimensions');
-                    array_push($data, array(
-                        'product_id'    => $item->product_id,
-                        'weight'        => $weight,
-                        'dimensions'    => $dimensions
-                    ));
-                }
-            }
-            array_push($arr, array(
-                'order'          => $this->get_order_wc_eship($_GET['post']),
-                'shipping'       => $this->get_shipping_data_wc_eship($order),
-                'shipping_lines' => $this->get_shipping_lines_wc_eship($order),
-                'lines_items'    => $lines_items,
-                'product_data'   => $data
-            ));
-        }
-        return $this->woocommerce_api->getApiOrder($_GET['post']);
+        return $address_store;
     }
 }
