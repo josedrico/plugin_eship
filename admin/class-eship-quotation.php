@@ -129,6 +129,6 @@ class ESHIP_Quotation {
         $json       = json_encode($body[0]);
         $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
 
-        return json_decode($response);
+        return $response;//json_decode($response);
     }
 }
