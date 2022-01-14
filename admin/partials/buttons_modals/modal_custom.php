@@ -18,11 +18,8 @@
                         <div class="col-12">
                             <?php
                             echo "<pre>";
-                            //var_dump($res);
-                            //var_dump($shipping);
-                            //var_dump($shipping_lines);
-                            //var_dump($lines_items);
-                            var_dump($arr_product_line);
+                            echo "ORDER <br>";
+                            var_dump($result);
                             //var_dump($res_wc_settings);
                             echo "</pre>";
                             ?>
