@@ -183,8 +183,8 @@ class ESHIP_Woocommerce_Api {
             'address'   => (isset($address->value) && !empty($address->value) )? $address->value : FALSE,
             'address2'  => (isset($address2->value) && !empty($address2->value) )? $address2->value : FALSE,
             'city'      => (isset($city->value) && !empty($city->value) )? $city->value : FALSE,
-            'country'   => (isset($countries[0]['country']) )? $countries[0]['country'] : FALSE,
-            'state'     => (isset($countries[0]['state']) )? $countries[0]['state'] : FALSE,
+            'country'   => (isset($countries[0]['country_code']) )? $countries[0]['country_code'] : FALSE,
+            'state'     => (isset($countries[0]['state_code']) )? $countries[0]['state_code'] : FALSE,
             'zip'       => (isset($zip->value) && !empty($zip->value) )? $zip->value : FALSE
         );
 
