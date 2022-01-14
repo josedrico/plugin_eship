@@ -1,4 +1,4 @@
-eshipBtTbCustomOrder();
+eshipBtTbQuotation();
 modalInsertToken();
 selectElement();
 
@@ -30,28 +30,17 @@ function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
     return html;
 }
 
-function eshipBtTbCustomOrder() {
-    jQuery.ajax({
-        url: '/wp-admin/admin-ajax.php?action=get_orders_wc_eship',
-    }).done(function (data) {
-        if (!data.error) {
-            let newOrders = [];
-            jQuery.each(data.result, (index, object) => {
-                //console.log(object);
-                newOrders.push({
-                    carrier: `${object.number} <br> ${object.date_created}`,
-                    services: `${object.billing.first_name} ${object.billing.last_name}`,
-                    shipDate: object.line_items,
-                    actions: `${redirectQuotesEship('eship_dashboard&quotes=' + object.id, 'secondary', 'Ship Now', ' mb-1')}
-                            ${redirectQuotesEship('eship_tracking_guide&label_quotes=' + object.id, 'info', 'View Label')}`
-                });
-            });
-            bsTb('#orders', newOrders);
-        } else {
-            bsTb('#orders', false);
-        }
-    }).fail(function (data) {
-        bsTb('#quotes', false);
+function eshipBtTbQuotation() {
+    jQuery('a[href="#dashBoardEshipModalToggle"]').click(function () {
+        console.log('hola mundo');
+        jQuery.ajax({
+            url: '/wp-admin/admin-ajax.php?action=get_quotation_data_eship',
+        }).done(function (data) {
+            console.log(data);
+            //bsTb('#orders', newOrders);
+        });//.fail(function (data) {
+        //bsTb('#quotes', false);
+        //});
     });
 }
 
