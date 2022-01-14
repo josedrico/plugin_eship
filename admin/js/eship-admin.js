@@ -32,7 +32,6 @@ function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
 
 function eshipBtTbQuotation() {
     jQuery('a[href="#dashBoardEshipModalToggle"]').click(function () {
-        console.log('hola mundo');
         jQuery.ajax({
             url: '/wp-admin/admin-ajax.php?action=get_quotation_data_eship',
         }).done(function (data) {

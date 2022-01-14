@@ -16,12 +16,13 @@
                 <div class="container" id="orders-list">
                     <div class="row">
                         <div class="col-12">
+                            <input id="object_id" name="object_id" type="hidden" value="<?php echo (isset($_GET['object_id']))? $_GET['object_id'] : FALSE;?>">
                             <?php
-                            echo "<pre>";
-                            echo "ORDER <br>";
-                            var_dump($result);
+                            //echo "<pre>";
+                            //echo "ORDER <br>";
+                            //var_dump($result);
                             //var_dump($res_wc_settings);
-                            echo "</pre>";
+                            //echo "</pre>";
                             ?>
                             <table id="custom-eship" class="table">
                                 <thead>
