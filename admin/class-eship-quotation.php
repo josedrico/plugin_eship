@@ -26,98 +26,109 @@ class ESHIP_Quotation {
         $this->eship_api        = new ESHIP_Api();
     }
 
-    private function req_quotation_api_eship()
+    private function setAddressFrom($data)
     {
-        $eship_api = array(
-            'address_from' => array(
-                'name' => '',
-                'company' => '', //optional
-                'street1' => '',
-                'street2' => '', //optional
-                'city' => '',
-                'zip' => '',
-                'state' => '',
-                'country' => '', //ISO 2 country code
-                'phone' => '',
-                'email' => '', //optional
-            ),
-            'address_to' => array(
-                'name' => '',
-                'company' => '', //optional
-                'street1' => '',
-                'street2' => '', //optional
-                'city' => '',
-                'zip' => '',
-                'state' => '',
-                'country' => '', //ISO 2 country code
-                'phone' => '',
-                'email' => '', //optional
-            ),
-            'parcels' => array(
-                'length' => '',
-                'width' => '',
-                'height' => '',
-                'distance_unit' => '',
-                'weight' => '',
-                'mass_unit' => '',
-                'reference' => ''
-            ),
-            'items' => array(
-                'quantity' => '',
-                'description' => '',
-                'SKU' => '',
-                'price' => '',
-                'weight' => '',
-                'currency' => '', //“MXN”, “USD”
-                'store_id' => ''
-            ),
-            'insurance' => array(
-                'amount' => '',
-                'currency' => '' //“MXN”, “USD”
-            ),
-            'order_info' => array(
-                'order_num' => '',
-                'paid' => '',
-                'fulfilled' => '',
-                'store' => '',
-                'shipment' => '',
-                'total_price' => '',
-                'subtotal_price' => '',
-                'total_tax' => '',
-                'total_shipment' => '',
-                'store_id' => ''
-            ),
-            'customs_declaration' => array(
-                'contents_type' => '',
-                'incoterm' => '',
-                'exporter_reference' => '',
-                'importer_reference' => '',
-                'contents_explanation' => '',
-                'invoice' => '',
-                'license' => '',
-                'certificate' => '',
-                'notes' => '',
-                'eel_pfc' => '',
-                'non_delivery_option' => '',
-                'certify' => '',
-                'certify_signer' => '',
-                'save_order' => '',
-                'notes' => '',
-            ),
+        $data = array(
+            'name'      => 'Test  Test',//$data['name'],
+            'company'   => $data['company'], //optional
+            'street1'   => $data['address'],
+            'street2'   => $data['address2'], //optional
+            'city'      => $data['city'],
+            'zip'       => $data['zip'],
+            'state'     => $data['state'],
+            'country'   => $data['country'], //ISO 2 country code
+            'phone'     => '5530174501',//$data['phone'],
+            'email'     => $data['email'], //optional
         );
+
+        return $data;
+    }
+
+    private function setAddressTo($data)
+    {
+        $data = array(
+            'name'      => $data->first_name . " " . $data->last_name,
+            'company'   => $data->company, //optional
+            'street1'   => $data->address_1,
+            'street2'   => $data->address_2, //optional
+            'city'      => $data->city,
+            'zip'       => $data->postcode,
+            'state'     => $data->state,
+            'country'   => $data->country, //ISO 2 country code
+            'phone'     => $data->phone,
+            'email'     => $data->email, //optional
+        );
+
+        return $data;
+    }
+
+    private function setParcels($data)
+    {
+        $parcels = array();
+
+        foreach ($data as $key) {
+            $product = $this->woocommerce_api->getProductApi($key->product_id);
+            array_push($parcels, array(
+                'length'        => $product['dimensions']->length,
+                'width'         => $product['dimensions']->width,
+                'height'        => $product['dimensions']->height,
+                'distance_unit' => 'cm',//$key['distance_unit'],
+                'weight'        => $product['weight'],
+                'mass_unit'     => 'kg',
+                'reference'     => 'reference'//
+            ));
+        }
+        return $parcels;
+    }
+
+    private function setInsurance($data) {
+        return array(
+            "amount"    => $data['amount'],
+            "currency"  => $data['currency']
+        );
+    }
+
+    private function setItems($data) {
+        $items = array();
+
+        foreach ($data as $key) {
+            $product = $this->woocommerce_api->getProductApi($key->product_id);
+            array_push($items, array(
+                'quantity'      => $key->quantity,
+                'description'   => $key->name,
+                'SKU'           => $key->sku,
+                'price'         => $key->price,
+                'weight'        => $product['weight'],
+                'currency'      => "MXN",//$key->currency, //“MXN”, “USD”
+                'store_id'      => 'store_id'//$key->store_id
+            ));
+        }
+
+        return $items;
     }
 
     public function create($id)
     {
-        $address_store      = $this->woocommerce_api->getStoreAddressApi();
-        $order              = $this->woocommerce_api->getOrderApi($id);
-        $address_shipping   = $order[0]['shipping'];
-        $line_items         = $order[0]['line_items'];
-        //$shipping_lines     = $order[0]['shipping_lines'];
-        $products           = $this->woocommerce_api->getProductApi($line_items[0]->product_id);
-        $weigth             = $products['weight'];
-        $dimensions         = $products['dimensions'];
+        $address_store          = $this->woocommerce_api->getStoreAddressApi();
+        $eship_address_store    = $this->setAddressFrom($address_store);
+        $order                  = $this->woocommerce_api->getOrderApi($id);
+        $address_shipping       = $order[0]['shipping'];
+        $eship_address_shipping = $this->setAddressTo($address_shipping);
+        $line_items             = $order[0]['line_items'];
+        $eship_line_items       = $this->setItems($line_items);
+        $eship_parcels          = $this->setParcels($line_items);
+        $body                   = array();
 
-        return $address_store;
+        array_push($body, array(
+            'address_from'  => $eship_address_store,
+            'address_to'    => $eship_address_shipping,
+            'items'         => $eship_line_items,
+            'parcels'       => $eship_parcels
+        ));
+
+        $json       = json_encode($body[0]);
+        $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
+
+        return json_decode($response);
     }
 }
