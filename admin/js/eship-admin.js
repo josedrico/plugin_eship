@@ -22,6 +22,16 @@ function bsTb(id, data) {
     });
 }
 
+function messageApi(data) {
+    return `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                ${data.Error}
+            </div>`;
+}
+
+function imgCarriersPacks(data) {
+    return `<img class="img-fluid w-50" src="/wp-content/plugins/plugin_eship/admin/img/paqueterias/${data}.png">`;
+}
+
 function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
     let html = `<a class="btn btn-${btnClass}${moreClass} w-100" href="/wp-admin/admin.php?page=${href}">
                     ${contentText}
@@ -32,12 +42,53 @@ function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
 
 function eshipBtTbQuotation() {
     jQuery('a[href="#dashBoardEshipModalToggle"]').click(function () {
-        jQuery.ajax({
+        let result  = jQuery('#result-custom').data('result');
+        //console.log(result);
+        let newData = [];
+
+        if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
+            jQuery('#dashBoardEshipModalToggleLabel > i').remove();
+            jQuery('#dashBoardEshipModalToggleLabel > span').remove();
+            jQuery('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
+            jQuery('.message-api').html(messageApi(result));
+            jQuery('.message-api').show();
+        } else {
+            if ((result.rates).length > 0) {
+                console.log('result', result.rates);
+                jQuery.each(result.rates, function (index, object) {
+                    console.log(object);
+                    newData.push({
+                        carrier: `${imgCarriersPacks((object.provider).toLowerCase())}`,
+                        service: `${object.provider}`,
+                        estimatedDelivery	: `${object.servicelevel.name}`,
+                        amount	: `${object.amount} ${object.currency}`,
+                        action	: `<a href="${object.object_id}">${object.provider}</a>`
+                    })
+
+                });
+                jQuery('#custom-eship-messages').hide();
+                jQuery('#custom-eship-rates').show();
+                bsTb('#custom-eship-rates', newData);
+            } else {
+                //console.log('result.messages', result.messages);
+                jQuery.each(result.messages, function (index, object) {
+                    newData.push({
+                        source: `${imgCarriersPacks((object.source).toLowerCase())}`,
+                        text: object.text,
+                    });
+                });
+                jQuery('#custom-eship-messages').show();
+                jQuery('#custom-eship-rates').hide();
+                bsTb('#custom-eship-messages', newData);
+            }
+        }
+
+        /*jQuery.ajax({
             url: '/wp-admin/admin-ajax.php?action=get_quotation_data_eship',
         }).done(function (data) {
             console.log(data);
-            //bsTb('#orders', newOrders);
-        });//.fail(function (data) {
+            /
+        });*///.fail(function (data) {
         //bsTb('#quotes', false);
         //});
     });

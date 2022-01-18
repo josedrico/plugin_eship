@@ -1,5 +1,6 @@
     <?php
     require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-quotation.php';
+
     use EshipAdmin\ESHIP_Quotation;
 
     /**
@@ -123,17 +124,8 @@
         {
             $result = FALSE;
             if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                //object_id = '61e0ee1d5ec77'
                 $result = $this->eship_quotation->create($_GET['post']);
-                $result = json_decode($result);
-                //$result = $result->object_id;
-                if (! isset($_GET['object_id'])) {
-                    var_dump($_GET);
-                    $redirect = admin_url() . 'post.php?post=' . $_GET['post'] . '&action=' . $_GET['action'] . '&object_id=' . $result->object_id;
-                    header("Location: " . $redirect);
-                    die();
-                }
-                //$this->send_data->setData($result);
+                $result = htmlentities($result);
             }
 
             $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
@@ -143,7 +135,7 @@
         public function get_quotation_data_eship()
         {
             //$this->quotation_data
-            wp_send_json('Respuesta');
+            //wp_send_json('Respuesta');
         }
 
         private function view_register_eship()

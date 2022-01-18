@@ -213,4 +213,25 @@ class ESHIP_Woocommerce_Api {
             'variations'        => (! empty($product->variations) )? $product->variations : FALSE,
         );
     }
+
+    public function getGeneral() {
+        $result = $this->woocommerce->get('data/continents');
+        $north_america = $result[4];
+        $data = array();
+        foreach ($north_america->countries  as $key) {
+            //var_dump($key->code);
+            if ($key->code == 'MX'){
+                //var_dump($key);
+                array_push($data, $key);
+            }
+            /*
+            if ($key->code == 'US'){
+                //var_dump($key);
+                array_push($data, $key);
+            }
+            */
+        }
+        $result = json_encode($data[0]);
+        return $result;
+    }
 }

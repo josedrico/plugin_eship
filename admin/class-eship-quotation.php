@@ -65,16 +65,17 @@ class ESHIP_Quotation {
     private function setParcels($data)
     {
         $parcels = array();
-
+        $data_gral = $this->woocommerce_api->getGeneral();
+        $data_gral = json_decode($data_gral);
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
             array_push($parcels, array(
                 'length'        => $product['dimensions']->length,
                 'width'         => $product['dimensions']->width,
                 'height'        => $product['dimensions']->height,
-                'distance_unit' => 'cm',//$key['distance_unit'],
+                'distance_unit' => $data_gral->dimension_unit,//'cm'
                 'weight'        => $product['weight'],
-                'mass_unit'     => 'kg',
+                'mass_unit'     => $data_gral->weight_unit,
                 'reference'     => 'reference'//
             ));
         }
@@ -89,7 +90,9 @@ class ESHIP_Quotation {
     }
 
     private function setItems($data) {
-        $items = array();
+        $items      = array();
+        $data_gral  = $this->woocommerce_api->getGeneral();
+        $data_gral  = json_decode($data_gral);
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
@@ -99,7 +102,7 @@ class ESHIP_Quotation {
                 'SKU'           => $key->sku,
                 'price'         => $key->price,
                 'weight'        => $product['weight'],
-                'currency'      => "MXN",//$key->currency, //“MXN”, “USD”
+                'currency'      => $data_gral->currency_code,//$key->currency, //“MXN”, “USD”
                 'store_id'      => 'store_id'//$key->store_id
             ));
         }

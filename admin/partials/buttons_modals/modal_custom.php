@@ -15,22 +15,24 @@
             <div class="modal-body">
                 <div class="container" id="orders-list">
                     <div class="row">
-                        <div class="col-12">
-                            <input id="object_id" name="object_id" type="hidden" value="<?php echo (isset($_GET['object_id']))? $_GET['object_id'] : FALSE;?>">
-                            <?php
-                            //echo "<pre>";
-                            //echo "ORDER <br>";
-                            //var_dump($result);
-                            //var_dump($res_wc_settings);
-                            //echo "</pre>";
-                            ?>
-                            <table id="custom-eship" class="table">
+                        <div id="result-custom" class="col-12" data-result="<?php echo (isset($result))? $result : FALSE;?>">
+                            <div class="message-api"></div>
+                            <table id="custom-eship-rates" class="table">
                                 <thead>
                                 <tr>
                                     <th data-field="carrier">Carrier</th>
-                                    <th data-field="services">Services</th>
-                                    <th data-field="shipDate">Ship date</th>
-                                    <th data-field="actions"></th>
+                                    <th data-field="service">Service</th>
+                                    <th data-field="estimatedDelivery">Estimated Delivery	</th>
+                                    <th data-field="amount">currency</th>
+                                    <th data-field="action">days</th>
+                                </tr>
+                                </thead>
+                            </table>
+                            <table id="custom-eship-messages" class="table">
+                                <thead>
+                                <tr>
+                                    <th data-field="source">Source</th>
+                                    <th data-field="text">Text</th>
                                 </tr>
                                 </thead>
                             </table>
