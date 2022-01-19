@@ -34,7 +34,6 @@ class ESHIP_Shipment {
             'rate'  => $this->rate_id
         ));
         $response   = wp_remote_retrieve_body( $this->eship_api->post('shipment', $json) );
-        //echo json_decode($response);
-        wp_send_json($response);
+        return $response;
     }
 }
