@@ -3,11 +3,7 @@
 */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
 
-.app-eship #custom-eship-messages, .app-eship #custom-eship-rates {
-    display: none;
-}
-
-.app-eship .message-api {
+.app-eship #custom-eship-messages, .app-eship #custom-eship-rates, .app-eship .message-api {
     display: none;
 }
 
