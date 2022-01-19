@@ -1,7 +1,9 @@
     <?php
     require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-quotation.php';
+    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-shipment.php';
 
     use EshipAdmin\ESHIP_Quotation;
+    use EshipAdmin\ESHIP_Shipment;
 
     /**
      * La funcionalidad específica de administración del plugin.
@@ -132,15 +134,46 @@
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
-        public function get_quotation_data_eship()
-        {
-            //$this->quotation_data
-            //wp_send_json('Respuesta');
-        }
-
         private function view_register_eship()
         {
             return ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
+        }
+
+        public function get_shipment_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $response = array();
+
+            if(current_user_can('manage_options')) {
+                $result = FALSE;
+                extract($_POST, EXTR_OVERWRITE);
+
+                if($typeAction == 'create_shipment') {
+                    $shipment   = new ESHIP_Shipment($rateId);
+                    $result     = $shipment->getShipment();
+                    $result     = json_decode($result);
+                    #TODO Idea Register el documento en la base de datos
+                }
+
+                if ($result) {
+                    $response = array(
+                        'result'    => $result,
+                        'redirect'  => '?page=eship_dashboard',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No se genero tu guía',
+                        'redirect'  => '?page=eship_dashboard',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
         }
 
         public function insert_token_eship()
