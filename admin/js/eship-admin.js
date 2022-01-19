@@ -1,6 +1,7 @@
 eshipBtTbQuotation();
 modalInsertToken();
 selectElement();
+clickGetShipment();
 
 function bsTb(id, data) {
     jQuery(`${id}`).bootstrapTable({
@@ -32,12 +33,52 @@ function imgCarriersPacks(data) {
     return `<img class="img-fluid w-50" src="/wp-content/plugins/plugin_eship/admin/img/paqueterias/${data}.png">`;
 }
 
+function createPdfIframe(data) {
+    return `<p>
+                Tracking number: <a href="https://app.myeship.co/en/track/track?no=${data.tracking_number}" target="_blank">${data.tracking_number}</a>
+            </p>
+            <div class="ratio ratio-16x9">
+              <iframe src="${data.label_url}" title="${data.provider}" allowfullscreen></iframe>
+            </div>`;
+}
+
 function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
     let html = `<a class="btn btn-${btnClass}${moreClass} w-100" href="/wp-admin/admin.php?page=${href}">
                     ${contentText}
                 </a>`;
 
     return html;
+}
+
+function clickGetShipment() {
+    jQuery('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
+        e.preventDefault();
+        let data = jQuery(this).data('shipment');
+        console.log('data', data);
+        e.preventDefault();
+
+        if (data != '') {
+            jQuery.ajax({
+                method: 'POST',
+                url: eshipData.url,
+                data: {
+                    action: 'get_shipment_eship',
+                        nonce: eshipData.security,
+                        rateId: data,
+                        typeAction: 'create_shipment'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (! data.error) {
+                        jQuery('#spinner-load-data').remove();
+                        jQuery('#shipmentModalToggleLabel2').html(`Your Label`);
+                        jQuery('.create-shipment').html(createPdfIframe(data.result));
+                    }
+                    //console.log('datos', data);
+                }
+            });
+        }
+    });
 }
 
 function eshipBtTbQuotation() {
@@ -62,7 +103,7 @@ function eshipBtTbQuotation() {
                         service: `${object.provider}`,
                         estimatedDelivery	: `${object.servicelevel.name}`,
                         amount	: `${object.amount} ${object.currency}`,
-                        action	: `<a href="${object.object_id}">${object.provider}</a>`
+                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="btn btn-secondary shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
                     })
 
                 });
