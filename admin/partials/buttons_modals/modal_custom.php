@@ -46,3 +46,30 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="shipmentModalToggle2" aria-hidden="true" aria-labelledby="shipmentModalToggleLabel2" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shipmentModalToggleLabel2">Tracking Number: <span id="tracking-number"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="spinner-load-data" class="d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div class="create-shipment">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!--
+                <button class="btn btn-secondary" data-bs-target="#dashBoardEshipModalToggle" data-bs-toggle="modal">Back</button>
+                -->
+            </div>
+        </div>
+    </div>
+</div>
