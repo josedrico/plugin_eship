@@ -1,7 +1,4 @@
     <?php
-    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-quotation.php';
-    require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-shipment.php';
-
     use EshipAdmin\ESHIP_Quotation;
     use EshipAdmin\ESHIP_Shipment;
 
@@ -103,23 +100,48 @@
             );
         }
 
-        public function add_metabox_eship(){
+        public function add_meta_boxes_eship()
+        {
+            $register_view = 'view_buttons_eship';
+            $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
+
             if (empty($this->get_token_eship())) {
-                $register_view = [$this, 'view_register_eship'];
-                $register_title = "<img src='" .ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' class='w-30 h-30'>";
-            }  else {
-                $register_view = [$this, 'view_buttons_eship'];
-                $register_title = "<img class='img-thumbnail' style='width:80%;' src='" .ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
+                $register_view = 'view_register_eship';
+                $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'";
             }
 
-            add_meta_box(
+            $fun = function () {
+                $result = FALSE;
+                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                    $result = $this->eship_quotation->create($_GET['post']);
+                    $result = htmlentities($result);
+                }
+
+                $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
+            };
+
+            $meta_box = array(
+                'id'        => 'woocommerce-order-eship',
+                'title_0'   => $register_title,
+                'title_1'   => 'woocommerce',
+                'callback'  => $fun,
+                'view'      => 'shop_order',
+                'context'   => 'side',
+                'priority'  => 'high'
+            );
+
+            $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
+            $add_meta_box->run();
+            /*add_meta_box(
                 'woocommerce-order-eship',
                 __($register_title, 'woocommerce'),
-                $register_view,
+                array( $this, $register_view ),
                 'shop_order',
                 'side',
                 'high'
-            );
+            );*/
         }
 
         public function view_buttons_eship()
@@ -131,10 +153,11 @@
             }
 
             $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
-        private function view_register_eship()
+        public function view_register_eship()
         {
             return ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
@@ -222,10 +245,11 @@
             
         }
 
-        private function get_token_eship()
+        protected function get_token_eship()
         {
             $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB . ";", OBJECT );
-            if ((count($results) > 0) && (isset($results[0]->token_eship)) && (! is_null($results[0]->token_eship))) {
+
+            if ((count($results) > 0) && (isset($results[0]->token_eship))) {
                 return $results[0]->token_eship;
             } else  {
                 return '';
