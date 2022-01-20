@@ -1,6 +1,23 @@
 <?php
 
-class ESHIP_Build_Add_Meta_Box
-{
+class ESHIP_Build_Add_Meta_Box {
+    protected $add_meta;
 
+    public function __construct($data)
+    {
+        $this->add_meta = $data;
+    }
+
+    public function run()
+    {
+        $data = $this->add_meta;
+        add_meta_box(
+            $data['id'],
+            __($data['title_0'], $data['title_1']),
+            $data['callback'],
+            $data['view'],
+            $data['context'],
+            $data['priority']
+        );
+    }
 }

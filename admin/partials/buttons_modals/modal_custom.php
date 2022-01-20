@@ -22,9 +22,9 @@
                                 <tr>
                                     <th data-field="carrier">Carrier</th>
                                     <th data-field="service">Service</th>
-                                    <th data-field="estimatedDelivery">Estimated Delivery	</th>
-                                    <th data-field="amount">currency</th>
-                                    <th data-field="action">days</th>
+                                    <th data-field="estimatedDelivery">Transit Days</th>
+                                    <th data-field="amount">Estimated Rate</th>
+                                    <th data-field="action"></th>
                                 </tr>
                                 </thead>
                             </table>
