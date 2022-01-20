@@ -1,7 +1,5 @@
 <?php
 namespace EshipAdmin;
-require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-woocommerce-api.php';
-require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-api.php';
 
 use EshipAdmin\ESHIP_Woocommerce_Api;
 use EshipAdmin\ESHIP_Api;
