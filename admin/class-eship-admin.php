@@ -28,16 +28,15 @@
         
         private $plugin_name;
         private $version;
-        private $db;
         private $eship_quotation;
+        private $eship_model;
 
         public function __construct( $plugin_name, $version ) 
         {
-            global $wpdb;
-            $this->db               = $wpdb;
             $this->plugin_name      = $plugin_name;
             $this->version          = $version;
             $this->eship_quotation  = new ESHIP_Quotation();
+            $this->eship_model      = new ESHIP_Model();
         }
 
         public function enqueue_styles($hook) 
@@ -105,7 +104,7 @@
             $register_view = 'view_buttons_eship';
             $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
 
-            if (empty($this->get_token_eship())) {
+            if (empty($this->eship_model->get_data_user_eship())) {
                 $register_view = 'view_register_eship';
                 $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
             }
@@ -192,58 +191,25 @@
         public function insert_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $response = array();
-            if(current_user_can('manage_options')) {
-                $adm = wp_get_current_user();
-                extract($_POST, EXTR_OVERWRITE);
+            $result = $this->eship_model->insert_data_store_eship($_POST);
 
-                if($typeAction == 'add_token') {
-                    $columns = [
-                        'email'         => $adm->user_email,
-                        'token_eship'   => $token,
-                        'data'          => NULL,
-                    ];
-                    
-                    $format = [
-                        "%s",
-                        "%s",
-                        "%s"
-                    ];
-        
-                    $result = $this->db->insert( ESHIP_TB, $columns, $format );
-                    if ($result > 0) {
-                        $response = array(
-                            'result'    => 'Se inserto token',
-                            'redirect'  => '?page=eship_dashboard',
-                            'error'     => FALSE,
-                            'code'      => 201
-                        );
-                    } else  {
-                        $response = array(
-                            'result'    => 'No se inserto tu token',
-                            'redirect'  => '?page=eship_dashboard',
-                            'error'     => TRUE,
-                            'code'      => 404
-                        );
-                    }
-
-                }
-
-                echo json_encode($response);
-                wp_die();
-            }
-            
-        }
-
-        protected function get_token_eship()
-        {
-            $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB . ";", OBJECT );
-
-            if ((count($results) > 0) && (isset($results[0]->token_eship))) {
-                return $results[0]->token_eship;
+            if (!is_null($result)) {
+                $response = array(
+                    'result'    => 'Exito',
+                    'redirect'  => true,
+                    'error'     => FALSE,
+                    'code'      => 201
+                );
             } else  {
-                return '';
+                $response = array(
+                    'result'    => 'Error',
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
             }
+
+            echo json_encode($response);
+            wp_die();
         }
     }
 

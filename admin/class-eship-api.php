@@ -9,6 +9,7 @@ class ESHIP_Api {
     {
         $this->setUrl();
         $this->setApiKey();
+
     }
 
     private function setUrl()
@@ -18,7 +19,9 @@ class ESHIP_Api {
 
     private function setApiKey()
     {
-        $this->api_key = 'eship_prod_835261c341f8465b2';
+        $token = new \ESHIP_Model();
+        //eship_prod_835261c341f8465b2
+        $this->api_key = $token->get_data_user_eship('token');
     }
 
     public function post($uri, $body)

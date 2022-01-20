@@ -35,8 +35,8 @@ class ESHIP_Woocommerce_Api {
 
     private function setConsumerKey()
     {
-        //$this->consumer_key = 'ck_e1e2f573ca6d3237a02a7442952fa37806ef47ea';
-        $this->consumer_key     = 'ck_8fc0c1a4fbc9fd2137a6b75c2728908f9346eb15';
+        $cs = new \ESHIP_Model();
+        $this->consumer_key = $cs->get_data_user_eship('ck');
     }
 
     private function getConsumerKey()
@@ -46,8 +46,8 @@ class ESHIP_Woocommerce_Api {
 
     private  function  setConsumerSecret()
     {
-        //$this->consumer_secret = 'cs_fc047f331954ffa83623ed0f47c927afee406438';
-        $this->consumer_secret = 'cs_46c0207837b87425d850fff14656ffef0621b4bc';
+        $ck = new \ESHIP_Model();
+        $this->consumer_secret = $ck->get_data_user_eship('cs');
     }
 
     private function getConsumerSecret()
