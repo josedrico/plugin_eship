@@ -110,7 +110,7 @@
                             <div class="col-12 col-md-6">
                                 <button id="tokenEshipModalBtn" type="button" class="btn btn-primary w-100">
                                     <span class="dashicons dashicons-saved"></span>
-                                    <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem;">
+                                    <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem; display: none;">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                 </button>

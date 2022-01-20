@@ -2,7 +2,6 @@ eshipBtTbQuotation();
 modalInsertToken();
 selectElement();
 clickGetShipment();
-jQuery('#loader-light').hide();
 
 function bsTb(config, data) {
     jQuery(`${config.id}`).bootstrapTable({
