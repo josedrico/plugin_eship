@@ -28,7 +28,11 @@ class ESHIP_Activator {
             id int(11) NOT NULL AUTO_INCREMENT,
             email varchar(255) NOT NULL,
             token_eship varchar(100) NOT NULL,
+            consumer_key varchar(255) NOT NULL,
+            consumer_secret varchar(255) NOT NULL,
             data longtext,
+            created_at TIMESTAMP NULL,
+            updated_at TIMESTAMP NULL,
             PRIMARY KEY (id)
         );";
 

@@ -107,26 +107,13 @@
 
             if (empty($this->get_token_eship())) {
                 $register_view = 'view_register_eship';
-                $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'";
+                $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
             }
-
-            $fun = function () {
-                $result = FALSE;
-                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                    $result = $this->eship_quotation->create($_GET['post']);
-                    $result = htmlentities($result);
-                }
-
-                $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
-
-                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
-            };
 
             $meta_box = array(
                 'id'        => 'woocommerce-order-eship',
-                'title_0'   => $register_title,
-                'title_1'   => 'woocommerce',
-                'callback'  => $fun,
+                'title'     => $register_title,
+                'callback'  => [$this, $register_view],
                 'view'      => 'shop_order',
                 'context'   => 'side',
                 'priority'  => 'high'
@@ -134,14 +121,17 @@
 
             $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
             $add_meta_box->run();
-            /*add_meta_box(
+            /*
+            //var_dump(ESHIP_PLUGIN_DIR_PATH);
+            add_meta_box(
                 'woocommerce-order-eship',
-                __($register_title, 'woocommerce'),
+                __($register_title),
                 array( $this, $register_view ),
                 'shop_order',
                 'side',
                 'high'
-            );*/
+            );
+            */
         }
 
         public function view_buttons_eship()
@@ -159,7 +149,7 @@
 
         public function view_register_eship()
         {
-            return ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
         public function get_shipment_eship()

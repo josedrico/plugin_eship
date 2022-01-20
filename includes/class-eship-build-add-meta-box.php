@@ -13,7 +13,7 @@ class ESHIP_Build_Add_Meta_Box {
         $data = $this->add_meta;
         add_meta_box(
             $data['id'],
-            __($data['title_0'], $data['title_1']),
+            __($data['title']),
             $data['callback'],
             $data['view'],
             $data['context'],
