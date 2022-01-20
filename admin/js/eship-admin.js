@@ -2,6 +2,7 @@ eshipBtTbQuotation();
 modalInsertToken();
 selectElement();
 clickGetShipment();
+jQuery('#loader-light').hide();
 
 function bsTb(config, data) {
     jQuery(`${config.id}`).bootstrapTable({
@@ -23,8 +24,8 @@ function bsTb(config, data) {
     });
 }
 
-function messageApi(data) {
-    return `<div class="alert alert-danger alert-dismissible fade show" role="alert">
+function messageApi(data, id = false) {
+    return `<div ${(id)? "id=" + id : ''} class="alert alert-danger alert-dismissible fade show" role="alert">
                 ${data.Error}
             </div>`;
 }
@@ -63,9 +64,9 @@ function clickGetShipment() {
                 url: eshipData.url,
                 data: {
                     action: 'get_shipment_eship',
-                        nonce: eshipData.security,
-                        rateId: data,
-                        typeAction: 'create_shipment'
+                    nonce: eshipData.security,
+                    rateId: data,
+                    typeAction: 'create_shipment'
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -143,10 +144,38 @@ function eshipBtTbQuotation() {
 
 function modalInsertToken() {
     jQuery('#tokenEshipModalBtn').on('click', function (e) {
-        e.preventDefault();
-        let formData = jQuery('#token-input-eship').val();
+        //e.preventDefault();
+        let formDataToken = jQuery('#token-input-eship').val();
+        let formDataCs = jQuery('#cs-input-eship').val();
+        let formDataCk = jQuery('#ck-input-eship').val();
+        let inc = 0;
 
-        if (formData != '') {
+        jQuery('#errorsTokenDiv').remove();
+        jQuery('#errorsCsDiv').remove();
+        jQuery('#errorsCkDiv').remove();
+
+        if (formDataToken == '') {
+            jQuery('#errorsToken').append(messageApi({
+                Error: 'El campo token no puede estar vacío'
+            }, 'errorsTokenDiv'));
+            inc += 1;
+        }
+
+        if (formDataCs == '') {
+            jQuery('#errorsCs').append(messageApi({
+                Error: 'El campo Consumer Secret no puede estar vacío'
+            }, 'errorsCsDiv'));
+            inc += 1;
+        }
+
+        if (formDataCk == '') {
+            jQuery('#errorsCk').append(messageApi({
+                Error: 'El campo Consumer Key no puede estar vacío'
+            }, 'errorsCkDiv'));
+            inc += 1;
+        }
+
+        if (inc == 0) {
 
             let $data = {
                 method: 'POST',
@@ -154,12 +183,13 @@ function modalInsertToken() {
                 content: {
                     action: 'insert_token_eship',
                     nonce: eshipData.security,
-                    token: formData,
+                    token: formDataToken,
+                    cs: formDataCs,
+                    ck: formDataCk,
                     typeAction: 'add_token'
                 },
                 type: 'json'
             };
-
             ajaxEship($data);
         }
     });
@@ -175,15 +205,15 @@ function ajaxEship($data) {
             if (data.error == false) {
                 console.log('success', data);
                 //reload
-                if (data.redirect != undefined) {
-                    setTimeout(function () {
-                        location.href = data.redirect
-                    }, 1300);
+                if (data.redirect) {
+                    jQuery('#loader-light').show()
+                    location.reload();
                 } else {
                     return data;
                 }
             } else {
                 console.log('error datos', data);
+                jQuery('#loader-light').hide()
             }
         },
         error: function (d, x, v) {

@@ -1,6 +1,6 @@
 <div class="app-eship" class="container">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#registerEshipModal">
+    <button type="button" class="page-title-action" data-bs-toggle="modal" data-bs-target="#registerEshipModal">
         Activar eship
     </button>
 
@@ -13,7 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="card w-100 h-100">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-4">
                                 <span class="dashicons dashicons-rest-api"></span>
@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card w-100 h-100">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title mb-4">
                                 <span class="dashicons dashicons-admin-site-alt2"></span>
@@ -84,7 +84,22 @@
                             <label for="token-input-eship" class="col-form-label">
                                 Token:
                             </label>
-                            <input type="text" class="form-control" id="token-input-eship">
+                            <input type="text" class="form-control" id="token-input-eship" data-form="eship-register">
+                            <div id="errorsToken"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="cs-input-eship" class="col-form-label">
+                                Consumer Secret:
+                            </label>
+                            <input type="text" class="form-control" id="cs-input-eship" data-form="eship-register">
+                            <div id="errorsCs"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="ck-input-eship" class="col-form-label">
+                                Consumer Key:
+                            </label>
+                            <input type="text" class="form-control" id="ck-input-eship" data-form="eship-register">
+                            <div id="errorsCk"></div>
                         </div>
                         <div class="row g-1 mb-4">
                             <div class="col-12 col-md-6">
@@ -95,6 +110,9 @@
                             <div class="col-12 col-md-6">
                                 <button id="tokenEshipModalBtn" type="button" class="btn btn-primary w-100">
                                     <span class="dashicons dashicons-saved"></span>
+                                    <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
                                 </button>
                             </div>
                         </div>

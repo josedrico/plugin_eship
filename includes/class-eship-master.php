@@ -43,12 +43,17 @@ class ESHIP_Master {
     
     private function load_class()
     {
-        
+
         /**
 		 * La clase responsable de iterar las acciones y filtros del núcleo del plugin.
 		 */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-loader.php';
-        
+
+        /**
+         * Consulta a base de datos
+         */
+        require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-model.php';
+
         /**
 		 * La clase responsable de definir la funcionalidad de la
          * internacionalización del plugin
