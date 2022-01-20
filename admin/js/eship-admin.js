@@ -3,10 +3,10 @@ modalInsertToken();
 selectElement();
 clickGetShipment();
 
-function bsTb(id, data) {
-    jQuery(`${id}`).bootstrapTable({
+function bsTb(config, data) {
+    jQuery(`${config.id}`).bootstrapTable({
         toggle: 'table',
-        search: true,
+        search: config.search,
         searchHighlight: true,
         searchOnEnterKey: true,
         showSearchButton: true,
@@ -15,7 +15,7 @@ function bsTb(id, data) {
             search: 'dashicons-search'
         },
         searchAlign: 'left',
-        pagination: true,
+        pagination: config.pagination,
         sidePagination: "server",
         pageList: "[25, 50, 100, ALL]",
         pageSize: "25",
@@ -30,7 +30,7 @@ function messageApi(data) {
 }
 
 function imgCarriersPacks(data) {
-    return `<img class="img-fluid w-50" src="/wp-content/plugins/plugin_eship/admin/img/paqueterias/${data}.png">`;
+    return `<img class="img-fluid w-25" src="/wp-content/plugins/plugin_eship/admin/img/paqueterias/${data}.png">`;
 }
 
 function createPdfIframe(data) {
@@ -100,16 +100,22 @@ function eshipBtTbQuotation() {
                     console.log(object);
                     newData.push({
                         carrier: `${imgCarriersPacks((object.provider).toLowerCase())}`,
-                        service: `${object.provider}`,
-                        estimatedDelivery	: `${object.servicelevel.name}`,
+                        service: `${object.servicelevel.name}`,
+                        estimatedDelivery	: `${object.days} days`,
                         amount	: `${object.amount} ${object.currency}`,
-                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="btn btn-secondary shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
+                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
                     })
 
                 });
                 jQuery('#custom-eship-messages').hide();
                 jQuery('#custom-eship-rates').show();
-                bsTb('#custom-eship-rates', newData);
+                bsTb({
+                        id: '#custom-eship-rates',
+                        search: false,
+                        pagination: false
+                    },
+                    newData
+                );
             } else {
                 //console.log('result.messages', result.messages);
                 jQuery.each(result.messages, function (index, object) {
