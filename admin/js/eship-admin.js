@@ -55,7 +55,6 @@ function clickGetShipment() {
         e.preventDefault();
         let url = jQuery('#result-custom').data('url');
         let data = jQuery(this).data('shipment');
-        //console.log('data', data);
 
         if (data != '') {
             jQuery.ajax({
@@ -93,10 +92,7 @@ function clickGetShipment() {
                                 search: false,
                                 pagination: false
                         }, newObj);
-                        //console.log('message', data.result.messages);
-                        console.log('newObj', newObj);
                     }
-                    //console.log('datos', data.result);
                 }
             });
         }
@@ -162,16 +158,19 @@ function eshipBtTbQuotation() {
 }
 
 function modalInsertToken() {
-    jQuery('#tokenEshipModalBtn').on('click', function (e) {
-        //e.preventDefault();
+    jQuery('#tokenEshipModalBtn').on('click', function () {
         let formDataToken = jQuery('#token-input-eship').val();
         let formDataCs = jQuery('#cs-input-eship').val();
         let formDataCk = jQuery('#ck-input-eship').val();
+        let formPhoneCompany = jQuery('#phone-input-eship').val();
+        let formNameCompany = jQuery('#name-input-eship').val();
         let inc = 0;
 
         jQuery('#errorsTokenDiv').remove();
         jQuery('#errorsCsDiv').remove();
         jQuery('#errorsCkDiv').remove();
+        jQuery('#errorsPhoneDiv').remove();
+        jQuery('#errorsNameDiv').remove();
 
         if (formDataToken == '') {
             jQuery('#errorsToken').append(messageApi({
@@ -194,6 +193,20 @@ function modalInsertToken() {
             inc += 1;
         }
 
+        if (formNameCompany == '') {
+            jQuery('#errorsName').append(messageApi({
+                Error: 'El campo Name Company no puede estar vacío'
+            }, 'errorsNameDiv'));
+            inc += 1;
+        }
+
+        if (formPhoneCompany == '') {
+            jQuery('#errorsPhone').append(messageApi({
+                Error: 'El campo Phone Company no puede estar vacío'
+            }, 'errorsPhoneDiv'));
+            inc += 1;
+        }
+
         if (inc == 0) {
 
             let $data = {
@@ -205,6 +218,8 @@ function modalInsertToken() {
                     token: formDataToken,
                     cs: formDataCs,
                     ck: formDataCk,
+                    phone: formPhoneCompany,
+                    name: formNameCompany,
                     typeAction: 'add_token'
                 },
                 type: 'json'
@@ -222,8 +237,6 @@ function ajaxEship($data) {
         dataType: $data.type,
         success: function (data) {
             if (data.error == false) {
-                //console.log('success', data);
-                //reload
                 if (data.redirect) {
                     jQuery('#loader-light').show()
                     location.reload();
@@ -231,7 +244,6 @@ function ajaxEship($data) {
                     return data;
                 }
             } else {
-                //console.log('error datos', data);
                 jQuery('#loader-light').hide()
             }
         },

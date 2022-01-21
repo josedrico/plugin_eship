@@ -30,7 +30,8 @@ class ESHIP_Activator {
             token_eship varchar(100) NOT NULL,
             consumer_key varchar(255) NOT NULL,
             consumer_secret varchar(255) NOT NULL,
-            data longtext,
+            phone varchar(20) NOT NULL,
+            name varchar(255) NOT NULL,
             created_at TIMESTAMP NULL,
             updated_at TIMESTAMP NULL,
             PRIMARY KEY (id)

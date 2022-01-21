@@ -101,6 +101,20 @@
                             <input type="text" class="form-control" id="ck-input-eship" data-form="eship-register">
                             <div id="errorsCk"></div>
                         </div>
+                        <div class="mb-2">
+                            <label for="phone-input-eship" class="col-form-label">
+                                Phone:
+                            </label>
+                            <input type="text" class="form-control" id="phone-input-eship" data-form="eship-register">
+                            <div id="errorsPhone"></div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="name-input-eship" class="col-form-label">
+                                Name Company:
+                            </label>
+                            <input type="text" class="form-control" id="name-input-eship" data-form="eship-register">
+                            <div id="errorsName"></div>
+                        </div>
                         <div class="row g-1 mb-4">
                             <div class="col-12 col-md-6">
                                 <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">

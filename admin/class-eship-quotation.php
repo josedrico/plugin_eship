@@ -3,6 +3,7 @@ namespace EshipAdmin;
 
 use EshipAdmin\ESHIP_Woocommerce_Api;
 use EshipAdmin\ESHIP_Api;
+use EshipAdmin\ESHIP_Model;
 
 /**
  * Config and queries to api's.
@@ -26,8 +27,9 @@ class ESHIP_Quotation {
 
     private function setAddressFrom($data)
     {
+        $tb = new ESHIP_Model();
         $data = array(
-            'name'      => $data['name'],//$data['name'],
+            'name'      => $tb->get_data_user_eship('name'),//$data['name'],
             'company'   => $data['company'], //optional
             'street1'   => $data['address'],
             'street2'   => $data['address2'], //optional
@@ -35,7 +37,7 @@ class ESHIP_Quotation {
             'zip'       => $data['zip'],
             'state'     => $data['state'],
             'country'   => $data['country'], //ISO 2 country code
-            'phone'     => '5544332211',//$data['phone'],
+            'phone'     => $tb->get_data_user_eship('phone'),//$data['phone'],
             'email'     => $data['email'], //optional
         );
 

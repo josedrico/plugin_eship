@@ -18,6 +18,10 @@ class ESHIP_Model {
         if ((count($results) > 0)) {
 
             switch ($show_data) {
+                case 'name':
+                    return $results[0]->name;
+                case 'phone':
+                    return $results[0]->phone;
                 case 'token':
                     return $results[0]->token_eship;
                 case 'cs':
@@ -48,7 +52,8 @@ class ESHIP_Model {
                     'token_eship'       => $token,
                     'consumer_secret'   => $cs,
                     'consumer_key'      => $ck,
-                    'data'              => NULL,
+                    'name'              => $name,
+                    'phone'             => $phone
                 ];
 
                 $format = [
@@ -57,12 +62,13 @@ class ESHIP_Model {
                     "%s",
                     "%s",
                     "%s",
+                    "%s"
                 ];
                 $result = $this->db->insert(ESHIP_TB, $columns, $format);
 
             }
         }
 
-        return $columns;
+        return $result;
     }
 }
