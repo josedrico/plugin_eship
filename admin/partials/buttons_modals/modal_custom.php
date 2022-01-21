@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <div class="container" id="orders-list">
                     <div class="row">
-                        <div id="result-custom" class="col-12" data-result="<?php echo (isset($result))? $result : FALSE;?>">
+                        <div id="result-custom" class="col-12" data-result="<?php echo (isset($result))? $result : FALSE;?>" data-url="<?php echo  ESHIP_PLUGIN_DIR_URL;?>">
                             <div class="message-api"></div>
                             <table id="custom-eship-rates" class="table">
                                 <thead>

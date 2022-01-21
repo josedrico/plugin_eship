@@ -27,7 +27,7 @@ class ESHIP_Quotation {
     private function setAddressFrom($data)
     {
         $data = array(
-            'name'      => 'Test  Test',//$data['name'],
+            'name'      => $data['name'],//$data['name'],
             'company'   => $data['company'], //optional
             'street1'   => $data['address'],
             'street2'   => $data['address2'], //optional
@@ -35,7 +35,7 @@ class ESHIP_Quotation {
             'zip'       => $data['zip'],
             'state'     => $data['state'],
             'country'   => $data['country'], //ISO 2 country code
-            'phone'     => '5530174501',//$data['phone'],
+            'phone'     => (isset($data['phone']))? $data['phone'] : '',
             'email'     => $data['email'], //optional
         );
 
@@ -46,15 +46,15 @@ class ESHIP_Quotation {
     {
         $data = array(
             'name'      => $data->first_name . " " . $data->last_name,
-            'company'   => $data->company, //optional
+            'company'   => (isset($data->company))? $data->company : '', //optional
             'street1'   => $data->address_1,
-            'street2'   => $data->address_2, //optional
+            'street2'   => (isset($data->address_2))? $data->address_2 : '', //optional
             'city'      => $data->city,
             'zip'       => $data->postcode,
             'state'     => $data->state,
             'country'   => $data->country, //ISO 2 country code
-            'phone'     => $data->phone,
-            'email'     => $data->email, //optional
+            'phone'     => (isset($data->phone))? $data->phone : '',
+            'email'     => (isset($data->email))? $data->email : '' , //optional
         );
 
         return $data;
@@ -65,6 +65,7 @@ class ESHIP_Quotation {
         $parcels = array();
         $data_gral = $this->woocommerce_api->getGeneral();
         $data_gral = json_decode($data_gral);
+
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
             array_push($parcels, array(
@@ -130,6 +131,6 @@ class ESHIP_Quotation {
         $json       = json_encode($body[0]);
         $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
 
-        return $response;//json_decode($response);
+        return $response;
     }
 }

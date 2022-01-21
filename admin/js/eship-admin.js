@@ -30,7 +30,7 @@ function messageApi(data, id = false) {
 }
 
 function imgCarriersPacks(data) {
-    return `<img class="img-fluid w-25" src="/wp-content/plugins/plugin_eship/admin/img/paqueterias/${data}.png">`;
+    return `<img class="img-fluid w-25" src="${data.url}admin/img/paqueterias/${data.src}.png">`;
 }
 
 function createPdfIframe(data) {
@@ -54,8 +54,7 @@ function clickGetShipment() {
     jQuery('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
         e.preventDefault();
         let data = jQuery(this).data('shipment');
-        console.log('data', data);
-        e.preventDefault();
+        //console.log('data', data);
 
         if (data != '') {
             jQuery.ajax({
@@ -74,7 +73,7 @@ function clickGetShipment() {
                         jQuery('#shipmentModalToggleLabel2').html(`Your Label`);
                         jQuery('.create-shipment').html(createPdfIframe(data.result));
                     }
-                    //console.log('datos', data);
+                    console.log('datos', data);
                 }
             });
         }
@@ -84,7 +83,7 @@ function clickGetShipment() {
 function eshipBtTbQuotation() {
     jQuery('a[href="#dashBoardEshipModalToggle"]').click(function () {
         let result  = jQuery('#result-custom').data('result');
-        //console.log(result);
+        let url = jQuery('#result-custom').data('url');
         let newData = [];
 
         if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
@@ -95,11 +94,14 @@ function eshipBtTbQuotation() {
             jQuery('.message-api').show();
         } else {
             if ((result.rates).length > 0) {
-                console.log('result', result.rates);
+                //console.log('result', result.rates);
                 jQuery.each(result.rates, function (index, object) {
-                    console.log(object);
+                    //console.log(object);
                     newData.push({
-                        carrier: `${imgCarriersPacks((object.provider).toLowerCase())}`,
+                        carrier: `${imgCarriersPacks({
+                            src: (object.provider).toLowerCase(),
+                            url
+                        })}`,
                         service: `${object.servicelevel.name}`,
                         estimatedDelivery	: `${object.days} days`,
                         amount	: `${object.amount} ${object.currency}`,
@@ -202,7 +204,7 @@ function ajaxEship($data) {
         dataType: $data.type,
         success: function (data) {
             if (data.error == false) {
-                console.log('success', data);
+                //console.log('success', data);
                 //reload
                 if (data.redirect) {
                     jQuery('#loader-light').show()
@@ -211,7 +213,7 @@ function ajaxEship($data) {
                     return data;
                 }
             } else {
-                console.log('error datos', data);
+                //console.log('error datos', data);
                 jQuery('#loader-light').hide()
             }
         },
@@ -255,7 +257,7 @@ function selectElement() {
                     jQuery('#multipiece').show();
                     break;
                 default:
-                    console.log('sin section');
+                    //console.log('sin section');
                     break;
             }
         });

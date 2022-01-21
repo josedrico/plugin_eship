@@ -102,11 +102,11 @@
 
         public function add_meta_boxes_eship()
         {
-            $register_view = 'view_buttons_eship';
+            $register_view  = 'view_buttons_eship';
             $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
 
             if (empty($this->eship_model->get_data_user_eship())) {
-                $register_view = 'view_register_eship';
+                $register_view  = 'view_register_eship';
                 $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
             }
 

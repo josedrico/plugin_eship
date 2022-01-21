@@ -11,9 +11,12 @@ class ESHIP_Woocommerce_Api {
     private $wp_api;
     private $version_api;
     public $woocommerce;
+    private $store;
 
     public function __construct()
     {
+        global $blog_id;
+        $this->store = $blog_id;
         $this->setUrlApi();
         $this->setConsumerKey();
         $this->setConsumerSecret();
@@ -24,8 +27,6 @@ class ESHIP_Woocommerce_Api {
 
     private function setUrlApi()
     {
-        //$this->url = 'http://18.191.235.204/wp-plugin-eship';
-        //$this->url              = 'http://wp.eship.mylocal:8888';
         $this->url = get_site_url();
     }
 
@@ -161,7 +162,8 @@ class ESHIP_Woocommerce_Api {
         return $data;
     }
 
-    public function getStoreAddressApi() {
+    public function getStoreAddressApi()
+    {
         $address    = $this->woocommerce->get('settings/general/woocommerce_store_address');
         $address2   = $this->woocommerce->get('settings/general/woocommerce_store_address_2');
         $city       = $this->woocommerce->get('settings/general/woocommerce_store_city');
@@ -173,12 +175,15 @@ class ESHIP_Woocommerce_Api {
         }
 
         $result = array(
+            'name'      => (!empty(get_bloginfo()))? get_bloginfo() : '',
             'address'   => (isset($address->value) && !empty($address->value) )? $address->value : FALSE,
             'address2'  => (isset($address2->value) && !empty($address2->value) )? $address2->value : FALSE,
             'city'      => (isset($city->value) && !empty($city->value) )? $city->value : FALSE,
             'country'   => (isset($countries[0]['country_code']) )? $countries[0]['country_code'] : FALSE,
             'state'     => (isset($countries[0]['state_code']) )? $countries[0]['state_code'] : FALSE,
-            'zip'       => (isset($zip->value) && !empty($zip->value) )? $zip->value : FALSE
+            'zip'       => (isset($zip->value) && !empty($zip->value) )? $zip->value : FALSE,
+            'email'     => (!empty(get_option('admin_email')))? get_option('admin_email') : '',
+            'company'   => (!empty(get_bloginfo()))? get_bloginfo() : ''
         );
 
         return $result;
