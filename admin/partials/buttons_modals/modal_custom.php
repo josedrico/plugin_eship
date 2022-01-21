@@ -63,6 +63,14 @@
                 <div class="create-shipment">
 
                 </div>
+                <table id="pack-eship-messages" class="table">
+                    <thead>
+                    <tr>
+                        <th data-field="source">Source</th>
+                        <th data-field="text">Text</th>
+                    </tr>
+                    </thead>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

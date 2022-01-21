@@ -5,7 +5,8 @@
 
 .app-eship #custom-eship-messages,
 .app-eship #custom-eship-rates,
-.app-eship .message-api {
+.app-eship .message-api,
+#shipmentModalToggle2 #pack-eship-messages{
     display: none;
 }
 

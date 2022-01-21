@@ -53,6 +53,7 @@ function redirectQuotesEship(href, btnClass, contentText, moreClass = '') {
 function clickGetShipment() {
     jQuery('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
         e.preventDefault();
+        let url = jQuery('#result-custom').data('url');
         let data = jQuery(this).data('shipment');
         //console.log('data', data);
 
@@ -68,12 +69,34 @@ function clickGetShipment() {
                 },
                 dataType: 'json',
                 success: function (data) {
-                    if (! data.error) {
+                    let newObj = [];
+
+                    if (data.result.status != 'ERROR') {
                         jQuery('#spinner-load-data').remove();
                         jQuery('#shipmentModalToggleLabel2').html(`Your Label`);
                         jQuery('.create-shipment').html(createPdfIframe(data.result));
+                    } else {
+                        jQuery('#spinner-load-data').remove();
+                        jQuery('#shipmentModalToggleLabel2').html(`ERROR`);
+                        jQuery.each(data.result.messages, function (index, object) {
+                            newObj.push({
+                                source: `${imgCarriersPacks({
+                                    src: (object.source).toLowerCase(),
+                                    url
+                                })}`,
+                                text: object.text
+                            });
+                        });
+                        jQuery('#pack-eship-messages').show();
+                        bsTb({
+                            id: '#pack-eship-messages',
+                                search: false,
+                                pagination: false
+                        }, newObj);
+                        //console.log('message', data.result.messages);
+                        console.log('newObj', newObj);
                     }
-                    console.log('datos', data);
+                    //console.log('datos', data.result);
                 }
             });
         }
@@ -93,7 +116,7 @@ function eshipBtTbQuotation() {
             jQuery('.message-api').html(messageApi(result));
             jQuery('.message-api').show();
         } else {
-            if ((result.rates).length > 0) {
+            if ((result.messages).length > 0) {
                 //console.log('result', result.rates);
                 jQuery.each(result.rates, function (index, object) {
                     //console.log(object);
@@ -128,18 +151,13 @@ function eshipBtTbQuotation() {
                 });
                 jQuery('#custom-eship-messages').show();
                 jQuery('#custom-eship-rates').hide();
-                bsTb('#custom-eship-messages', newData);
+                bsTb({
+                    id: '#custom-eship-messages',
+                        search: false,
+                        pagination: false
+                }, newData);
             }
         }
-
-        /*jQuery.ajax({
-            url: '/wp-admin/admin-ajax.php?action=get_quotation_data_eship',
-        }).done(function (data) {
-            console.log(data);
-            /
-        });*///.fail(function (data) {
-        //bsTb('#quotes', false);
-        //});
     });
 }
 

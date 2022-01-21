@@ -35,7 +35,7 @@ class ESHIP_Quotation {
             'zip'       => $data['zip'],
             'state'     => $data['state'],
             'country'   => $data['country'], //ISO 2 country code
-            'phone'     => (isset($data['phone']))? $data['phone'] : '',
+            'phone'     => '5544332211',//$data['phone'],
             'email'     => $data['email'], //optional
         );
 
@@ -53,7 +53,7 @@ class ESHIP_Quotation {
             'zip'       => $data->postcode,
             'state'     => $data->state,
             'country'   => $data->country, //ISO 2 country code
-            'phone'     => (isset($data->phone))? $data->phone : '',
+            'phone'     => $data->phone,
             'email'     => (isset($data->email))? $data->email : '' , //optional
         );
 
