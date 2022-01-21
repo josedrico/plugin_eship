@@ -1,6 +1,7 @@
     <?php
     use EshipAdmin\ESHIP_Quotation;
     use EshipAdmin\ESHIP_Shipment;
+    use EshipAdmin\ESHIP_Model;
 
     /**
      * La funcionalidad específica de administración del plugin.
@@ -120,17 +121,6 @@
 
             $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
             $add_meta_box->run();
-            /*
-            //var_dump(ESHIP_PLUGIN_DIR_PATH);
-            add_meta_box(
-                'woocommerce-order-eship',
-                __($register_title),
-                array( $this, $register_view ),
-                'shop_order',
-                'side',
-                'high'
-            );
-            */
         }
 
         public function view_buttons_eship()

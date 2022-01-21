@@ -1,6 +1,7 @@
 <?php
 namespace EshipAdmin;
 
+use EshipAdmin\ESHIP_Model;
 use Automattic\WooCommerce\Client;
 
 class ESHIP_Woocommerce_Api {
@@ -35,8 +36,8 @@ class ESHIP_Woocommerce_Api {
 
     private function setConsumerKey()
     {
-        $cs = new \ESHIP_Model();
-        $this->consumer_key = $cs->get_data_user_eship('ck');
+        $tb = new ESHIP_Model();
+        $this->consumer_key = $tb->get_data_user_eship('ck');
     }
 
     private function getConsumerKey()
@@ -46,8 +47,8 @@ class ESHIP_Woocommerce_Api {
 
     private  function  setConsumerSecret()
     {
-        $ck = new \ESHIP_Model();
-        $this->consumer_secret = $ck->get_data_user_eship('cs');
+        $tb = new ESHIP_Model();
+        $this->consumer_secret = $tb->get_data_user_eship('cs');
     }
 
     private function getConsumerSecret()

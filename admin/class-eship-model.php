@@ -1,4 +1,5 @@
 <?php
+namespace EshipAdmin;
 
 class ESHIP_Model {
     protected $db;

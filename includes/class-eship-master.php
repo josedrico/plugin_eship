@@ -50,11 +50,6 @@ class ESHIP_Master {
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-loader.php';
 
         /**
-         * Consulta a base de datos
-         */
-        require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-model.php';
-
-        /**
 		 * La clase responsable de definir la funcionalidad de la
          * internacionalización del plugin
 		 */
@@ -84,6 +79,11 @@ class ESHIP_Master {
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/HttpClient/HttpClientException.php";
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/HttpClient/HttpClient.php";
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/Client.php";
+
+        /**
+         * Consulta a base de datos
+         */
+        require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-model.php';
 
         /**
          * Conexiones y configuraciones de las a

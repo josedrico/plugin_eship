@@ -1,6 +1,8 @@
 <?php
 namespace EshipAdmin;
 
+use EshipAdmin\ESHIP_Model;
+
 class ESHIP_Api {
     private $url;
     private $api_key;
@@ -9,7 +11,6 @@ class ESHIP_Api {
     {
         $this->setUrl();
         $this->setApiKey();
-
     }
 
     private function setUrl()
@@ -19,9 +20,9 @@ class ESHIP_Api {
 
     private function setApiKey()
     {
-        $token = new \ESHIP_Model();
         //eship_prod_835261c341f8465b2
-        $this->api_key = $token->get_data_user_eship('token');
+        $tb = new ESHIP_Model();
+        $this->api_key = $tb->get_data_user_eship('token');
     }
 
     public function post($uri, $body)
