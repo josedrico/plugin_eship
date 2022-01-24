@@ -88,6 +88,9 @@
              */
             wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', TRUE );
 
+            wp_enqueue_script( 'eship_validation_jquery_admin_js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js', array('jquery'), 'v1.19.3', TRUE );
+            wp_enqueue_script( 'eship_validation_jquery_methods_admin_js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js', array('jquery'), 'v1.19.3', TRUE );
+
             wp_enqueue_script( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, TRUE );
             
             wp_localize_script(
@@ -138,6 +141,18 @@
 
         public function view_register_eship()
         {
+            $text_modal_ak = 'Connect to ESHIP';
+            $text_title_api_key = 'Register API Key';
+            $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
+                             <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
+                             "Settings" and click on "View your API Key".';
+            $btn_account_ak_modal = 'Register API Key';
+            $title_eship_account = 'I do not have an account of ESHIP';
+            $text_eship_account = '';
+            $btn_account_ak = 'I have ESHIP account';
+            $btn_account_ak_text = '';
+            $btn_account = 'Register Now';
+            $btn_account_link = 'https://app.myeship.co/en/login';
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
