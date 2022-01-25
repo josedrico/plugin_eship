@@ -2,6 +2,7 @@
 namespace EshipAdmin;
 
 use EshipAdmin\ESHIP_Model;
+use EshipAdmin\ESHIP_Admin_Notices;
 
 class ESHIP_Api {
     private $url;

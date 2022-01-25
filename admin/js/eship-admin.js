@@ -113,8 +113,8 @@
                 $('.message-api').html(messageApi(result));
                 $('.message-api').show();
             } else {
-                if ((result.messages).length > 0) {
-                    //console.log('result', result.rates);
+                if (result.messages != 'undefined' && (result.messages).length > 0) {
+                    console.log('result', result);
                     $.each(result.rates, function (index, object) {
                         //console.log(object);
                         newData.push({
@@ -122,7 +122,7 @@
                                 src: (object.provider).toLowerCase(),
                                 url
                             })}`,
-                            service: `${object.servicelevel.name}`,
+                            service: `<b>${object.servicelevel.name}</b>`,
                             estimatedDelivery	: `${object.days} days`,
                             amount	: `${object.amount} ${object.currency}`,
                             action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`

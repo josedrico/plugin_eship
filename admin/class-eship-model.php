@@ -19,22 +19,46 @@ class ESHIP_Model {
 
             switch ($show_data) {
                 case 'name':
-                    return $results[0]->name;
+                    if (isset($results[0]->name) && !empty($results[0]->name)) {
+                        return $results[0]->name;
+                    } else  {
+                        return  FALSE;
+                    }
                 case 'phone':
-                    return $results[0]->phone;
+                    if (isset($results[0]->phone) && ! empty($results[0]->phone)) {
+                         return $results[0]->phone;
+                    } else {
+                        return FALSE;
+                    }
                 case 'token':
-                    return $results[0]->token_eship;
+                    if (isset($results[0]->token_eship) && !empty($results[0]->token_eship)) {
+                        return $results[0]->token_eship;
+                    } else  {
+                        return  FALSE;
+                    }
                 case 'cs':
                     //test 'cs_fc047f331954ffa83623ed0f47c927afee406438';
                     //mac 'cs_46c0207837b87425d850fff14656ffef0621b4bc';
-                    return $results[0]->consumer_secret;
+                    if (isset($results[0]->consumer_secret) && !empty($results[0]->consumer_secret)) {
+                        return $results[0]->consumer_secret;
+                    } else {
+                        return FALSE;
+                    }
                 case 'ck':
                     //test 'ck_e1e2f573ca6d3237a02a7442952fa37806ef47ea';
                     //mac 'ck_8fc0c1a4fbc9fd2137a6b75c2728908f9346eb15';
-                    return $results[0]->consumer_key;
-                default:
-                    return $results;
+                    if (isset($results[0]->consumer_key) && !empty($results[0]->consumer_key)){
+                        return $results[0]->consumer_key;
+                    } else  {
+                        return FALSE;
+                    }
 
+                default:
+                    if (isset($results) && count($results) > 0) {
+                        return $results;
+                    } else  {
+                        return FALSE;
+                    }
             }
         }
     }

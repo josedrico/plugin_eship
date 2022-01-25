@@ -3,6 +3,7 @@ namespace EshipAdmin;
 
 use EshipAdmin\ESHIP_Model;
 use Automattic\WooCommerce\Client;
+use EshipAdmin\ESHIP_Admin_Notices;
 
 class ESHIP_Woocommerce_Api {
     private $url;
@@ -97,46 +98,18 @@ class ESHIP_Woocommerce_Api {
 
     public function getOrderApi($id)
     {
-        $parameters = array(
-            'id' => $id
-        );
-        $order = $this->woocommerce->get('orders', $parameters);
-        if (! empty($order)) {
-            $i = 0;
-            $data = array();
-            while($i < count($order)) {
-                $new_order = array(
-                    'id'                    => $order[$i]->id,
-                    'status'                => (! empty($order[$i]->status) )? trim($order[$i]->status) : FALSE,
-                    'currency'              => (! empty($order[$i]->currency) )? trim($order[$i]->currency) : FALSE,
-                    'prices_include_tax'    => (! empty($order[$i]->prices_include_tax) )? trim($order[$i]->prices_include_tax) : FALSE,
-                    'date_created'          => (! empty($order[$i]->date_created) )? trim($order[$i]->date_created) : FALSE,
-                    'date_modified'         => (! empty($order[$i]->date_modified) )? trim($order[$i]->date_modified) : FALSE,
-                    'discount_total'        => (! empty($order[$i]->discount_total) )? trim($order[$i]->discount_total) : FALSE,
-                    'discount_tax'          => (! empty($order[$i]->discount_tax) )? trim($order[$i]->discount_tax) : FALSE,
-                    'shipping_total'        => (! empty($order[$i]->shipping_total) )? trim($order[$i]->shipping_total) : FALSE,
-                    'shipping_tax'          => (! empty($order[$i]->shipping_tax) )? trim($order[$i]->shipping_tax) : FALSE,
-                    'cart_tax'              => (! empty($order[$i]->cart_tax) )? trim($order[$i]->cart_tax) : FALSE,
-                    'total'                 => (! empty($order[$i]->total) )? trim($order[$i]->total) : FALSE,
-                    'total_tax'             => (! empty($order[$i]->total_tax) )? trim($order[$i]->total_tax) : FALSE,
-                    'customer_id'           => (! empty($order[$i]->customer_id) )? trim($order[$i]->customer_id) : FALSE,
-                    'order_key'             => (! empty($order[$i]->order_key) )? trim($order[$i]->order_key) : FALSE,
-                    'shipping'              => (! empty($order[$i]->shipping) )? $order[$i]->shipping : FALSE,
-                    'customer_note'         => (! empty($order[$i]->customer_note) )? trim( htmlentities($order[$i]->customer_note) ) : FALSE,
-                    'meta_data'             => (! empty($order[$i]->meta_data) )? $order[$i]->meta_data : FALSE,
-                    'line_items'            => (! empty($order[$i]->line_items) )? $order[$i]->line_items : FALSE,
-                    //'tax_lines' => (! empty($order[$i]->tax_lines) )? trim($order[$i]->tax_lines) : FALSE,
-                    'shipping_lines'        => (! empty($order[$i]->shipping_lines) )? $order[$i]->shipping_lines : FALSE,
-                    //'fee_lines' => (! empty($order[$i]->fee_lines) )? $order[$i]->fee_lines : FALSE,
-                    //'coupon_lines' => (! empty($order[$i]->coupon_lines) )? $order[$i]->coupon_lines : FALSE,
-                    //'refunds'               => (! empty($order[$i]->refunds) )? $order[$i]->refunds : FALSE,
-                );
-                array_push($data, $new_order);
-                //$data = $order[$i];
-                $i++;
+        try {
+            $order = $this->woocommerce->get('orders/' . $id);
+            if (! empty($order)) {
+                return (( !empty($order) )? $order : FALSE);
             }
-            return (( !empty($data) )? $data : FALSE);
+        } catch (\Exception $e) {
+            return  array(
+                'error' => TRUE,
+                'message' => $e->getMessage()
+            );
         }
+
     }
 
     public function getCountryApi($string)
@@ -210,6 +183,11 @@ class ESHIP_Woocommerce_Api {
             'images'            => (! empty($product->images))? $product->images : FALSE,
             'variations'        => (! empty($product->variations) )? $product->variations : FALSE,
         );
+    }
+
+    public function test()
+    {
+        return  $this->woocommerce->get('');
     }
 
     public function getGeneral() {

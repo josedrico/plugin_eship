@@ -2,6 +2,8 @@
     use EshipAdmin\ESHIP_Quotation;
     use EshipAdmin\ESHIP_Shipment;
     use EshipAdmin\ESHIP_Model;
+    use EshipAdmin\ESHIP_Woocommerce_Api;
+    use EshipAdmin\ESHIP_Admin_Notices;
 
     /**
      * La funcionalidad específica de administración del plugin.
@@ -103,6 +105,21 @@
             );
         }
 
+        public function check_data_user_eship() {
+            $arr_user = $this->eship_model->get_data_user_eship();
+            $message = FALSE;
+            if ($arr_user) {
+                $woo_api = new ESHIP_Woocommerce_Api();
+                try {
+                    $woo_api->test();
+                } catch (Exception $e) {
+                    $message = $e->getMessage();
+                }
+            }
+
+            return $message;
+        }
+
         public function add_meta_boxes_eship()
         {
             $register_view  = 'view_buttons_eship';
@@ -128,19 +145,25 @@
 
         public function view_buttons_eship()
         {
-            $result = FALSE;
-            if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                $result = $this->eship_quotation->create($_GET['post']);
-                $result = htmlentities($result);
+            if (($msg = $this->check_data_user_eship()) != FALSE) {
+                $admin_notice = new ESHIP_Admin_Notices($msg);
+                $admin_notice->run(array('callback' => 'error_message'));
+            } else {
+                $result = FALSE;
+                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                    $result = $this->eship_quotation->create($_GET['post']);
+                    $result = htmlentities($result);
+                }
+
+                $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
             }
-
-            $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
-
+            
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
         public function view_register_eship()
         {
+            $error_eship = $this->check_data_user_eship();
             $text_modal_ak = 'Connect to ESHIP';
             $text_title_api_key = 'Register API Key';
             $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
@@ -201,7 +224,7 @@
             if (!is_null($result)) {
                 $response = array(
                     'result'    => 'Exito',
-                    'redirect'  => true,
+                    'redirect'  => TRUE,
                     'error'     => FALSE,
                     'code'      => 201
                 );

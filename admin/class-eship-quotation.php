@@ -4,6 +4,7 @@ namespace EshipAdmin;
 use EshipAdmin\ESHIP_Woocommerce_Api;
 use EshipAdmin\ESHIP_Api;
 use EshipAdmin\ESHIP_Model;
+use EshipAdmin\ESHIP_Admin_Notices;
 
 /**
  * Config and queries to api's.
@@ -104,34 +105,64 @@ class ESHIP_Quotation {
                 'price'         => $key->price,
                 'weight'        => $product['weight'],
                 'currency'      => $data_gral->currency_code,//$key->currency, //“MXN”, “USD”
-                'store_id'      => 'store_id'//$key->store_id
+                'store_id'      => $product['id']//$key->store_id
             ));
         }
 
         return $items;
     }
 
-    public function create($id)
+    private function setOrderInfo($data)
     {
-        $address_store          = $this->woocommerce_api->getStoreAddressApi();
-        $eship_address_store    = $this->setAddressFrom($address_store);
-        $order                  = $this->woocommerce_api->getOrderApi($id);
-        $address_shipping       = $order[0]['shipping'];
-        $eship_address_shipping = $this->setAddressTo($address_shipping);
-        $line_items             = $order[0]['line_items'];
-        $eship_line_items       = $this->setItems($line_items);
-        $eship_parcels          = $this->setParcels($line_items);
-        $body                   = array();
+        $arr = array();
 
-        array_push($body, array(
-            'address_from'  => $eship_address_store,
-            'address_to'    => $eship_address_shipping,
-            'items'         => $eship_line_items,
-            'parcels'       => $eship_parcels
+        array_push($arr,  array(
+            'order_num'         => $data->number,
+            'paid'              => ($data->status == 'completed')? TRUE : FALSE,
+            'fulfilled'         => FALSE,
+            'store'             => 'woo',
+            'shipment'          => $data->shipping_lines,
+            'total_price'       => $data->total,
+            'subtotal_price'    => ((float)$data->total - (float)$data->total_tax),
+            'total_tax'         => $data->total_tax,
+            'total_shipment'    => $data->shipping_total,
+            'store_id'          => $data->id,
         ));
 
-        $json       = json_encode($body[0]);
-        $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
+        return $arr;
+    }
+
+    public function create($id)
+    {
+        try {
+            $address_store          = $this->woocommerce_api->getStoreAddressApi();
+            $eship_address_store    = $this->setAddressFrom($address_store);
+            $order                  = $this->woocommerce_api->getOrderApi($id);
+            $address_shipping       = $order->shipping;
+            $eship_address_shipping = $this->setAddressTo($address_shipping);
+            $line_items             = $order->line_items;
+            $eship_line_items       = $this->setItems($line_items);
+            $eship_parcels          = $this->setParcels($line_items);
+            $body                   = array();
+
+            array_push($body, array(
+                'address_from'  => $eship_address_store,
+                'address_to'    => $eship_address_shipping,
+                'order_info'    => $this->setOrderInfo($order),
+                'items'         => $eship_line_items,
+                'parcels'       => $eship_parcels
+            ));
+
+
+            $json       = json_encode($body[0]);
+            $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
+            var_dump($response);
+            die();
+        } catch (\Exception $e) {
+            $admin_notice = new ESHIP_Admin_Notices($e->getMessage());
+            $admin_notice->run(array('callback' => 'error_message'));
+            $response = $e->getMessage();
+        }
 
         return $response;
     }

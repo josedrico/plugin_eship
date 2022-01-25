@@ -65,7 +65,8 @@ class ESHIP_Master {
          * Clase de add meta box
          */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-build-add-meta-box.php';
-
+        
+        require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-admin-notices.php';
 
         /**
          * La clase responsable del woocommerce api
