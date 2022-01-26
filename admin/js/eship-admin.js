@@ -1,6 +1,7 @@
 (function($){
     getQuotationEship();
     modalInsertToken();
+    modalUpdateToken();
     selectElement();
     clickGetShipment();
 
@@ -25,23 +26,13 @@
     }
 
     function messageApi(data, id = false) {
-        return `<div ${(id)? "id=" + id : ''} class="alert alert-danger alert-dismissible fade show" role="alert">
-                ${data.Error}
+        return `<div ${(id)? "id=" + id : ''} class="alert ${(data.bg != undefined)? data.bg : 'alert-danger'} alert-dismissible fade show ${(data.margin != 'undefined')? data.margin : FALSE}" role="alert">
+                ${(data.svg != 'undefined')? data.svg : FALSE } ${data.Error}
             </div>`;
     }
 
     function imgCarriersPacks(data) {
-        let src = data.src;
-        let heigth = '';
-        if (data.src == 'dhl express') {
-            src = 'dhl'
-        }
-
-        if (data.src == 'ups') {
-            heigth = 'h-25';
-        }
-
-        return `<img class="img-fluid w-25 ${heigth}" src="${data.url}admin/img/paqueterias/${src}.png">`;
+        return `<img class="img-fluid ${data.heigth} ${data.width}" src="${data.src}">`;
     }
 
     function createPdfIframe(data) {
@@ -66,6 +57,7 @@
             e.preventDefault();
             let url = $('#app-eship-url').data('url');
             let data = $(this).data('shipment');
+            console.log(url, data);
 
             if (data != '') {
                 $.ajax({
@@ -79,6 +71,8 @@
                     },
                     dataType: 'json',
                     success: function (data) {
+                        console.log(data);
+                        
                         let newObj = [];
 
                         if (data.result.status != 'ERROR') {
@@ -91,7 +85,7 @@
                             $.each(data.result.messages, function (index, object) {
                                 newObj.push({
                                     source: `${imgCarriersPacks({
-                                        src: (object.source).toLowerCase(),
+                                        src: object.provider_image_75,//(object.source).toLowerCase(),
                                         url
                                     })}`,
                                     text: object.text
@@ -108,66 +102,6 @@
                 });
             }
         });
-    }
-
-    function eshipBtTbQuotation(data) {
-        $('#spinner-load-data-q').remove();
-        let result  = data;
-        let url = $('#app-eship-url').data('url');
-        let newRates = [];
-        let newMessage = [];
-
-        if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
-            $('#dashBoardEshipModalToggleLabel > i').remove();
-            $('#dashBoardEshipModalToggleLabel > span').remove();
-            $('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
-            $('.message-api').html(messageApi(result));
-            $('.message-api').show();
-        } else {
-            if (result.rates != 'undefined') {
-                console.log('result', result);
-                $.each(result.rates, function (index, object) {
-                    newMessage.push({
-                        carrier: `${imgCarriersPacks({
-                            src: (object.provider).toLowerCase(),
-                            url
-                        })}`,
-                        service: `<b>${object.servicelevel.name}</b>`,
-                        estimatedDelivery	: `${object.days} days`,
-                        amount	: `${object.amount} ${object.currency}`,
-                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
-                    })
-
-                });
-                $('#custom-eship-rates').show();
-                bsTb({
-                        id: '#custom-eship-rates',
-                        search: false,
-                        pagination: false
-                    },
-                    newMessage
-                );
-            }
-
-            if (result.messages != 'undefined') {
-                //console.log('result.messages', result.messages);
-                $.each(result.messages, function (index, object) {
-                    newRates.push({
-                        source: `${imgCarriersPacks({
-                            src: (object.source).toLowerCase(),
-                            url
-                        })}`,
-                        text: object.text,
-                    });
-                });
-                $('#custom-eship-messages').show();
-                bsTb({
-                    id: '#custom-eship-messages',
-                    search: false,
-                    pagination: false
-                }, newRates);
-            }
-        }
     }
 
     function modalInsertToken() {
@@ -218,6 +152,63 @@
                         },
                         type: 'json'
                     };
+                    ajaxEship($data);
+                }
+            });
+        });
+    }
+
+    function modalUpdateToken() {
+        $('#updateDataEshipModalBtn').on('click', function (e) {
+            //e.preventDefault();
+            let formDataToken = $('#token-input-eship').val();
+            let formDataCs = $('#cs-input-eship').val();
+            let formDataCk = $('#ck-input-eship').val();
+            let formPhoneCompany = $('#phone-input-eship').val();
+            let formNameCompany = $('#name-input-eship').val();
+            let user =  $('#updateDataEshipModalForm').data('user');
+
+            $("#updateDataEshipModalForm").validate({
+                rules: {
+                    apiKey: {
+                        required: true
+                    },
+                    customerSecret: {
+                        required: true
+                    },
+                    customerKey: {
+                        required: true
+                    },
+                    phoneCompany: {
+                        required: true,
+                        digits: true
+                    },
+                    nameCompany: {
+                        required: true
+                    }
+                },
+                success: function(label) {
+                    label.addClass("valid").css('color','green').text('Valid')
+                },
+                submitHandler: function(form) {
+                    //console.log(form);
+                    let $data = {
+                        method: 'POST',
+                        url: eshipData.url,
+                        content: {
+                            action: 'update_token_eship',
+                            nonce: eshipData.security,
+                            token: formDataToken,
+                            cs: formDataCs,
+                            ck: formDataCk,
+                            phone: formPhoneCompany,
+                            name: formNameCompany,
+                            user,
+                            typeAction: 'update_token'
+                        },
+                        type: 'json'
+                    };
+                    //console.log($data);
                     ajaxEship($data);
                 }
             });
@@ -304,12 +295,18 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    //console.log(data);
-                    if (data.result.object_id != 'undefined') {
-                        //console.log(data.result.object_id);
-                        eshipBtTbQuotation(data.result);
+                    console.log(data);
+                    $('#spinner-load-data-q').remove();
+                    if (data.error) {
+                        $('#orders-list').append(messageApi({
+                            Error: data.result
+                        }));
+                    } else {
+                        if (data.result.object_id != 'undefined') {
+                            //console.log(data.result.object_id);
+                            eshipBtTbQuotation(data.result);
+                        }
                     }
-
                 },
                 error: function (d, x, v) {
                     console.error('d', d);
@@ -318,5 +315,72 @@
                 }
             });
         });
+    }
+
+    function eshipBtTbQuotation(result) {
+        $('#spinner-load-data-q').remove();
+        let url = $('#app-eship-url').data('url');
+        let newMessage = [];
+
+        if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
+            $('#dashBoardEshipModalToggleLabel > i').remove();
+            $('#dashBoardEshipModalToggleLabel > span').remove();
+            $('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
+            $('.message-api').html(messageApi(result));
+            $('.message-api').show();
+        } else {
+            if (result.rates != 'undefined') {
+                //console.log('result', result.rates);
+                $.each(result.rates, function (index, object) {
+                    console.log(object);
+                    let heigth = '';
+                    let width = 'w-25'
+                    if (object.provider == 'UPS') {
+                        heigth = 'h-25'
+                        width = 'w-10'
+                    }
+                    newMessage.push({
+                        carrier: `${imgCarriersPacks({
+                            src: object.provider_image_75,//(object.provider).toLowerCase(),
+                            url,
+                            heigth,
+                            width
+                        })}`,
+                        service: `<strong>${object.provider}</strong> ${object.servicelevel.name}`,
+                        estimatedDelivery	: `${object.days} days`,
+                        amount	: `${object.amount} ${object.currency}`,
+                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
+                    })
+
+                });
+                $('#custom-eship-rates').show();
+                bsTb({
+                        id: '#custom-eship-rates',
+                        search: false,
+                        pagination: false
+                    },
+                    newMessage
+                );
+            }
+
+            if (result.messages != 'undefined') {
+                $('#custom-eship-messages').show();
+                $.each( result.messages, function (i,o) {
+                    $('#custom-eship-messages').append(messageApi({
+                        margin: 'mt-1',
+                        bg: 'alert-secondary',
+                        svg: '<span class="dashicons dashicons-info-outline"></span>',
+                        Error: `<strong>${o.source}</strong> - ${o.text}`
+                    }));
+                });
+                /*
+                bsTb({
+                    id: '#custom-eship-messages',
+                    search: false,
+                    pagination: false
+                }, result.messages);
+                 */
+            }
+        }
     }
 })(jQuery);
