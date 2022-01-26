@@ -1,5 +1,5 @@
 (function($){
-    eshipBtTbQuotation();
+    getQuotationEship();
     modalInsertToken();
     selectElement();
     clickGetShipment();
@@ -31,7 +31,17 @@
     }
 
     function imgCarriersPacks(data) {
-        return `<img class="img-fluid w-25" src="${data.url}admin/img/paqueterias/${data.src}.png">`;
+        let src = data.src;
+        let heigth = '';
+        if (data.src == 'dhl express') {
+            src = 'dhl'
+        }
+
+        if (data.src == 'ups') {
+            heigth = 'h-25';
+        }
+
+        return `<img class="img-fluid w-25 ${heigth}" src="${data.url}admin/img/paqueterias/${src}.png">`;
     }
 
     function createPdfIframe(data) {
@@ -54,7 +64,7 @@
     function clickGetShipment() {
         $('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
             e.preventDefault();
-            let url = $('#result-custom').data('url');
+            let url = $('#app-eship-url').data('url');
             let data = $(this).data('shipment');
 
             if (data != '') {
@@ -100,62 +110,64 @@
         });
     }
 
-    function eshipBtTbQuotation() {
-        $('a[href="#dashBoardEshipModalToggle"]').on('click',function () {
-            let result  = $('#result-custom').data('result');
-            let url = $('#result-custom').data('url');
-            let newData = [];
+    function eshipBtTbQuotation(data) {
+        $('#spinner-load-data-q').remove();
+        let result  = data;
+        let url = $('#app-eship-url').data('url');
+        let newRates = [];
+        let newMessage = [];
 
-            if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
-                $('#dashBoardEshipModalToggleLabel > i').remove();
-                $('#dashBoardEshipModalToggleLabel > span').remove();
-                $('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
-                $('.message-api').html(messageApi(result));
-                $('.message-api').show();
-            } else {
-                if (result.messages != 'undefined' && (result.messages).length > 0) {
-                    console.log('result', result);
-                    $.each(result.rates, function (index, object) {
-                        //console.log(object);
-                        newData.push({
-                            carrier: `${imgCarriersPacks({
-                                src: (object.provider).toLowerCase(),
-                                url
-                            })}`,
-                            service: `<b>${object.servicelevel.name}</b>`,
-                            estimatedDelivery	: `${object.days} days`,
-                            amount	: `${object.amount} ${object.currency}`,
-                            action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
-                        })
+        if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
+            $('#dashBoardEshipModalToggleLabel > i').remove();
+            $('#dashBoardEshipModalToggleLabel > span').remove();
+            $('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
+            $('.message-api').html(messageApi(result));
+            $('.message-api').show();
+        } else {
+            if (result.rates != 'undefined') {
+                console.log('result', result);
+                $.each(result.rates, function (index, object) {
+                    newMessage.push({
+                        carrier: `${imgCarriersPacks({
+                            src: (object.provider).toLowerCase(),
+                            url
+                        })}`,
+                        service: `<b>${object.servicelevel.name}</b>`,
+                        estimatedDelivery	: `${object.days} days`,
+                        amount	: `${object.amount} ${object.currency}`,
+                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
+                    })
 
-                    });
-                    $('#custom-eship-messages').hide();
-                    $('#custom-eship-rates').show();
-                    bsTb({
-                            id: '#custom-eship-rates',
-                            search: false,
-                            pagination: false
-                        },
-                        newData
-                    );
-                } else {
-                    //console.log('result.messages', result.messages);
-                    $.each(result.messages, function (index, object) {
-                        newData.push({
-                            source: `${imgCarriersPacks((object.source).toLowerCase())}`,
-                            text: object.text,
-                        });
-                    });
-                    $('#custom-eship-messages').show();
-                    $('#custom-eship-rates').hide();
-                    bsTb({
-                        id: '#custom-eship-messages',
+                });
+                $('#custom-eship-rates').show();
+                bsTb({
+                        id: '#custom-eship-rates',
                         search: false,
                         pagination: false
-                    }, newData);
-                }
+                    },
+                    newMessage
+                );
             }
-        });
+
+            if (result.messages != 'undefined') {
+                //console.log('result.messages', result.messages);
+                $.each(result.messages, function (index, object) {
+                    newRates.push({
+                        source: `${imgCarriersPacks({
+                            src: (object.source).toLowerCase(),
+                            url
+                        })}`,
+                        text: object.text,
+                    });
+                });
+                $('#custom-eship-messages').show();
+                bsTb({
+                    id: '#custom-eship-messages',
+                    search: false,
+                    pagination: false
+                }, newRates);
+            }
+        }
     }
 
     function modalInsertToken() {
@@ -275,5 +287,36 @@
                 }
             });
         }
+    }
+
+    function getQuotationEship() {
+        $('button[href="#dashBoardEshipModalToggle"]').on('click', function () {
+            let order =  $('button[href="#dashBoardEshipModalToggle"]').data('order');
+
+            $.ajax({
+                method: 'POST',
+                url:  eshipData.url,
+                data: {
+                    action: 'get_quotation_eship',
+                    nonce: eshipData.security,
+                    order_id: order,
+                    typeAction: 'add_quotation'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //console.log(data);
+                    if (data.result.object_id != 'undefined') {
+                        //console.log(data.result.object_id);
+                        eshipBtTbQuotation(data.result);
+                    }
+
+                },
+                error: function (d, x, v) {
+                    console.error('d', d);
+                    console.error('x', x);
+                    console.error('v', v);
+                }
+            });
+        });
     }
 })(jQuery);
