@@ -153,15 +153,15 @@ class ESHIP_Quotation {
                 'parcels'       => $eship_parcels
             ));
 
-
             $json       = json_encode($body[0]);
-            $response   = wp_remote_retrieve_body( $this->eship_api->post('quotation', $json) );
-            var_dump($response);
-            die();
+            $response  = wp_remote_retrieve_body($this->eship_api->post('quotation', $json));
+            //var_dump($response);
+            //die();
         } catch (\Exception $e) {
-            $admin_notice = new ESHIP_Admin_Notices($e->getMessage());
-            $admin_notice->run(array('callback' => 'error_message'));
-            $response = $e->getMessage();
+            $response = wp_remote_retrieve_body( array(
+                'error'     => TRUE,
+                'result'    => $e->getMessage()
+            ));
         }
 
         return $response;
