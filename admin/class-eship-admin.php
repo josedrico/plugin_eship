@@ -145,24 +145,21 @@
 
         public function view_buttons_eship()
         {
-            if (($msg = $this->check_data_user_eship()) != FALSE) {
-                $admin_notice = new ESHIP_Admin_Notices($msg);
-                $admin_notice->run(array('callback' => 'error_message'));
-            } else {
-                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                    $order = $_GET['post'];
-                }
-                $form_data = $this->eship_model->get_data_user_eship();
-                $btn_account_ak_modal = 'Update Data';
-                $id_api_key = 'updateDataEshipModal';
-                $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
-                             <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
-                             "Settings" and click on "View your API Key".';
-                $text_title_api_key = 'Update Data';
-                $show_btn_update    = TRUE;
-                $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
-                $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+            if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                $order  = $_GET['post'];
+                //$result = $this->eship_quotation->create($order);
             }
+
+            $form_data              = $this->eship_model->get_data_user_eship();
+            $btn_account_ak_modal   = 'Update Data';
+            $id_api_key             = 'updateDataEshipModal';
+            $text_api_key           = 'To obtain your eShip API key, you login into your eShip account 
+                                           <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
+                                           "Settings" and click on "View your API Key".';
+            $text_title_api_key     = 'Update Data';
+            $show_btn_update        = TRUE;
+            $modal_token            = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+            $modal_custom  = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
             
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
@@ -199,6 +196,8 @@
                 if($typeAction == 'create_shipment') {
                     $shipment   = new ESHIP_Shipment($rateId);
                     $result     = $shipment->getShipment();
+                    //var_dump($result);
+                    //die();
                     $result     = json_decode($result);
                     #TODO Idea Register el documento en la base de datos
                 }
@@ -212,8 +211,8 @@
                     );
                 } else  {
                     $response = array(
-                        'result'    => 'No se genero tu guía',
-                        'redirect'  => '?page=eship_dashboard',
+                        'result'    => $result,//'No se genero tu guía',
+                        'redirect'  => FALSE,
                         'error'     => TRUE,
                         'code'      => 404
                     );
@@ -230,19 +229,19 @@
             $result = FALSE;
             if (isset($_POST['order_id'])) {
                 $result = $this->eship_quotation->create($_POST['order_id']);
-                $res = json_decode($result);
+                $result = json_decode($result);
                 //$result = htmlentities($result);
 
-                if ($result) {
+                if ($result && !(isset($result->error))) {
                     $response = array(
-                        'result'    => $res,
+                        'result'    => $result,
                         'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201
                     );
                 } else  {
                     $response = array(
-                        'result'    => $res,
+                        'result'    => $result->result,
                         'error'     => TRUE,
                         'code'      => 404
                     );
@@ -250,7 +249,7 @@
 
             } else {
                 $response = array(
-                    'result'    => 'No se encontro ninguna orden',
+                    'result'    => 'No se conecto con las APIs',
                     'error'     => TRUE,
                     'code'      => 500
                 );
@@ -274,6 +273,30 @@
             } else  {
                 $response = array(
                     'result'    => 'Error',
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
+            }
+
+            echo json_encode($response);
+            wp_die();
+        }
+
+        public function update_token_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->update_data_store_eship($_POST);
+
+            if (!is_null($result)) {
+                $response = array(
+                    'result'    => 'Done!',
+                    'redirect'  => TRUE,
+                    'error'     => FALSE,
+                    'code'      => 201
+                );
+            } else  {
+                $response = array(
+                    'result'    => 'No updated',
                     'error'     => TRUE,
                     'code'      => 404
                 );
