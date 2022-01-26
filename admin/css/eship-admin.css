@@ -6,7 +6,8 @@
 .app-eship #custom-eship-messages,
 .app-eship #custom-eship-rates,
 .app-eship .message-api,
-#shipmentModalToggle2 #pack-eship-messages{
+#shipmentModalToggle2 #pack-eship-messages,
+.app-eship #spinner-load-data-q{
     display: none;
 }
 
