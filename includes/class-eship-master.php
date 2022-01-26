@@ -131,6 +131,7 @@ class ESHIP_Master {
         $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'wp_ajax_get_quotation_data_eship', $this->eship_admin, 'get_quotation_data_eship' );
         $this->loader->add_action( 'wp_ajax_insert_token_eship', $this->eship_admin, 'insert_token_eship' );
+        $this->loader->add_action( 'wp_ajax_update_token_eship', $this->eship_admin, 'update_token_eship' );
         $this->loader->add_action( 'wp_ajax_get_shipment_eship', $this->eship_admin, 'get_shipment_eship' );
         $this->loader->add_action( 'wp_ajax_get_quotation_eship', $this->eship_admin, 'get_quotation_eship' );
     }
