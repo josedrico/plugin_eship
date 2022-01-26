@@ -105,8 +105,8 @@ class ESHIP_Woocommerce_Api {
             }
         } catch (\Exception $e) {
             return  array(
-                'error' => TRUE,
-                'message' => $e->getMessage()
+                'error'     => TRUE,
+                'result'    => $e->getMessage()
             );
         }
 
