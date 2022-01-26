@@ -14,6 +14,8 @@
             </div>
         </div>
         <?php (isset($modal_custom))? require_once $modal_custom : FALSE;?>
+
+        <?php (isset($modal_token))? require_once $modal_token : FALSE;?>
     </div>
 </div>
 
