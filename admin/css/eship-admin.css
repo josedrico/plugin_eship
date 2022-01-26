@@ -16,6 +16,10 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+.w-10 {
+    width: 10% !important;
+}
+
 .app-eship p {
     color: #333333;
 }
