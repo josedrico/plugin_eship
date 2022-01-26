@@ -95,4 +95,24 @@ class ESHIP_Model {
 
         return $result;
     }
+
+
+    public function update_data_store_eship($data)
+    {
+        $result = FALSE;
+        if(current_user_can('manage_options')) {
+            $adm = wp_get_current_user();
+            extract($data, EXTR_OVERWRITE);
+
+            if ($typeAction == 'update_token') {
+
+                $sql = "UPDATE " . ESHIP_TB . " SET  WHERE";
+
+                $this->check_current_query = false;
+                $result = $this->query( $this->prepare( $sql, $values ) );
+            }
+        }
+
+        return $result;
+    }
 }

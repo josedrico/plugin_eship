@@ -149,13 +149,19 @@
                 $admin_notice = new ESHIP_Admin_Notices($msg);
                 $admin_notice->run(array('callback' => 'error_message'));
             } else {
-                $result = FALSE;
                 if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                    $result = $this->eship_quotation->create($_GET['post']);
-                    $result = htmlentities($result);
+                    $order = $_GET['post'];
                 }
-
-                $modal_custom = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+                $form_data = $this->eship_model->get_data_user_eship();
+                $btn_account_ak_modal = 'Update Data';
+                $id_api_key = 'updateDataEshipModal';
+                $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
+                             <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
+                             "Settings" and click on "View your API Key".';
+                $text_title_api_key = 'Update Data';
+                $show_btn_update    = TRUE;
+                $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+                $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
             }
             
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
@@ -169,6 +175,7 @@
             $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
                              <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
                              "Settings" and click on "View your API Key".';
+            $id_api_key = 'tokenEshipModal';
             $btn_account_ak_modal = 'Register API Key';
             $title_eship_account = 'I do not have an account of ESHIP';
             $text_eship_account = '';
@@ -176,6 +183,7 @@
             $btn_account_ak_text = '';
             $btn_account = 'Register Now';
             $btn_account_link = 'https://app.myeship.co/en/login';
+            $modal_token =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
@@ -214,6 +222,41 @@
                 echo json_encode($response);
                 wp_die();
             }
+        }
+
+        public function get_quotation_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = FALSE;
+            if (isset($_POST['order_id'])) {
+                $result = $this->eship_quotation->create($_POST['order_id']);
+                $res = json_decode($result);
+                //$result = htmlentities($result);
+
+                if ($result) {
+                    $response = array(
+                        'result'    => $res,
+                        'redirect'  => FALSE,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => $res,
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+
+            } else {
+                $response = array(
+                    'result'    => 'No se encontro ninguna orden',
+                    'error'     => TRUE,
+                    'code'      => 500
+                );
+            }
+            echo json_encode($response);
+            wp_die();
         }
 
         public function insert_token_eship()
