@@ -106,10 +106,27 @@ class ESHIP_Model {
 
             if ($typeAction == 'update_token') {
 
-                $sql = "UPDATE " . ESHIP_TB . " SET  WHERE";
+                $result = $this->db->update($this->tb,
+                    array(
+                        'token_eship' => $token,
+                        'consumer_key' => $ck,
+                        'consumer_secret' => $cs,
+                        'phone' => $phone,
+                        'name' => $name,
+                        //'updated_at' => ''
+                    ),
+                    array(
+                        'id' => $user
+                    ),
+                    array(
+                        '%s','%s', '%s', '%s', '%s'
+                    ),
+                    array('%d')
+                );
 
-                $this->check_current_query = false;
-                $result = $this->query( $this->prepare( $sql, $values ) );
+                if($result > 0){
+                    $result = TRUE;
+                }
             }
         }
 
