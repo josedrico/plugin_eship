@@ -1,3 +1,4 @@
+<!-- Modal Custom -->
 <div class="modal fade" id="dashBoardEshipModalToggle" aria-hidden="true" aria-labelledby="dashBoardEshipModalToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content">
@@ -33,6 +34,7 @@
                                 </tr>
                                 </thead>
                             </table>
+                            <!--
                             <table id="custom-eship-messages" class="table mt-5 text-danger">
                                 <thead>
                                 <tr>
@@ -41,6 +43,8 @@
                                 </tr>
                                 </thead>
                             </table>
+                            -->
+                            <div id="custom-eship-messages"></div>
                         </div>
                     </div>
                 </div>
@@ -86,8 +90,3 @@
         </div>
     </div>
 </div>
-
-
-<?php if (isset($modal_token)):?>
-    <?php require_once $modal_token;?>
-<?php endif;?>
