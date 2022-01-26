@@ -114,20 +114,18 @@ class ESHIP_Quotation {
 
     private function setOrderInfo($data)
     {
-        $arr = array();
-
-        array_push($arr,  array(
+        $arr = array(
             'order_num'         => $data->number,
-            'paid'              => ($data->status == 'completed')? TRUE : FALSE,
+            'paid'              => ($data->status != 'pending')? TRUE : FALSE,
             'fulfilled'         => FALSE,
             'store'             => 'woo',
-            'shipment'          => $data->shipping_lines,
+            'shipment'          => 'FLAT',//$data->shipping_lines,
             'total_price'       => $data->total,
             'subtotal_price'    => ((float)$data->total - (float)$data->total_tax),
             'total_tax'         => $data->total_tax,
             'total_shipment'    => $data->shipping_total,
             'store_id'          => $data->id,
-        ));
+        );
 
         return $arr;
     }
@@ -153,12 +151,16 @@ class ESHIP_Quotation {
                 'parcels'       => $eship_parcels
             ));
 
-            $json       = json_encode($body[0]);
+            $json      = json_encode($body[0]);
+            /*echo "<pre>";
+            var_dump(json_decode($json));
+            echo "</pre>";
+            die();*/
             $response  = wp_remote_retrieve_body($this->eship_api->post('quotation', $json));
             //var_dump($response);
             //die();
         } catch (\Exception $e) {
-            $response = wp_remote_retrieve_body( array(
+            $response = json_encode( array(
                 'error'     => TRUE,
                 'result'    => $e->getMessage()
             ));
