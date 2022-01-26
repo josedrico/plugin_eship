@@ -28,7 +28,7 @@
                             <?php endif;?>
                             <div class="row g-1">
                                 <div class="col-12 col-md-6 offset-md-6">
-                                    <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#tokenEshipModal">
+                                    <button type="button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#<?php echo (isset($id_api_key))? $id_api_key : 'tokenEshipModal'?>">
                                         <span class="dashicons dashicons-edit"></span>
                                         <?php echo (isset($btn_account_ak_modal))? $btn_account_ak_modal : '';?>
                                     </button>
@@ -70,72 +70,9 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="tokenEshipModal" tabindex="-1" aria-labelledby="tokenEshipModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                        <?php echo (isset($text_title_api_key))? $text_title_api_key : '';?>
-                        <span class="dashicons dashicons-editor-help"></span>
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <p class="modal-text fw-bolder">
-                        <?php echo (isset($text_api_key))? $text_api_key : '';?>
-                    </p>
-                    <form action=""></form>
-                    <form id="tokenEshipModalForm" method="post" action="">
-                        <div class="mb-2">
-                            <label for="token-input-eship" class="col-form-label">
-                                API Key:
-                            </label>
-                            <input type="text" class="form-control" id="token-input-eship" data-form="eship-register" name="apiKey">
-                        </div>
-                        <div class="mb-2">
-                            <label for="cs-input-eship" class="col-form-label">
-                                Consumer Secret:
-                            </label>
-                            <input type="text" class="form-control" id="cs-input-eship" data-form="eship-register" name="customerSecret">
-                        </div>
-                        <div class="mb-2">
-                            <label for="ck-input-eship" class="col-form-label">
-                                Consumer Key:
-                            </label>
-                            <input type="text" class="form-control" id="ck-input-eship" data-form="eship-register" name="customerKey">
-                        </div>
-                        <div class="mb-2">
-                            <label for="phone-input-eship" class="col-form-label">
-                                Phone:
-                            </label>
-                            <input type="text" class="form-control" id="phone-input-eship" data-form="eship-register" name="phoneCompany">
-                        </div>
-                        <div class="mb-2">
-                            <label for="name-input-eship" class="col-form-label">
-                                Name Company:
-                            </label>
-                            <input type="text" class="form-control" id="name-input-eship" data-form="eship-register" name="nameCompany">
-                        </div>
-                        <div class="row g-1 mb-4">
-                            <div class="col-12 col-md-6">
-                                <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">
-                                    <span class="dashicons dashicons-no-alt"></span>
-                                </button>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <button id="tokenEshipModalBtn" type="submit" class="btn btn-primary w-100">
-                                    <span class="dashicons dashicons-saved"></span>
-                                    <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem; display: none;">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php if (isset($modal_token)):?>
+    <?php require_once $modal_token;?>
+    <?php endif;?>
 </div>
 
 

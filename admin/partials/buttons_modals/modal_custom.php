@@ -14,8 +14,13 @@
             </div>
             <div class="modal-body">
                 <div class="container" id="orders-list">
+                    <div id="spinner-load-data-q" class="d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                     <div class="row">
-                        <div id="result-custom" class="col-12" data-result="<?php echo (isset($result))? $result : FALSE;?>" data-url="<?php echo  ESHIP_PLUGIN_DIR_URL;?>">
+                        <div class="col-12">
                             <div class="message-api"></div>
                             <table id="custom-eship-rates" class="table">
                                 <thead>
@@ -28,7 +33,7 @@
                                 </tr>
                                 </thead>
                             </table>
-                            <table id="custom-eship-messages" class="table">
+                            <table id="custom-eship-messages" class="table mt-5 text-danger">
                                 <thead>
                                 <tr>
                                     <th data-field="source">Source</th>
@@ -81,3 +86,8 @@
         </div>
     </div>
 </div>
+
+
+<?php if (isset($modal_token)):?>
+    <?php require_once $modal_token;?>
+<?php endif;?>
