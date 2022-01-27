@@ -281,9 +281,10 @@
     }
 
     function getQuotationEship() {
-        $('button[href="#dashBoardEshipModalToggle"]').on('click', function () {
+        $('button[href="#dashBoardEshipModalToggle"]').on('click', function (e) {
+            e.preventDefault();
             let order =  $('button[href="#dashBoardEshipModalToggle"]').data('order');
-
+            console.log(order);
             $.ajax({
                 method: 'POST',
                 url:  eshipData.url,
@@ -303,7 +304,7 @@
                         }));
                     } else {
                         if (data.result.object_id != 'undefined') {
-                            //console.log(data.result.object_id);
+                            console.log(data.result.object_id);
                             eshipBtTbQuotation(data.result);
                         }
                     }

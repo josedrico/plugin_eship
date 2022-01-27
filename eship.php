@@ -72,4 +72,6 @@ function run_eship_master() {
  * */
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     run_eship_master();
+} else {
+    echo "necesitas tener instalado woo";
 }

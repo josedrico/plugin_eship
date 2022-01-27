@@ -125,8 +125,9 @@ class ESHIP_Model {
                 );
 
                 if($result > 0){
-                    $result = TRUE;
+                    $result = $this->db->last_query();
                 }
+                $this->db->flush();
             }
         }
 

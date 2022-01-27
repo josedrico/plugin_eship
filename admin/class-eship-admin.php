@@ -290,7 +290,7 @@
             if (!is_null($result)) {
                 $response = array(
                     'result'    => 'Done!',
-                    'redirect'  => TRUE,
+                    'redirect'  => FALSE,
                     'error'     => FALSE,
                     'code'      => 201
                 );
