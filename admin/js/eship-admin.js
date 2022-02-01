@@ -4,6 +4,17 @@
     modalUpdateToken();
     selectElement();
     clickGetShipment();
+    closeReload();
+
+    function closeReload() {
+        $('#show-pdf-eship').click(function () {
+            location.reload();
+        });
+
+        $('#show-pdf-eship-top').click(function () {
+            location.reload();
+        })
+    }
 
     function bsTb(config, data) {
         $(`${config.id}`).bootstrapTable({
@@ -52,58 +63,6 @@
         return html;
     }
 
-    function clickGetShipment() {
-        $('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
-            e.preventDefault();
-            let url = $('#app-eship-url').data('url');
-            let data = $(this).data('shipment');
-            console.log(url, data);
-
-            if (data != '') {
-                $.ajax({
-                    method: 'POST',
-                    url: eshipData.url,
-                    data: {
-                        action: 'get_shipment_eship',
-                        nonce: eshipData.security,
-                        rateId: data,
-                        typeAction: 'create_shipment'
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log(data);
-                        
-                        let newObj = [];
-
-                        if (data.result.status != 'ERROR') {
-                            $('#spinner-load-data').remove();
-                            $('#shipmentModalToggleLabel2').html(`Your Label`);
-                            $('.create-shipment').html(createPdfIframe(data.result));
-                        } else {
-                            $('#spinner-load-data').remove();
-                            $('#shipmentModalToggleLabel2').html(`ERROR`);
-                            $.each(data.result.messages, function (index, object) {
-                                newObj.push({
-                                    source: `${imgCarriersPacks({
-                                        src: object.provider_image_75,//(object.source).toLowerCase(),
-                                        url
-                                    })}`,
-                                    text: object.text
-                                });
-                            });
-                            $('#pack-eship-messages').show();
-                            bsTb({
-                                id: '#pack-eship-messages',
-                                search: false,
-                                pagination: false
-                            }, newObj);
-                        }
-                    }
-                });
-            }
-        });
-    }
-
     function modalInsertToken() {
         $('#tokenEshipModalBtn').on('click', function (e) {
             //e.preventDefault();
@@ -115,20 +74,20 @@
 
             $("#tokenEshipModalForm").validate({
                 rules: {
-                    apiKey: {
+                    apiKeyEship: {
                         required: true
                     },
-                    customerSecret: {
+                    customerSecretEship: {
                         required: true
                     },
-                    customerKey: {
+                    customerKeyEship: {
                         required: true
                     },
-                    phoneCompany: {
+                    phoneCompanyEship: {
                         required: true,
                         digits: true
                     },
-                    nameCompany: {
+                    nameCompanyEship: {
                         required: true
                     }
                 },
@@ -160,30 +119,35 @@
 
     function modalUpdateToken() {
         $('#updateDataEshipModalBtn').on('click', function (e) {
+            //console.log('updateDataEshipModalBtn');
             //e.preventDefault();
             let formDataToken = $('#token-input-eship').val();
             let formDataCs = $('#cs-input-eship').val();
             let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
+            let formEmailCompany = $('#email-input-eship').val();
             let user =  $('#updateDataEshipModalForm').data('user');
 
             $("#updateDataEshipModalForm").validate({
                 rules: {
-                    apiKey: {
+                    apiKeyEship: {
                         required: true
                     },
-                    customerSecret: {
+                    customerSecretEship: {
                         required: true
                     },
-                    customerKey: {
+                    customerKeyEship: {
                         required: true
                     },
-                    phoneCompany: {
+                    phoneCompanyEship: {
                         required: true,
                         digits: true
                     },
-                    nameCompany: {
+                    nameCompanyEship: {
+                        required: true
+                    },
+                    emailCompanyEship: {
                         required: true
                     }
                 },
@@ -203,6 +167,7 @@
                             ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
+                            email: formEmailCompany,
                             user,
                             typeAction: 'update_token'
                         },
@@ -233,10 +198,8 @@
                     $('#loader-light').hide()
                 }
             },
-            error: function (d, x, v) {
-                console.error('d', d);
-                console.error('x', x);
-                console.error('v', v);
+            error: function (error) {
+                console.log(error);
             }
         });
     }
@@ -284,7 +247,7 @@
         $('button[href="#dashBoardEshipModalToggle"]').on('click', function (e) {
             e.preventDefault();
             let order =  $('button[href="#dashBoardEshipModalToggle"]').data('order');
-            console.log(order);
+            //console.log(order);
             $.ajax({
                 method: 'POST',
                 url:  eshipData.url,
@@ -296,7 +259,7 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
                         $('#orders-list').append(messageApi({
@@ -304,8 +267,8 @@
                         }));
                     } else {
                         if (data.result.object_id != 'undefined') {
-                            console.log(data.result.object_id);
-                            eshipBtTbQuotation(data.result);
+                            //console.log(data.result.object_id);
+                            eshipBtTbQuotation(data.result, data.order);
                         }
                     }
                 },
@@ -318,7 +281,61 @@
         });
     }
 
-    function eshipBtTbQuotation(result) {
+    function clickGetShipment() {
+        $('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
+            e.preventDefault();
+            let url = $('#app-eship-url').data('url');
+            let data = $(this).data('shipment');
+            let order = $(this).data('order');
+            console.log(url, data);
+
+            if (data != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: eshipData.url,
+                    data: {
+                        action: 'get_shipment_eship',
+                        nonce: eshipData.security,
+                        rateId: data,
+                        order,
+                        typeAction: 'create_shipment'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data);
+
+                        let newObj = [];
+
+                        if (data.result.status != 'ERROR') {
+                            $('#spinner-load-data').remove();
+                            $('#shipmentModalToggleLabel2').html(`Your Label`);
+                            $('.create-shipment').html(createPdfIframe(data.result));
+                        } else {
+                            $('#spinner-load-data').remove();
+                            $('#shipmentModalToggleLabel2').html(`ERROR`);
+                            $.each(data.result.messages, function (index, object) {
+                                newObj.push({
+                                    source: `${imgCarriersPacks({
+                                        src: object.provider_image_75,//(object.source).toLowerCase(),
+                                        url
+                                    })}`,
+                                    text: object.text
+                                });
+                            });
+                            $('#pack-eship-messages').show();
+                            bsTb({
+                                id: '#pack-eship-messages',
+                                search: false,
+                                pagination: false
+                            }, newObj);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function eshipBtTbQuotation(result, order) {
         $('#spinner-load-data-q').remove();
         let url = $('#app-eship-url').data('url');
         let newMessage = [];
@@ -333,7 +350,7 @@
             if (result.rates != 'undefined') {
                 //console.log('result', result.rates);
                 $.each(result.rates, function (index, object) {
-                    console.log(object);
+                    //console.log(object);
                     let heigth = '';
                     let width = 'w-25'
                     if (object.provider == 'UPS') {
@@ -350,7 +367,7 @@
                         service: `<strong>${object.provider}</strong> ${object.servicelevel.name}`,
                         estimatedDelivery	: `${object.days} days`,
                         amount	: `${object.amount} ${object.currency}`,
-                        action	: `<button name="shipment" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
+                        action	: `<button name="shipment" data-order="${order}" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
                     })
 
                 });
@@ -368,8 +385,7 @@
                 $('#custom-eship-messages').show();
                 $.each( result.messages, function (i,o) {
                     $('#custom-eship-messages').append(messageApi({
-                        margin: 'mt-1',
-                        bg: 'alert-secondary',
+                        bg: 'alert-white',
                         svg: '<span class="dashicons dashicons-info-outline"></span>',
                         Error: `<strong>${o.source}</strong> - ${o.text}`
                     }));
