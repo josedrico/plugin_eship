@@ -112,6 +112,65 @@ class ESHIP_Woocommerce_Api {
 
     }
 
+    public function setOrderApi($id, $data, $type = FALSE)
+    {
+        try {
+            switch ($type) {
+                case 'meta_data_object_id':
+                    $data = array(
+                        'meta_data' => array(
+                            array(
+                                'key'    => 'object_id',
+                                'value'  => $data['object_id'],
+                            )
+                        )
+                    );
+                    break;
+                case 'meta_data_tracking_number':
+                    $data = array(
+                        'meta_data' => array(
+                            array(
+                                'key'    => 'tracking_number',
+                                'value'  => $data['tracking_number'],
+                            )
+                        )
+                    );
+                    break;
+                case 'meta_data_provider':
+                    $data = array(
+                        'meta_data' => array(
+                            array(
+                                'key'    => 'provider',
+                                'value'  => $data['provider'],
+                            )
+                        )
+                    );
+                    break;
+                case 'meta_data_tracking_link':
+                    $data = array(
+                        'meta_data' => array(
+                            array(
+                                'key'    => 'tracking_link',
+                                'value'  => $data['tracking_link'],
+                            )
+                        )
+                    );
+                    break;
+                default:
+                    $data = FALSE;
+                    break;
+            }
+            return $this->woocommerce->put('orders/' . $id, $data);
+
+        } catch (\Exception $e) {
+            return  array(
+                'error'     => TRUE,
+                'result'    => $e->getMessage()
+            );
+        }
+
+    }
+
     public function getCountryApi($string)
     {
         $iso    = explode(':', $string);
