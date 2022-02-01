@@ -16,6 +16,11 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+#eship-card {
+    border: none !important;
+    width: 100%;
+}
+
 .w-10 {
     width: 10% !important;
 }
