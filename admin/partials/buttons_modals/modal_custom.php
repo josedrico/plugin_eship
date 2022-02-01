@@ -61,7 +61,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="shipmentModalToggleLabel2">Tracking Number: <span id="tracking-number"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button id="show-pdf-eship-top" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <div id="spinner-load-data" class="d-flex justify-content-center">
@@ -82,7 +82,7 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button id="show-pdf-eship" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <!--
                 <button class="btn btn-secondary" data-bs-target="#dashBoardEshipModalToggle" data-bs-toggle="modal">Back</button>
                 -->
