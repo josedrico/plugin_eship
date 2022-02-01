@@ -33,6 +33,7 @@
         private $version;
         private $eship_quotation;
         private $eship_model;
+        private $build_menupage;
 
         public function __construct( $plugin_name, $version ) 
         {
@@ -40,6 +41,7 @@
             $this->version          = $version;
             $this->eship_quotation  = new ESHIP_Quotation();
             $this->eship_model      = new ESHIP_Model();
+            $this->build_menupage = new ESHIP_Build_Menupage();
         }
 
         public function enqueue_styles($hook) 
@@ -105,6 +107,39 @@
             );
         }
 
+        public function add_menu() {
+            $this->build_menupage->add_menu_page(
+                'ESHIP',
+                'eship',
+                'manage_options',
+                'eship_dashboard',
+                [ $this, 'eship_dashboard' ],
+                "",
+                25
+            );
+
+            $this->build_menupage->run();
+        }
+
+        public function eship_dashboard()
+        {
+            $config_data = array();
+            if ($user_eship = $this->eship_model->get_data_user_eship()) {
+                $config_data = array(
+                    'btn' => 'updateDataEshipModalBtn',
+                    'form' => 'updateDataEshipModalForm',
+                );
+            } else {
+                $config_data = array(
+                    'btn'   => 'tokenEshipModalBtn',
+                    'form'  => 'tokenEshipModalForm',
+                );
+            }
+
+            $img_title = ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png';
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/dashboard_connection.php';
+        }
+
         public function check_data_user_eship() {
             $arr_user = $this->eship_model->get_data_user_eship();
             $message = FALSE;
@@ -145,21 +180,51 @@
 
         public function view_buttons_eship()
         {
+            $pdf_arr = array();
             if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
                 $order  = $_GET['post'];
-                //$result = $this->eship_quotation->create($order);
+                $pdf = new ESHIP_Woocommerce_Api();
+                $pdf_exist = $pdf->getOrderApi($order);
+                $check_metadata = $pdf_exist->meta_data;
+                $i = 0;
+
+                if (count($pdf_exist->meta_data) > 0) {
+                    foreach ($pdf_exist->meta_data  as $key) {
+                        if ($key->key == 'tracking_number') {
+                            $pdf_arr['tracking_number'] = $key->value;
+                            $i++;
+                        }
+
+                        if ($key->key == 'provider') {
+                            $pdf_arr['provider'] = $key->value;
+                            $i++;
+                        }
+
+                        if ($key->key == 'tracking_link') {
+                            $pdf_arr['tracking_link'] = $key->value;
+                            $i++;
+                        }
+                    }
+                }
+
+                $arr_total = array_filter(
+                    $pdf_arr,
+                    function ($var) {
+                        if (empty($var)) {
+                            return $var;
+                        }
+                    }
+                );
+
+                if (empty($arr_total)) {
+                    $modal_shipment_pdf_show = TRUE;
+                }
+
             }
 
-            $form_data              = $this->eship_model->get_data_user_eship();
-            $btn_account_ak_modal   = 'Update Data';
-            $id_api_key             = 'updateDataEshipModal';
-            $text_api_key           = 'To obtain your eShip API key, you login into your eShip account 
-                                           <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
-                                           "Settings" and click on "View your API Key".';
-            $text_title_api_key     = 'Update Data';
-            $show_btn_update        = TRUE;
-            $modal_token            = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
-            $modal_custom  = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+            $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+            $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+            $modal_shipment_pdf = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/shipment_sheet.php';
             
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
@@ -203,9 +268,31 @@
                 }
 
                 if ($result) {
+                    $woo = new ESHIP_Woocommerce_Api();
+                    $tracking_number    = FALSE;
+                    $provider           = FALSE;
+                    $tracking_link      = FALSE;
+                    if ($order) {
+                        $tracking_number = $woo->setOrderApi(
+                            $order,
+                            array('tracking_number' => $result->tracking_number),
+                            'meta_data_tracking_number'
+                        );
+                        $provider = $woo->setOrderApi(
+                            $order,
+                            array('provider' => $result->provider),
+                            'meta_data_provider'
+                        );
+                        $tracking_link = $woo->setOrderApi(
+                            $order,
+                            array('tracking_link' => $result->label_url),
+                            'meta_data_tracking_link'
+                        );
+                    }
                     $response = array(
                         'result'    => $result,
-                        'redirect'  => '?page=eship_dashboard',
+                        'tracking_link' => $tracking_link,
+                        'redirect'  => '',
                         'error'     => FALSE,
                         'code'      => 201
                     );
@@ -233,8 +320,23 @@
                 //$result = htmlentities($result);
 
                 if ($result && !(isset($result->error))) {
+                    $woo = new ESHIP_Woocommerce_Api();
+
+                    $update_order = FALSE;
+                    if ($result->object_id) {
+                        $update_order = $woo->setOrderApi(
+                            $_POST['order_id'],
+                            array(
+                                'object_id' => $result->object_id
+                            ),
+                            'meta_data_object_id'
+                        );
+                    }
+
                     $response = array(
                         'result'    => $result,
+                        'upOrder'   => $update_order,
+                        'order'     => $_POST['order_id'],
                         'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201
@@ -290,7 +392,7 @@
             if (!is_null($result)) {
                 $response = array(
                     'result'    => 'Done!',
-                    'redirect'  => FALSE,
+                    'redirect'  => TRUE,
                     'error'     => FALSE,
                     'code'      => 201
                 );
