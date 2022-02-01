@@ -96,30 +96,34 @@ class ESHIP_Model {
         return $result;
     }
 
-
     public function update_data_store_eship($data)
     {
         $result = FALSE;
         if(current_user_can('manage_options')) {
-            $adm = wp_get_current_user();
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'update_token') {
 
                 $result = $this->db->update($this->tb,
                     array(
-                        'token_eship' => $token,
-                        'consumer_key' => $ck,
-                        'consumer_secret' => $cs,
-                        'phone' => $phone,
-                        'name' => $name,
+                        'token_eship'       => sanitize_text_field($token),
+                        'consumer_key'      => sanitize_text_field($ck),
+                        'consumer_secret'   => sanitize_text_field($cs),
+                        'phone'             => sanitize_text_field($phone),
+                        'name'              => sanitize_text_field($name),
+                        'email'             => sanitize_email($email)
                         //'updated_at' => ''
                     ),
                     array(
                         'id' => $user
                     ),
                     array(
-                        '%s','%s', '%s', '%s', '%s'
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s'
                     ),
                     array('%d')
                 );
