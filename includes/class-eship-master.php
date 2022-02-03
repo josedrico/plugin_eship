@@ -129,12 +129,17 @@ class ESHIP_Master {
         $this->loader->add_action( 'add_meta_boxes', $this->eship_admin, 'add_meta_boxes_eship' );
         $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_scripts' );
-        $this->loader->add_action( 'admin_menu', $this->eship_admin, 'add_menu' );
+        $this->loader->add_action( 'admin_menu', $this->eship_admin, 'add_menu_order' );
         $this->loader->add_action( 'wp_ajax_get_quotation_data_eship', $this->eship_admin, 'get_quotation_data_eship' );
         $this->loader->add_action( 'wp_ajax_insert_token_eship', $this->eship_admin, 'insert_token_eship' );
         $this->loader->add_action( 'wp_ajax_update_token_eship', $this->eship_admin, 'update_token_eship' );
         $this->loader->add_action( 'wp_ajax_get_quotation_eship', $this->eship_admin, 'get_quotation_eship' );
+        $this->loader->add_action( 'wp_ajax_get_quotation_orders_eship', $this->eship_admin, 'get_quotation_orders_eship' );
         $this->loader->add_action( 'wp_ajax_get_shipment_eship', $this->eship_admin, 'get_shipment_eship' );
+
+        $this->loader->add_filter('bulk_actions-edit-shop_order', $this->eship_admin, 'insert_quotations_bulk_eship');
+        $this->loader->add_filter('handle_bulk_actions-edit-shop_order', $this->eship_admin, 'get_quotations_bulk_eship');
+        $this->loader->add_action( 'admin_head', $this->eship_admin, 'test' );
     }
     
     public function run()
