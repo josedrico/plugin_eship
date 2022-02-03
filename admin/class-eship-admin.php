@@ -107,18 +107,44 @@
             );
         }
 
-        public function add_menu() {
+        public function add_menu_order() {
             $this->build_menupage->add_menu_page(
                 'ESHIP',
-                'eship',
+                'eShip',
                 'manage_options',
                 'eship_dashboard',
                 [ $this, 'eship_dashboard' ],
-                "",
+                ESHIP_PLUGIN_DIR_URL . 'admin/img/plane.png',
                 25
             );
 
             $this->build_menupage->run();
+        }
+
+        public function insert_quotations_bulk_eship()
+        {
+            $actions['eship_quotations'] = __( 'Create multiple shipments', 'woocommerce' );
+            return $actions;
+        }
+
+        public  function get_quotations_bulk_eship()
+        {
+            if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
+                $count = implode(',', $_GET['post']);
+                $url = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;//$_GET['_wp_http_referer'];
+                header("Location: " . $url);
+                die();
+            }
+        }
+
+        public  function test()
+        {
+            //$orders_eship = 'hola';//$_GET;//implode(',', $_GET['post']);
+            if (isset($_GET['countEship'])) {
+                $orders_eship = $_GET['countEship'];
+            }
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/modals/modal_bulk_eship.php';
+
         }
 
         public function eship_dashboard()
@@ -181,28 +207,26 @@
         public function view_buttons_eship()
         {
             $pdf_arr = array();
+            $button_quotation_eship = 'Ship Now';
+
             if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
                 $order  = $_GET['post'];
                 $pdf = new ESHIP_Woocommerce_Api();
                 $pdf_exist = $pdf->getOrderApi($order);
                 $check_metadata = $pdf_exist->meta_data;
-                $i = 0;
 
                 if (count($pdf_exist->meta_data) > 0) {
                     foreach ($pdf_exist->meta_data  as $key) {
                         if ($key->key == 'tracking_number') {
                             $pdf_arr['tracking_number'] = $key->value;
-                            $i++;
                         }
 
                         if ($key->key == 'provider') {
                             $pdf_arr['provider'] = $key->value;
-                            $i++;
                         }
 
                         if ($key->key == 'tracking_link') {
                             $pdf_arr['tracking_link'] = $key->value;
-                            $i++;
                         }
                     }
                 }
@@ -217,9 +241,9 @@
                 );
 
                 if (empty($arr_total)) {
+                    $button_quotation_eship = 'Create Another Label';
                     $modal_shipment_pdf_show = TRUE;
                 }
-
             }
 
             $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
@@ -356,6 +380,48 @@
                     'code'      => 500
                 );
             }
+            echo json_encode($response);
+            wp_die();
+        }
+
+        public function get_quotation_orders_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $data = array();
+            if (isset($_POST['typeAction'])) {
+                $orders = (isset($_POST['orders']))? explode(',', $_POST['orders']) : FALSE;
+                if (is_array($orders)) {
+                    for ($i = 0; $i < count($orders); $i++) {
+                        $result     = $this->eship_quotation->create($orders[$i], 'date');
+                        $result     = json_decode($result);
+                        $order_woo  = new ESHIP_Woocommerce_Api();
+                        $order      = $order_woo->getOrderApi($orders[$i], 'date');
+                        $result->order_id   = $orders[$i];
+                        $new_data = new DateTime($order);
+                        $result->date_final = $new_data->format('Y-m-d');
+
+                        array_push($data, $result);
+                    }
+                    $response = array(
+                        'result'    => $data,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else {
+                    $response = array(
+                        'result'    => 'Sin ordenes',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+            } else {
+                $response = array(
+                    'result'    => 'No existe typeAction',
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
+            }
+
             echo json_encode($response);
             wp_die();
         }
