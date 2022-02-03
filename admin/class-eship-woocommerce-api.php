@@ -96,12 +96,22 @@ class ESHIP_Woocommerce_Api {
         return $this->woocommerce;
     }
 
-    public function getOrderApi($id)
+    public function getOrderApi($id, $sel = FALSE)
     {
         try {
             $order = $this->woocommerce->get('orders/' . $id);
             if (! empty($order)) {
-                return (( !empty($order) )? $order : FALSE);
+                switch ($sel) {
+                    case 'date':
+                        if(isset($order->date_modified)) {
+                            return $order->date_modified;
+                        } else {
+                            return $order->date_created;
+                        }
+
+                    default:
+                        return (( !empty($order) )? $order : FALSE);
+                }
             }
         } catch (\Exception $e) {
             return  array(
