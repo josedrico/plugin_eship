@@ -7,7 +7,7 @@
 .app-eship #custom-eship-rates,
 .app-eship .message-api,
 #shipmentModalToggle2 #pack-eship-messages,
-.app-eship #spinner-load-data-q{
+.app-eship #spinner-load-data-q {
     display: none;
 }
 
@@ -41,7 +41,9 @@
     max-width: 100% !important;
 }
 
-.app-eship .modal{
+.app-eship .modal,
+#ordersQuotationsEshipModalToggle,
+#ordersQuotationsEshipModalToggle2 {
    z-index: 100000;
 }
 
