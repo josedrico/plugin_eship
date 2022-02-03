@@ -5,6 +5,7 @@
     selectElement();
     clickGetShipment();
     closeReload();
+    modalOrders();
 
     function closeReload() {
         $('#show-pdf-eship').click(function () {
@@ -400,4 +401,117 @@
             }
         }
     }
+
+    function modalOrders(){
+
+        let url = window.location;
+        let str = url.href;
+        let segment = str.split(/countEship/i);
+        if (segment.length > 1) {
+            let modal = new bootstrap.Modal(document.getElementById('ordersQuotationsEshipModalToggle'));
+            let modalShow = document.getElementById('ordersQuotationsEshipModalToggle');
+            modal.show(modalShow);
+            let orders =  $('#ordersQuotationsEshipModalToggle').data('orders-eship');
+            if (orders != 'undefined' && orders != '') {
+                $.ajax({
+                    method: 'POST',
+                    url:  eshipData.url,
+                    data: {
+                        action: 'get_quotation_orders_eship',
+                        nonce: eshipData.security,
+                        orders,
+                        typeAction: 'add_quotation_orders'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        //console.log(data);
+                        $('#spinner-eship-orders').remove();
+
+                        let selectFun = function (data) {
+                            let html = `<select class="form-select" aria-label="Default select example" name="order${data.id}">`;
+                            html += `<option data-object-eship="${data.object_id}" selected>Open this select menu</option>`;
+                            let rates = data.rates;
+                            if (rates != 'undefined') {
+                                $.each(rates, function (i, o) {
+                                    html += `<option data-object-eship="${data.object_id}" value="${o.rate_id}">${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
+                                });
+                            }
+                            html += `</select>`;
+
+                            return html;
+                        };
+
+                        if (! data.error) {
+                            let newArr = [];
+                            $.each(data.result, function (i,o) {
+                                console.log(i, o);
+                                let provArr = [];
+                                $.each(o.rates, function (index, prov) {
+                                    //console.log(prov.provider);
+                                    provArr.push(prov.provider);
+                                });
+
+                                newArr.push({
+                                    order: `${o.order_id} (${o.date_final})`,
+                                    ship: `${(provArr.length > 0)? provArr.join(' / ') : provArr.join('')}`,
+                                    services: `${selectFun({
+                                        id: o.object_id,
+                                        rates: o.rates
+                                    })}`,
+                                });
+                            });
+
+                            console.log(newArr);
+                            $('#orders-multiple-eship').show();
+                            bsTb({
+                                    id: '#orders-multiple-eship',
+                                    search: false,
+                                    pagination: false
+                                },
+                                newArr
+                            );
+                        }
+                    },
+                    error: function (d, x, v) {
+                        console.error('d', d);
+                        console.error('x', x);
+                        console.error('v', v);
+                    }
+                });
+            }
+            /*
+            $.ajax({
+                method: 'POST',
+                url:  eshipData.url,
+                data: {
+                    action: 'get_quotation_eship',
+                    nonce: eshipData.security,
+                    order_id: order,
+                    typeAction: 'add_quotation'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //console.log(data);
+                    $('#spinner-load-data-q').remove();
+                    if (data.error) {
+                        $('#orders-list').append(messageApi({
+                            Error: data.result
+                        }));
+                    } else {
+                        if (data.result.object_id != 'undefined') {
+                            //console.log(data.result.object_id);
+                            eshipBtTbQuotation(data.result, data.order);
+                        }
+                    }
+                },
+                error: function (d, x, v) {
+                    console.error('d', d);
+                    console.error('x', x);
+                    console.error('v', v);
+                }
+            });
+             */
+        }
+    }
+
 })(jQuery);
