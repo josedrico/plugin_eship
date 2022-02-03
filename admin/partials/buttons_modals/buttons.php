@@ -9,7 +9,8 @@
         <div class="row">
             <div class="col-12">
                 <button type="button" class="page-title-action w-100 mt-1" data-bs-toggle="modal" href="#dashBoardEshipModalToggle" role="button" data-order="<?php echo (isset($order))? $order : FALSE;?>">
-                    Ship Now <i class="fas fa-shipping-fast"></i>
+                    <?php echo (isset($button_quotation_eship))? $button_quotation_eship : '';?>
+                    <i class="fas fa-shipping-fast"></i>
                 </button>
             </div>
         </div>
