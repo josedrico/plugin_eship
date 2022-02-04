@@ -16,20 +16,31 @@ use EshipAdmin\ESHIP_Api;
 class ESHIP_Shipment {
     private $rate_id;
     private $eship_api;
+    private $multiple;
 
-    public function __construct($rate_id)
+    public function __construct($rate_id, $multiple = FALSE)
     {
-        $this->eship_api    = new ESHIP_Api();
-        $this->rate_id      = $rate_id;
+        $this->eship_api = new ESHIP_Api();
+        $this->rate_id   = $rate_id;
+        $this->multiple  = $multiple;
     }
 
     public function getShipment()
     {
         try {
-            $json       = json_encode(array(
+            $uri = 'shipment';
+            $json = json_encode(array(
                 'rate'  => $this->rate_id
             ));
-            $response   = wp_remote_retrieve_body($this->eship_api->post('shipment', $json));
+
+            if ($this->multiple) {
+                $uri = 'batch_shipment';
+                $json = json_encode(array(
+                    'rates' => $this->rate_id
+                ));
+            }
+
+            $response = $json;//wp_remote_retrieve_body($this->eship_api->post($uri, $json));
         } catch (\Exception $e) {
             $response = array(
                 'error'     => TRUE,
