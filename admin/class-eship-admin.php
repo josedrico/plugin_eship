@@ -426,6 +426,53 @@
             wp_die();
         }
 
+        public function get_shipments_orders_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $response = array();
+            $shipments = array();
+
+            if(current_user_can('manage_options')) {
+                $result = FALSE;
+                extract($_POST, EXTR_OVERWRITE);
+
+                if($typeAction == 'add_shipments') {
+                    if (! empty($content)) {
+                        for ($i = 0; $i < count($content); $i++) {
+                            $order = explode("_", $content[$i]['value']);
+                            //$result     = $shipment->getShipment();
+                            //$result     = json_decode($result);
+                            array_push($shipments, $order[0]);
+                        }
+                        $shipment = new ESHIP_Shipment($shipments, TRUE);
+                        $res = $shipment->getShipment();
+                        $result = json_decode($res);
+                    }
+
+                    //$result = $shipments;//json_decode($shipments);
+                }
+
+                if ($result) {
+                    $response = array(
+                        'result'    => $res,
+                        'redirect'  => '',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No se generaron tus guías',
+                        'redirect'  => FALSE,
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
+        }
+
         public function insert_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
