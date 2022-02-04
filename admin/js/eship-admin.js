@@ -5,7 +5,8 @@
     selectElement();
     clickGetShipment();
     closeReload();
-    modalOrders();
+    modalOrdersEship();
+    modalShipmentEship();
 
     function closeReload() {
         $('#show-pdf-eship').click(function () {
@@ -402,7 +403,7 @@
         }
     }
 
-    function modalOrders(){
+    function modalOrdersEship(){
 
         let url = window.location;
         let str = url.href;
@@ -428,12 +429,12 @@
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
-                            let html = `<select class="form-select" aria-label="Default select example" name="order${data.id}">`;
-                            html += `<option data-object-eship="${data.object_id}" selected>Open this select menu</option>`;
+                            let html = `<select class="form-select" aria-label="Select to carrier" name="order${data.increment}">`;
+                            html += `<option data-object-eship="" selected>Open this select menu</option>`;
                             let rates = data.rates;
                             if (rates != 'undefined') {
                                 $.each(rates, function (i, o) {
-                                    html += `<option data-object-eship="${data.object_id}" value="${o.rate_id}">${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
+                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}">${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
                                 });
                             }
                             html += `</select>`;
@@ -453,10 +454,12 @@
 
                                 newArr.push({
                                     order: `${o.order_id} (${o.date_final})`,
-                                    ship: `${(provArr.length > 0)? provArr.join(' / ') : provArr.join('')}`,
+                                    ship: 'Not specified',//`${(provArr.length > 0)? provArr.join(' / ') : provArr.join('')}`,
                                     services: `${selectFun({
+                                        increment: i,
                                         id: o.object_id,
-                                        rates: o.rates
+                                        rates: o.rates,
+                                        orderId: o.order_id
                                     })}`,
                                 });
                             });
@@ -479,39 +482,64 @@
                     }
                 });
             }
-            /*
-            $.ajax({
-                method: 'POST',
-                url:  eshipData.url,
-                data: {
-                    action: 'get_quotation_eship',
-                    nonce: eshipData.security,
-                    order_id: order,
-                    typeAction: 'add_quotation'
-                },
-                dataType: 'json',
-                success: function (data) {
-                    //console.log(data);
-                    $('#spinner-load-data-q').remove();
-                    if (data.error) {
-                        $('#orders-list').append(messageApi({
-                            Error: data.result
-                        }));
-                    } else {
-                        if (data.result.object_id != 'undefined') {
-                            //console.log(data.result.object_id);
-                            eshipBtTbQuotation(data.result, data.order);
-                        }
-                    }
-                },
-                error: function (d, x, v) {
-                    console.error('d', d);
-                    console.error('x', x);
-                    console.error('v', v);
-                }
-            });
-             */
         }
+    }
+
+    function modalShipmentEship(){
+        $('#ordersQuotationsEshipModalToggleBtn').on('click', function () {
+            let select = $('#ordersModalForms').serializeArray();
+            console.log(select);
+            if (select.length > 0) {
+                $.ajax({
+                    method: 'POST',
+                    url:  eshipData.url,
+                    data: {
+                        action: 'get_shipments_orders_eship',
+                        nonce: eshipData.security,
+                        content: select,
+                        typeAction: 'add_shipments'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log(data.result);
+                        $('#spinner-eship-orders-pdf').remove();
+                        if (! data.error && data.result.status == 'SUCCESS'){
+                            let newArr = [];
+                            let fulfillment = data.result.batch_labels;
+                            $.each(fulfillment, function (i,o) {
+                                console.log('o', o);
+                                if (o.status == 'SUCCESS') {
+                                    newArr.push({
+                                        order: o.fulfillment.order_num,
+                                        client: 'Not specified',
+                                        services: o.provider,
+                                        trackingNumber: `<a href="${o.tracking_url_provider}" target="_blank">${o.tracking_number}</a>`,
+                                        tracking: `<a class="page-title-action btn btn-light" href="${o.label_url}" target="_blank">Label <i class="fas fa-file-pdf"></i></a>`,
+                                        //label_url
+                                        //tracking_url_provider
+                                    });
+                                }
+                            });
+                            //orders-multiple-eship-pdf
+                            $('#orders-multiple-eship-pdf').show();
+                            $('#ordersMultipleLabels').append(`<a class="btn btn-secondary" target="_blank" href="${data.batch_labels_url}">Download</a>`);
+                            bsTb({
+                                    id: '#orders-multiple-eship-pdf',
+                                    search: false,
+                                    pagination: false
+                                },
+                                newArr
+                            );
+                        }
+                    },
+                    error: function (d, x, v) {
+                        console.error('d', d);
+                        console.error('x', x);
+                        console.error('v', v);
+                    }
+                });
+            }
+        });
     }
 
 })(jQuery);

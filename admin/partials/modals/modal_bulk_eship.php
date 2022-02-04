@@ -6,6 +6,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <form action="" id="ordersModalForms">
                 <div id="spinner-eship-orders" class="d-flex justify-content-center">
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
@@ -20,9 +21,10 @@
                     </tr>
                     </thead>
                 </table>
+                </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#ordersQuotationsEshipModalToggle2" data-bs-toggle="modal">
+                <button id="ordersQuotationsEshipModalToggleBtn" class="btn btn-primary" data-bs-target="#ordersQuotationsEshipModalToggle2" data-bs-toggle="modal">
                     Create Shipments
                 </button>
             </div>
@@ -55,9 +57,8 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#ordersQuotationsEshipModalToggle" data-bs-toggle="modal">
-                    Close
-                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <span id="ordersMultipleLabels"></span>
             </div>
         </div>
     </div>
