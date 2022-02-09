@@ -130,6 +130,7 @@
                                         <th data-field="unit_dim">Unit</th>
                                         <th data-field="weight_w">weight</th>
                                         <th data-field="unit_w">Unit</th>
+                                        <th data-field="status">Status</th>
                                         <th data-field="actions">Actions</th>
                                     </tr>
                                     </thead>
