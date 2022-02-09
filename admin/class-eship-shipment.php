@@ -29,18 +29,20 @@ class ESHIP_Shipment {
     {
         try {
             $uri = 'shipment';
+            $timeout = 50;
             $json = json_encode(array(
                 'rate'  => $this->rate_id
             ));
 
             if ($this->multiple) {
                 $uri = 'batch_shipment';
+                $timeout = 100;
                 $json = json_encode(array(
                     'rates' => $this->rate_id
                 ));
             }
 
-            $response = $json;//wp_remote_retrieve_body($this->eship_api->post($uri, $json));
+            $response = wp_remote_retrieve_body($this->eship_api->post($uri, $json, $timeout));
         } catch (\Exception $e) {
             $response = array(
                 'error'     => TRUE,
