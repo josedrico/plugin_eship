@@ -41,7 +41,7 @@
             $this->version          = $version;
             $this->eship_quotation  = new ESHIP_Quotation();
             $this->eship_model      = new ESHIP_Model();
-            $this->build_menupage = new ESHIP_Build_Menupage();
+            $this->build_menupage   = new ESHIP_Build_Menupage();
         }
 
         public function enqueue_styles($hook) 
@@ -130,14 +130,14 @@
         public  function get_quotations_bulk_eship()
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
-                $count = implode(',', $_GET['post']);
-                $url = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;//$_GET['_wp_http_referer'];
+                $count  = implode(',', $_GET['post']);
+                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;//$_GET['_wp_http_referer'];
                 header("Location: " . $url);
                 die();
             }
         }
 
-        public  function test()
+        public  function search_data_eship()
         {
             //$orders_eship = 'hola';//$_GET;//implode(',', $_GET['post']);
             if (isset($_GET['countEship'])) {
@@ -206,16 +206,16 @@
 
         public function view_buttons_eship()
         {
-            $pdf_arr = array();
+            $pdf_arr                = array();
             $button_quotation_eship = 'Ship Now';
 
             if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                $order  = $_GET['post'];
-                $pdf = new ESHIP_Woocommerce_Api();
-                $pdf_exist = $pdf->getOrderApi($order);
+                $order          = $_GET['post'];
+                $pdf            = new ESHIP_Woocommerce_Api();
+                $pdf_exist      = $pdf->getOrderApi($order);
                 $check_metadata = $pdf_exist->meta_data;
 
-                if (count($pdf_exist->meta_data) > 0) {
+                if (! empty($pdf_exist->meta_data) && count($pdf_exist->meta_data) > 0) {
                     foreach ($pdf_exist->meta_data  as $key) {
                         if ($key->key == 'tracking_number') {
                             $pdf_arr['tracking_number'] = $key->value;
@@ -241,8 +241,8 @@
                 );
 
                 if (empty($arr_total)) {
-                    $button_quotation_eship = 'Create Another Label';
-                    $modal_shipment_pdf_show = TRUE;
+                    $button_quotation_eship     = 'Create Another Label';
+                    $modal_shipment_pdf_show    = TRUE;
                 }
             }
 
@@ -255,21 +255,21 @@
 
         public function view_register_eship()
         {
-            $error_eship = $this->check_data_user_eship();
-            $text_modal_ak = 'Connect to ESHIP';
-            $text_title_api_key = 'Register API Key';
+            $error_eship            = $this->check_data_user_eship();
+            $text_modal_ak          = 'Connect to ESHIP';
+            $text_title_api_key     = 'Register API Key';
             $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
                              <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
                              "Settings" and click on "View your API Key".';
-            $id_api_key = 'tokenEshipModal';
-            $btn_account_ak_modal = 'Register API Key';
-            $title_eship_account = 'I do not have an account of ESHIP';
-            $text_eship_account = '';
-            $btn_account_ak = 'I have ESHIP account';
-            $btn_account_ak_text = '';
-            $btn_account = 'Register Now';
-            $btn_account_link = 'https://app.myeship.co/en/login';
-            $modal_token =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+            $id_api_key             = 'tokenEshipModal';
+            $btn_account_ak_modal   = 'Register API Key';
+            $title_eship_account    = 'I do not have an account of ESHIP';
+            $text_eship_account     = '';
+            $btn_account_ak         = 'I have ESHIP account';
+            $btn_account_ak_text    = '';
+            $btn_account            = 'Register Now';
+            $btn_account_link       = 'https://app.myeship.co/en/login';
+            $modal_token            =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
@@ -344,9 +344,8 @@
                 //$result = htmlentities($result);
 
                 if ($result && !(isset($result->error))) {
-                    $woo = new ESHIP_Woocommerce_Api();
-
-                    $update_order = FALSE;
+                    $woo            = new ESHIP_Woocommerce_Api();
+                    $update_order   = FALSE;
                     if ($result->object_id) {
                         $update_order = $woo->setOrderApi(
                             $_POST['order_id'],
@@ -454,14 +453,15 @@
 
                 if ($result) {
                     $response = array(
-                        'result'    => $res,
-                        'redirect'  => '',
+                        'result'    => $result,
+                        'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201
                     );
                 } else  {
                     $response = array(
                         'result'    => 'No se generaron tus guías',
+                        'res'       => $res,
                         'redirect'  => FALSE,
                         'error'     => TRUE,
                         'code'      => 404
@@ -512,6 +512,72 @@
             } else  {
                 $response = array(
                     'result'    => 'No updated',
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
+            }
+
+            echo json_encode($response);
+            wp_die();
+        }
+
+        public function get_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->get_dimensions_eship();
+            $response = array(
+                'result'    => $result,
+                'error'     => TRUE,
+                'code'      => 200
+            );
+
+            echo json_encode($response);
+            wp_die();
+        }
+
+        public function insert_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->insert_dimensions_eship($_POST);
+
+            if ($result) {
+                $response = array(
+                    'result'    => 'Exito',
+                    'res'       => $result,
+                    'redirect'  => FALSE,
+                    'error'     => FALSE,
+                    'code'      => 201
+                );
+            } else  {
+                $response = array(
+                    'result'    => 'Error',
+                    'res'       => $result,
+                    'error'     => TRUE,
+                    'code'      => 404
+                );
+            }
+
+            echo json_encode($response);
+            wp_die();
+        }
+
+        public function update_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $_POST;//$this->eship_model->update_data_store_eship($_POST);
+
+            if (!is_null($result)) {
+                $response = array(
+                    'result'    => 'Done!',
+                    'res'       => $result,
+                    'redirect'  => TRUE,
+                    'error'     => FALSE,
+                    'code'      => 201
+                );
+            } else  {
+                $response = array(
+                    'result'    => 'No updated',
+                    'res'       => $result,
                     'error'     => TRUE,
                     'code'      => 404
                 );
