@@ -74,5 +74,12 @@ function run_eship_master() {
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     run_eship_master();
 } else {
-    echo "necesitas tener instalado woo";
+    function woo_admin_notice__error() {
+        $class = 'notice notice-error';
+        $message = __( 'Don`t have woocommerce, it is necesary to ESHIP plugin!', 'sample-text.txt-domain' );
+
+        printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+    }
+    add_action( 'admin_notices', 'woo_admin_notice__error' );
+
 }
