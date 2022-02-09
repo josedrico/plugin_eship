@@ -8,7 +8,6 @@ class ESHIP_Model {
     {
         global $wpdb;
         $this->db = $wpdb;
-        $this->tb = ESHIP_TB;
     }
 
     public function get_data_user_eship($show_data = FALSE)
@@ -77,7 +76,8 @@ class ESHIP_Model {
                     'consumer_secret'   => $cs,
                     'consumer_key'      => $ck,
                     'name'              => $name,
-                    'phone'             => $phone
+                    'phone'             => $phone,
+                    'dimensions'        => $dimensions
                 ];
 
                 $format = [
@@ -86,7 +86,8 @@ class ESHIP_Model {
                     "%s",
                     "%s",
                     "%s",
-                    "%s"
+                    "%s",
+                    "%d"
                 ];
                 $result = $this->db->insert(ESHIP_TB, $columns, $format);
 
@@ -104,7 +105,97 @@ class ESHIP_Model {
 
             if ($typeAction == 'update_token') {
 
-                $result = $this->db->update($this->tb,
+                $result = $this->db->update(ESHIP_TB_DIM,
+                    array(
+                        'token_eship'       => sanitize_text_field($token),
+                        'consumer_key'      => sanitize_text_field($ck),
+                        'consumer_secret'   => sanitize_text_field($cs),
+                        'phone'             => sanitize_text_field($phone),
+                        'name'              => sanitize_text_field($name),
+                        'email'             => sanitize_email($email),
+                        'dimensions'        => sanitize_text_field($dimensions)
+                    ),
+                    array(
+                        'id' => $user
+                    ),
+                    array(
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s',
+                        '%s'
+                    ),
+                    array('%d')
+                );
+
+                if($result > 0){
+                    $result = $this->db->last_query();
+                }
+                $this->db->flush();
+            }
+        }
+
+        return $result;
+    }
+
+    public function get_dimensions_eship()
+    {
+        $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB_DIM . ";", OBJECT );
+
+        if (isset($results) && (count($results) > 0)) {
+            return $results;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function insert_dimensions_eship($data)
+    {
+        $result = FALSE;
+        if(current_user_can('manage_options')) {
+            extract($data, EXTR_OVERWRITE);
+
+            if ($typeAction == 'add_dimensions') {
+                $columns = [
+                    'name'          => $aliasEship,
+                    'length_dim'    => (float)$lengthEship,
+                    'width_dim'     => (float)$widthEship,
+                    'height_dim'    => (float)$heightEship,
+                    'unit_dim'      => $unitDimensionsEship,
+                    'weight_w'      => (float)$weightEship,
+                    'unit_w'        => $unitWeigthEship,
+                    'status'        => ($statusEship == 'true')? 1 : 0,
+                ];
+
+                $format = [
+                    "%s",
+                    "%f",
+                    "%f",
+                    "%f",
+                    "%s",
+                    "%f",
+                    "%s",
+                    "%d",
+                ];
+                $result = $this->db->insert(ESHIP_TB_DIM, $columns, $format);
+
+            }
+        }
+
+        return $result;
+    }
+
+    public function update_dimension_eship($data)
+    {
+        $result = FALSE;
+        if(current_user_can('manage_options')) {
+            extract($data, EXTR_OVERWRITE);
+
+            if ($typeAction == 'update_token') {
+
+                $result = $this->db->update(ESHIP_TB_DIM,
                     array(
                         'token_eship'       => sanitize_text_field($token),
                         'consumer_key'      => sanitize_text_field($ck),
