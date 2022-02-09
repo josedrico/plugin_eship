@@ -57,8 +57,18 @@
              */
             wp_enqueue_style( 'eship_bootstrap_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap/css/bootstrap.min.css', array(), '5.1.3', '' );
 
+            /**
+             * Framework Fontawesome
+             * https://fontawesome.com/
+             * Fontawesome
+             */
             wp_enqueue_style( 'eship_fontawesome_free_css', ESHIP_PLUGIN_DIR_URL . 'helpers/fontawesome-free-5.15.4-web/css/all.min.css', array(), '5.15.4', '' );
 
+            /**
+             * Library Bootstrap Table
+             * https://bootstrap-table.com/
+             * Fontawesome
+             */
             wp_enqueue_style( 'eship_bootstrap_table_admin_css', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/css/bootstrap-table.min.css', array(), '1.19.1', '' );
 
 
@@ -114,7 +124,7 @@
                 'manage_options',
                 'eship_dashboard',
                 [ $this, 'eship_dashboard' ],
-                'none',//ESHIP_PLUGIN_DIR_URL . 'admin/img/plane.png',
+                'none',
                 25
             );
 
@@ -123,7 +133,7 @@
 
         public function insert_quotations_bulk_eship()
         {
-            $actions['eship_quotations'] = __( 'Create multiple shipments', 'woocommerce' );
+            $actions['eship_quotations'] = 'Create multiple shipments';
             return $actions;
         }
 
@@ -131,7 +141,7 @@
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
                 $count  = implode(',', $_GET['post']);
-                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;//$_GET['_wp_http_referer'];
+                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
                 header("Location: " . $url);
                 die();
             }
@@ -139,7 +149,6 @@
 
         public  function search_data_eship()
         {
-            //$orders_eship = 'hola';//$_GET;//implode(',', $_GET['post']);
             if (isset($_GET['countEship'])) {
                 $orders_eship = $_GET['countEship'];
             }
@@ -341,7 +350,6 @@
             if (isset($_POST['order_id'])) {
                 $result = $this->eship_quotation->create($_POST['order_id']);
                 $result = json_decode($result);
-                //$result = htmlentities($result);
 
                 if ($result && !(isset($result->error))) {
                     $woo            = new ESHIP_Woocommerce_Api();
@@ -439,16 +447,12 @@
                     if (! empty($content)) {
                         for ($i = 0; $i < count($content); $i++) {
                             $order = explode("_", $content[$i]['value']);
-                            //$result     = $shipment->getShipment();
-                            //$result     = json_decode($result);
                             array_push($shipments, $order[0]);
                         }
                         $shipment = new ESHIP_Shipment($shipments, TRUE);
                         $res = $shipment->getShipment();
                         $result = json_decode($res);
                     }
-
-                    //$result = $shipments;//json_decode($shipments);
                 }
 
                 if ($result) {
@@ -525,11 +529,22 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
             $result = $this->eship_model->get_dimensions_eship();
-            $response = array(
-                'result'    => $result,
-                'error'     => TRUE,
-                'code'      => 200
-            );
+            if ($result) {
+                $response = array(
+                    'result'    => $result,
+                    'message'   => 'Done!',
+                    'error'     => FALSE,
+                    //'redirect'  => TRUE,
+                    'code'      => 200
+                );
+            } else {
+                $response = array(
+                    'result'    => $result,
+                    'error'     => TRUE,
+                    'message'   => 'No data!',
+                    'code'      => 200
+                );
+            }
 
             echo json_encode($response);
             wp_die();
