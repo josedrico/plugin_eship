@@ -37,7 +37,7 @@ class ESHIP_Master {
         $this->load_class();
         $this->load_instances();
         $this->set_language();
-        $this->definir_admin_hooks();
+        $this->defined_admin_hooks();
         
     }
     
@@ -45,32 +45,32 @@ class ESHIP_Master {
     {
 
         /**
-		 * La clase responsable de iterar las acciones y filtros del núcleo del plugin.
+		 * Kernel load filters, actions and hooks
 		 */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-loader.php';
 
         /**
-		 * La clase responsable de definir la funcionalidad de la
-         * internacionalización del plugin
+		 * Class to load language
 		 */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-i18n.php';        
         
         /**
-		 * La clase responsable de registrar menús y submenús
-         * en el área de administración
+		 * Class to build menupage
 		 */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-build-menupage.php';
 
         /**
-         * Clase de add meta box
+         * Class add meta box
          */
         require_once ESHIP_PLUGIN_DIR_PATH . 'includes/class-eship-build-add-meta-box.php';
-        
+
+        /**
+         * Class that defined alert messages
+         */
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-admin-notices.php';
 
         /**
-         * La clase responsable del woocommerce api
-         * área de administración
+         * Classes to work witdth API REST Woocommerce
          */
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/HttpClient/BasicAuth.php";
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/HttpClient/OAuth.php";
@@ -82,26 +82,24 @@ class ESHIP_Master {
         require_once ESHIP_PLUGIN_DIR_PATH . "helpers/wc-api/src/WooCommerce/Client.php";
 
         /**
-         * Consulta a base de datos
+         * Model to database
          */
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-model.php';
 
         /**
-         * Conexiones y configuraciones de las a
-         * API
+         * Classes to consume API`s woocommerce and ESHIP
          */
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-woocommerce-api.php';
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-api.php';
 
         /**
-         * Configuraciones para consultas API´s
+         * Resources to endpoints ESHIP API REST
          */
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-quotation.php';
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-shipment.php';
 
         /**
-		 * La clase responsable de definir todas las acciones en el
-         * área de administración
+		 * Class to defined logic plugin
 		 */
         require_once ESHIP_PLUGIN_DIR_PATH . 'admin/class-eship-admin.php'; 
         
@@ -109,9 +107,8 @@ class ESHIP_Master {
     
     private function set_language()
     {
-        
-        //$eship_i18n = new ESHIP_i18n();
-        //  $this->loader->add_action( 'plugins_loaded', $eship_i18n, 'load_plugin_textdomain' );        
+        $eship_i18n = new ESHIP_i18n();
+        $this->loader->add_action( 'plugins_loaded', $eship_i18n, 'load_plugin_textdomain' );
         
     }
     
@@ -124,7 +121,7 @@ class ESHIP_Master {
         
     }
     
-    private function definir_admin_hooks()
+    private function defined_admin_hooks()
     {
         $this->loader->add_action( 'add_meta_boxes', $this->eship_admin, 'add_meta_boxes_eship' );
         $this->loader->add_action( 'admin_enqueue_scripts', $this->eship_admin, 'enqueue_styles' );

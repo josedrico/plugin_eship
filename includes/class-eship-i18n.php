@@ -13,7 +13,7 @@
  */
 
 /**
- * Ésta clase define todo lo necesario durante la activación del plugin
+ * Class to language
  *
  * @since      1.0.0
  * @package    ESHIP
