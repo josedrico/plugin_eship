@@ -57,6 +57,13 @@
                         </label>
                         <input type="text" class="form-control" id="name-input-eship" data-form="eship-register" name="nameCompanyEship" <?php if(isset($form_data[0]->name)):?>value="<?php echo $form_data[0]->name;?>"<?php endif;?>>
                     </div>
+                    <div class="mb-2">
+                        <h4 class="mt-1">Config Dimensions & Weigth</h4>
+                        <label for="activate-config-input-eship" class="col-form-label">
+                            <input class="form-check-input" type="checkbox" id="activate-config-input-eship" aria-label="Activate" name="activateConfigEship" <?php if(isset($form_data[0]->dimensions ) && $form_data[0]->dimensions == 1):?>checked<?php endif;?>>
+                            Activate dimension and weigth to every product.
+                        </label>
+                    </div>
                     <div class="row g-1 mb-4">
                         <div class="col-12 col-md-6">
                             <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">
