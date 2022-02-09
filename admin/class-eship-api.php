@@ -26,13 +26,13 @@ class ESHIP_Api {
         $this->api_key = $tb->get_data_user_eship('token');
     }
 
-    public function post($uri, $body)
+    public function post($uri, $body, $timeout = 45)
     {
         return  wp_remote_post(
             $this->url . $uri,
             array(
                 'method'      => 'POST',
-                //'timeout'     => 45,
+                'timeout'     => $timeout,
                 //'redirection' => 5,
                 //'httpversion' => '1.0',
                 'blocking'    => true,
