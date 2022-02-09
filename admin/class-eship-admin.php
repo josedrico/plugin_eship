@@ -114,7 +114,7 @@
                 'manage_options',
                 'eship_dashboard',
                 [ $this, 'eship_dashboard' ],
-                ESHIP_PLUGIN_DIR_URL . 'admin/img/plane.png',
+                'none',//ESHIP_PLUGIN_DIR_URL . 'admin/img/plane.png',
                 25
             );
 
