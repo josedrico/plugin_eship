@@ -34,6 +34,7 @@ define( 'ESHIP_REALPATH_BASENAME_PLUGIN', dirname( plugin_basename( __FILE__ ) )
 define( 'ESHIP_PLUGIN_DIR_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ESHIP_PLUGIN_DIR_URL', plugin_dir_url( __FILE__ ) );
 define( 'ESHIP_TB', "{$wpdb->prefix}eship_data" );
+define( 'ESHIP_TB_DIM', "{$wpdb->prefix}eship_dimensions" );
 
 /**
  * Activate EShip
