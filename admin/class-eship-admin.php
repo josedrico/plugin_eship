@@ -1,4 +1,4 @@
-    <?php
+<?php
     use EshipAdmin\ESHIP_Quotation;
     use EshipAdmin\ESHIP_Shipment;
     use EshipAdmin\ESHIP_Model;
@@ -143,7 +143,7 @@
                 $count  = implode(',', $_GET['post']);
                 $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
                 header("Location: " . $url);
-                die();
+                //die();
             }
         }
 
