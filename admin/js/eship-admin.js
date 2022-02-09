@@ -7,6 +7,8 @@
     closeReload();
     modalOrdersEship();
     modalShipmentEship();
+    getDimensionsEship();
+    modalInsertDimensionsEship();
 
     function closeReload() {
         $('#show-pdf-eship').click(function () {
@@ -73,6 +75,7 @@
             let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
+            let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
 
             $("#tokenEshipModalForm").validate({
                 rules: {
@@ -90,6 +93,9 @@
                         digits: true
                     },
                     nameCompanyEship: {
+                        required: true
+                    },
+                    activateConfigEship: {
                         required: true
                     }
                 },
@@ -109,6 +115,7 @@
                             ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
+                            dimensions: formCheckboxCompany,
                             typeAction: 'add_token'
                         },
                         type: 'json'
@@ -129,6 +136,7 @@
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
+            let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
             let user =  $('#updateDataEshipModalForm').data('user');
 
             $("#updateDataEshipModalForm").validate({
@@ -151,6 +159,9 @@
                     },
                     emailCompanyEship: {
                         required: true
+                    },
+                    activateConfigEship: {
+                        required: true
                     }
                 },
                 success: function(label) {
@@ -170,6 +181,7 @@
                             phone: formPhoneCompany,
                             name: formNameCompany,
                             email: formEmailCompany,
+                            dimensions: formCheckboxCompany,
                             user,
                             typeAction: 'update_token'
                         },
@@ -507,7 +519,7 @@
                             let newArr = [];
                             let fulfillment = data.result.batch_labels;
                             $.each(fulfillment, function (i,o) {
-                                console.log('o', o);
+                               //console.log('o', o);
                                 if (o.status == 'SUCCESS') {
                                     newArr.push({
                                         order: o.fulfillment.order_num,
@@ -522,7 +534,7 @@
                             });
                             //orders-multiple-eship-pdf
                             $('#orders-multiple-eship-pdf').show();
-                            $('#ordersMultipleLabels').append(`<a class="btn btn-secondary" target="_blank" href="${data.batch_labels_url}">Download</a>`);
+                            $('#ordersMultipleLabels').append(`<a class="btn btn-secondary" target="_blank" href="${data.result.batch_labels_url}">Download</a>`);
                             bsTb({
                                     id: '#orders-multiple-eship-pdf',
                                     search: false,
@@ -539,6 +551,90 @@
                     }
                 });
             }
+        });
+    }
+
+    function getDimensionsEship() {
+        $('#nav-package-tab').on('click', function (e) {
+            $.ajax({
+                method: 'POST',
+                url:  eshipData.url,
+                data: {
+                    action: 'get_dimensions_eship',
+                    nonce: eshipData.security,
+                    typeAction: 'get_dimensions'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                    bsTb({
+                        id: '#eship-dim-weigth',
+                        search: false,
+                        pagination: false
+                    }, data.result);
+                },
+                error: function (d, x, v) {
+                    console.error('d', d);
+                    console.error('x', x);
+                    console.error('v', v);
+                }
+            });
+        });
+    }
+
+    function modalInsertDimensionsEship() {
+        $('#eshipDimWeModalBtn').on('click', function (e) {
+            //e.preventDefault();
+            $("#eshipDimWeModalForm").validate({
+                rules: {
+                    aliasEship: {
+                        required: true
+                    },
+                    lengthEship: {
+                        required: true
+                    },
+                    widthEship: {
+                        required: true
+                    },
+                    heightEship: {
+                        required: true
+                    },
+                    unitDimensionsEship: {
+                        required: true
+                    },
+                    weightEship: {
+                        required: true
+                    },
+                    unitWeigthEship: {
+                        required: true
+                    }
+                },
+                success: function(label) {
+                    label.addClass("valid").css('color','green').text('Valid')
+                },
+                submitHandler: function(form) {
+                    console.log(form);
+                    let $data = {
+                        method: 'POST',
+                        url: eshipData.url,
+                        content: {
+                            action: 'insert_dimensions_eship',
+                            nonce: eshipData.security,
+                            typeAction: 'add_dimensions',
+                            aliasEship: $('#alias-input-eship').val(),
+                            lengthEship: $('#length-input-eship').val(),
+                            widthEship: $('#width-input-eship').val(),
+                            heightEship: $('#height-input-eship').val(),
+                            unitDimensionsEship: $('#unit-input-eship').val(),
+                            weightEship: $('#weigth-input-eship').val(),
+                            unitWeigthEship: $('#unitWeigth-input-eship').val(),
+                            statusEship: $('#status-input-eship').prop('checked')
+                        },
+                        type: 'json'
+                    };
+                    ajaxEship($data);
+                }
+            });
         });
     }
 

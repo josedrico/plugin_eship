@@ -43,7 +43,8 @@
 
 .app-eship .modal,
 #ordersQuotationsEshipModalToggle,
-#ordersQuotationsEshipModalToggle2 {
+#ordersQuotationsEshipModalToggle2,
+#eship-dim-weigth {
    z-index: 100000;
 }
 
