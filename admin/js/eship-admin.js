@@ -10,6 +10,8 @@
     getDimensionsEship();
     modalInsertDimensionsEship();
 
+    clickDelDimEship();
+
     function closeReload() {
         $('#show-pdf-eship').click(function () {
             location.reload();
@@ -555,6 +557,20 @@
     }
 
     function getDimensionsEship() {
+        const btnFun = function (data){
+            let html = `<div class="btn-group" role="group" aria-label="Active and desactive">`;
+            html += `<input type="radio" class="btn-check" name="btnradio${data.id}_yes" id="btnradio${data.id}_yes" autocomplete="off" ${(data.status == 1)? 'checked' : ''}>
+                         <label class="btn btn-outline-success" for="btnradio${data.id}_yes">
+                            <span class="dashicons dashicons-yes"></span>
+                         </label>
+                                            
+                         <input type="radio" class="btn-check" name="btnradio${data.id}_no" id="btnradio${data.id}_no" autocomplete="off" ${(data.status == 0)? 'checked' : ''}>
+                         <label class="btn btn-outline-danger" for="btnradio${data.id}_no">
+                            <span class="dashicons dashicons-dismiss"></span>
+                         </label`;
+            html += `</div>`;
+            return  html;
+        };
         $('#nav-package-tab').on('click', function (e) {
             $.ajax({
                 method: 'POST',
@@ -566,12 +582,39 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    console.log(data);
-                    bsTb({
-                        id: '#eship-dim-weigth',
-                        search: false,
-                        pagination: false
-                    }, data.result);
+                    //console.log(data);
+                    let newArr = [];
+                    if (data.error) {
+                        console.log(data);
+                    } else {
+                        $.each(data.result, function (index, object) {
+                            //console.log(`object ${object.status}`);
+                            newArr.push({
+                                length_dim: object.length_dim,
+                                width_dim: object.width_dim,
+                                height_dim: object.height_dim,
+                                unit_dim: object.unit_dim,
+                                weight_w: object.weight_w,
+                                unit_w: object.unit_w,
+                                status: btnFun({
+                                    id: object.id,
+                                    status: object.status
+                                }),
+                                actions: `<button type="button" data-eship="edit" class="btn btn-outline-warning">
+                                              <span class="dashicons dashicons-edit"></span>
+                                          </button>
+                                          <button type="button" data-eship="deleted" class="btn btn-outline-danger">
+                                              <span class="dashicons dashicons-table-row-delete"></span>
+                                          </button>`
+                            });
+                        });
+                        bsTb({
+                            id: '#eship-dim-weigth',
+                            search: false,
+                            pagination: false
+                        }, newArr);
+                    }
+
                 },
                 error: function (d, x, v) {
                     console.error('d', d);
@@ -580,6 +623,99 @@
                 }
             });
         });
+    }
+
+    function clickDelDimEship() {
+        $('#eship-dim-weigth').on('click', 'tr button[data-eship="deleted"]',function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this imaginary file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Your imaginary file has been deleted!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Your imaginary file is safe!");
+                    }
+                });
+        });
+    }
+
+    function clickEditDimEship() {
+        $('#eship-dim-weigth').on('click', 'tr button[data-eship="edit"]',function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this imaginary file!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        swal("Poof! Your imaginary file has been deleted!", {
+                            icon: "success",
+                        });
+                    } else {
+                        swal("Your imaginary file is safe!");
+                    }
+                });
+        });
+    }
+
+    function createModalEshipDim(data) {
+        let html = `<button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticBackdropEship${data.id}_edit">
+                      <span class="dashicons dashicons-edit"></span>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#staticBackdropEship${data.id}_deleted">
+                      <span class="dashicons dashicons-table-row-delete"></span>
+                    </button>
+                    
+                    <div class="modal fade" id="staticBackdropEship${data.id}_edit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelEship${data.id}_edit" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabelEship${data.id}_edit">
+                            Edit
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                     <div class="modal fade" id="staticBackdropEship${data.id}_deleted" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabelEship${data.id}_deleted" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabelEship${data.id}_deleted">
+                                Deleted
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            ...
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Understood</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>`;
+
+        return html;
     }
 
     function modalInsertDimensionsEship() {

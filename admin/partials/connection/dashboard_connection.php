@@ -121,7 +121,7 @@
                                     <thead>
                                     <tr>
                                         <th colspan="4">Dimensions</th>
-                                        <th colspan="3">Weight</th>
+                                        <th colspan="4">Weight</th>
                                     </tr>
                                     <tr>
                                         <th data-field="length_dim">Length</th>
