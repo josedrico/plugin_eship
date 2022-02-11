@@ -88,13 +88,6 @@
                                             <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='".$user_eship[0]->email."'": '';?>>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <h4 class="mt-1">Config Dimensions & Weigth</h4>
-                                        <label for="activate-config-input-eship" class="col-form-label">
-                                            <input class="form-check-input" type="checkbox" id="activate-config-input-eship" value="1" aria-label="Activate" name="activateConfigEship" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 1)? 'checked': '';?>>
-                                            Activate dimension and weigth to every product.
-                                        </label>
-                                    </div>
                                     <div class="row g-1 mb-4">
                                         <div class="col-12 col-md-6 offset-md-6">
                                             <button type="submit" class="btn btn-primary w-100" id="<?php echo $config_data['btn'];?>">
@@ -110,33 +103,57 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab">
-                        <div class="row mt-3">
-                            <div class="col-12 text-end">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eshipDimWeModal">
-                                    Create dimensions
-                                </button>
+                        <div class="row mt-4 ms-3" >
+                            <div class="col-12 col-md-6">
+                                <h5>Config Dimensions and Weigth</h5>
+                                <div class="mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template">
+                                        <label class="form-check-label" for="radioDimSts1">
+                                            Use a package template
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" checked>
+                                        <label class="form-check-label" for="radioDimSts2" value="default">
+                                            Use items weight and dimensions for shipments
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-12 mt-2">
-                                <table id="eship-dim-weigth" class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th colspan="4">Dimensions</th>
-                                        <th colspan="4">Weight</th>
-                                    </tr>
-                                    <tr>
-                                        <th data-field="length_dim">Length</th>
-                                        <th data-field="width_dim">Width</th>
-                                        <th data-field="height_dim">Height</th>
-                                        <th data-field="unit_dim">Unit</th>
-                                        <th data-field="weight_w">weight</th>
-                                        <th data-field="unit_w">Unit</th>
-                                        <th data-field="status">Status</th>
-                                        <th data-field="actions">Actions</th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
+                            <?php if (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0):?>
+                                <div class="col-12 col-md-6 text-end" data-show-eship-btn>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eshipDimWeModal">
+                                        Create dimensions
+                                    </button>
+                                </div>
+                            <?php endif;?>
                         </div>
+                        <?php if (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0):?>
+                            <div class="row mt-1" data-show-eship-div>
+                                <div class="col-12 mt-2">
+                                    <table id="eship-dim-weigth" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th colspan="5">Dimensions</th>
+                                            <th colspan="4">Weight</th>
+                                        </tr>
+                                        <tr>
+                                            <th data-field="name">Alias</th>
+                                            <th data-field="length_dim">Length</th>
+                                            <th data-field="width_dim">Width</th>
+                                            <th data-field="height_dim">Height</th>
+                                            <th data-field="unit_dim">Unit</th>
+                                            <th data-field="weight_w">weight</th>
+                                            <th data-field="unit_w">Unit</th>
+                                            <th data-field="status">Status</th>
+                                            <th data-field="actions">Actions</th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </div>
+                        <?php endif;?>
                     </div>
                 </div>
             </div>
@@ -224,12 +241,21 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12 col-md-6">
+                                <div class="col-12">
                                     <div class="mb-2">
-                                        <label for="status-input-eship" class="col-form-label">
-                                            <input class="form-check-input" type="checkbox" id="status-input-eship" value="1" aria-label="Activate" name="statusEship">
-                                            Activate:
-                                        </label>
+                                        <h6>Config Dimensions and Weigth</h6>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="radioDimCreate1" name="statusEship" value="1">
+                                            <label class="form-check-label" for="radioDimCreate1">
+                                                Use this package template
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" id="radioDimCreate2" name="statusEship" value="0" checked>
+                                            <label class="form-check-label" for="radioDimCreate2">
+                                                Use items weight and dimensions for shipments
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row g-1 mb-4">
