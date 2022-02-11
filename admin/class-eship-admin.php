@@ -134,8 +134,11 @@
 
         public function insert_quotations_bulk_eship()
         {
-            $actions['eship_quotations'] = 'Create multiple shipments';
-            return $actions;
+            $id_token = $this->eship_model->get_data_user_eship('id');
+            if ($id_token) {
+                $actions['eship_quotations'] = 'Create multiple shipments';
+                return $actions;
+            }
         }
 
         public  function get_quotations_bulk_eship()

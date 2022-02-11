@@ -25,9 +25,11 @@
                         <button class="nav-link active" id="nav-connection-tab" data-bs-toggle="tab" data-bs-target="#nav-connection" type="button" role="tab" aria-controls="nav-connection" aria-selected="true">
                             Connection
                         </button>
-                        <button class="nav-link" id="nav-package-tab" data-bs-toggle="tab" data-bs-target="#nav-package" type="button" role="tab" aria-controls="nav-package" aria-selected="false">
-                            Package
-                        </button>
+                        <?php if (isset($user_eship[0]->dimensions)):?>
+                            <button class="nav-link" id="nav-package-tab" data-bs-toggle="tab" data-bs-target="#nav-package" type="button" role="tab" aria-controls="nav-package" aria-selected="false">
+                                Package
+                            </button>
+                        <?php endif;?>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
