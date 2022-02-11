@@ -506,20 +506,55 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
             $result = $this->eship_model->update_data_store_eship($_POST);
+            $response = array();
+            if ($_POST['typeAction'] == 'update_token') {
+                if ($result) {
+                    $response = array(
+                        'result'    => 'Done!',
+                        'redirect'  => TRUE,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No updated',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+            }
 
-            if (!is_null($result)) {
-                $response = array(
-                    'result'    => 'Done!',
-                    'redirect'  => TRUE,
-                    'error'     => FALSE,
-                    'code'      => 201
-                );
-            } else  {
-                $response = array(
-                    'result'    => 'No updated',
-                    'error'     => TRUE,
-                    'code'      => 404
-                );
+
+            if ($_POST['typeAction'] == 'update_status_dimension') {
+                $id_token = $this->eship_model->get_data_user_eship('id');
+                if ($_POST['status'] == 'default') {
+                    $dim_token = 1;
+                }
+
+                if ($_POST['status'] == 'template') {
+                    $dim_token = 0;
+                }
+
+                $result = $this->eship_model->update_data_store_eship(array(
+                    'id'            => $id_token,
+                    'dimensions'    => $dim_token,
+                    'typeAction'    => 'update_dimension_token'
+                ));
+
+                if ($result) {
+                    $response = array(
+                        'result'    => 'Done!',
+                        'redirect'  => TRUE,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No updated',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
             }
 
             echo json_encode($response);
@@ -560,7 +595,7 @@
                 $response = array(
                     'result'    => 'Exito',
                     'res'       => $result,
-                    'redirect'  => FALSE,
+                    'redirect'  => TRUE,
                     'error'     => FALSE,
                     'code'      => 201
                 );
@@ -580,20 +615,90 @@
         public function update_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result = $_POST;//$this->eship_model->update_data_store_eship($_POST);
+            $result = $this->eship_model->update_dimension_eship($_POST);
 
-            if (!is_null($result)) {
+            if ($_POST['typeAction'] == 'update_status_dimension') {
+                $id_token = $this->eship_model->get_data_user_eship('id');
+                if ($_POST['status'] == 1) {
+                    $dim_token = 0;
+                }
+
+                $update_token = $this->eship_model->update_data_store_eship(array(
+                    'id'            => $id_token,
+                    'dimensions'    => $dim_token,
+                    'typeAction'    => 'update_dimension_token'
+                ));
+
+                if ($result == 1) {
+                    $response = array(
+                        'result'    => 'Done!',
+                        'updateEffect' => $result,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No updated',
+                        'res'       => $result,
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
+
+
+            if ($_POST['typeAction'] == 'update_dimensions') {
+                $id_token = $this->eship_model->get_data_user_eship('id');
+                if ($_POST['statusEship'] == 1) {
+                    $dim_token = 0;
+                }
+
+                $update_token = $this->eship_model->update_data_store_eship(array(
+                    'id'            => $id_token,
+                    'dimensions'    => $dim_token,
+                    'typeAction'    => 'update_dimension_token'
+                ));
+
+                if ($result) {
+                    $response = array(
+                        'result'    => 'Done!',
+                        'res'       => $result,
+                        'redirect'  => TRUE,
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'    => 'No updated',
+                        'res'       => $result,
+                        'error'     => TRUE,
+                        'code'      => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
+        }
+
+        public function delete_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->delete_dimension_eship($_POST);
+
+            if ($result) {
                 $response = array(
-                    'result'    => 'Done!',
-                    'res'       => $result,
-                    'redirect'  => TRUE,
+                    'result'    => $_POST,//'Done!',
+                    //'redirect'  => TRUE,
                     'error'     => FALSE,
                     'code'      => 201
                 );
             } else  {
                 $response = array(
-                    'result'    => 'No updated',
-                    'res'       => $result,
+                    'result'    => $_POST,//'No deleted',
                     'error'     => TRUE,
                     'code'      => 404
                 );
