@@ -1,6 +1,8 @@
 <?php
 namespace EshipAdmin;
 
+use Cassandra\Date;
+
 class ESHIP_Model {
     protected $db;
 
@@ -51,7 +53,19 @@ class ESHIP_Model {
                     } else  {
                         return FALSE;
                     }
+                case 'dimension':
+                    if (isset($results[0]->dimensions) && !empty($results[0]->dimensions)){
+                        return $results[0]->dimensions;
+                    } else  {
+                        return FALSE;
+                    }
 
+                case 'id':
+                    if (isset($results[0]->id)) {
+                        return $results[0]->id;
+                    } else  {
+                        return FALSE;
+                    }
                 default:
                     if (isset($results) && count($results) > 0) {
                         return $results;
@@ -105,7 +119,7 @@ class ESHIP_Model {
 
             if ($typeAction == 'update_token') {
 
-                $result = $this->db->update(ESHIP_TB_DIM,
+                $result = $this->db->update(ESHIP_TB,
                     array(
                         'token_eship'       => sanitize_text_field($token),
                         'consumer_key'      => sanitize_text_field($ck),
@@ -135,6 +149,40 @@ class ESHIP_Model {
                 }
                 $this->db->flush();
             }
+
+            if ($typeAction == 'update_dimension_token') {
+                $result = $this->db->update(ESHIP_TB,
+                    array(
+                        'dimensions' => $dimensions
+                    ),
+                    array(
+                        'id' => $id
+                    ),
+                    array(
+                        '%s'
+                    ),
+                    array('%d')
+                );
+
+                $this->db->flush();
+            }
+
+            if ($typeAction == 'update_dimension_value') {
+                $result = $this->db->update(ESHIP_TB,
+                    array(
+                        'dimensions' => $dimVal
+                    ),
+                    array(
+                        'id' => $dim_id
+                    ),
+                    array(
+                        '%s'
+                    ),
+                    array('%d')
+                );
+
+                $this->db->flush();
+            }
         }
 
         return $result;
@@ -156,6 +204,8 @@ class ESHIP_Model {
         $result = FALSE;
         if(current_user_can('manage_options')) {
             extract($data, EXTR_OVERWRITE);
+            date_default_timezone_set('America/Mexico_City');
+            $date_timestamp = new \DateTime();
 
             if ($typeAction == 'add_dimensions') {
                 $columns = [
@@ -167,6 +217,7 @@ class ESHIP_Model {
                     'weight_w'      => (float)$weightEship,
                     'unit_w'        => $unitWeigthEship,
                     'status'        => ($statusEship == 'true')? 1 : 0,
+                    'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                 ];
 
                 $format = [
@@ -178,6 +229,7 @@ class ESHIP_Model {
                     "%f",
                     "%s",
                     "%d",
+                    "%s",
                 ];
                 $result = $this->db->insert(ESHIP_TB_DIM, $columns, $format);
 
@@ -189,40 +241,60 @@ class ESHIP_Model {
 
     public function update_dimension_eship($data)
     {
-        $result = FALSE;
+        $result = 0;
         if(current_user_can('manage_options')) {
             extract($data, EXTR_OVERWRITE);
 
-            if ($typeAction == 'update_token') {
+            if ($typeAction == 'update_status_dimension') {
 
-                $result = $this->db->update(ESHIP_TB_DIM,
-                    array(
-                        'token_eship'       => sanitize_text_field($token),
-                        'consumer_key'      => sanitize_text_field($ck),
-                        'consumer_secret'   => sanitize_text_field($cs),
-                        'phone'             => sanitize_text_field($phone),
-                        'name'              => sanitize_text_field($name),
-                        'email'             => sanitize_email($email)
-                        //'updated_at' => ''
-                    ),
-                    array(
-                        'id' => $user
-                    ),
-                    array(
-                        '%s',
-                        '%s',
-                        '%s',
-                        '%s',
-                        '%s',
-                        '%s'
-                    ),
-                    array('%d')
+                $result = $this->db->update(
+                    ESHIP_TB_DIM,
+                    array('status' => $status),
+                    array('id' => $dim)
                 );
 
-                if($result > 0){
-                    $result = $this->db->last_query();
-                }
                 $this->db->flush();
+            }
+
+            if ($typeAction == 'update_dimensions') {
+                date_default_timezone_set('America/Mexico_City');
+                $date_timestamp = new \DateTime();
+                $result = $this->db->update(
+                    ESHIP_TB_DIM,
+                    array(
+                        'name'          => $aliasEship,
+                        'length_dim'    => (float)$lengthEship,
+                        'width_dim'     => (float)$widthEship,
+                        'height_dim'    => (float)$heightEship,
+                        'unit_dim'      => $unitDimensionsEship,
+                        'weight_w'      => (float)$weightEship,
+                        'unit_w'        => $unitWeigthEship,
+                        'status'        => $statusEship,
+                        'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
+                    ),
+                    array('id' => $dim)
+                );
+
+                $this->db->flush();
+            }
+        }
+
+        return $result;
+    }
+
+    public function delete_dimension_eship($data)
+    {
+        $result = 0;
+        if(current_user_can('manage_options')) {
+            extract($data, EXTR_OVERWRITE);
+
+            if ($typeAction == 'delete_dimension') {
+
+                $result = $this->db->delete(
+                    ESHIP_TB_DIM,
+                    array('id' => $delId),
+                    array('%d')
+                );
             }
         }
 
