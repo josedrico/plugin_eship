@@ -3,6 +3,7 @@
     use EshipAdmin\ESHIP_Shipment;
     use EshipAdmin\ESHIP_Model;
     use EshipAdmin\ESHIP_Woocommerce_Api;
+    use EshipAdmin\ESHIP_Api;
     use EshipAdmin\ESHIP_Admin_Notices;
 
     /**
@@ -34,6 +35,7 @@
         private $eship_quotation;
         private $eship_model;
         private $build_menupage;
+        private $api_key_eship;
 
         public function __construct( $plugin_name, $version ) 
         {
@@ -42,6 +44,7 @@
             $this->eship_quotation  = new ESHIP_Quotation();
             $this->eship_model      = new ESHIP_Model();
             $this->build_menupage   = new ESHIP_Build_Menupage();
+            $this->api_key_eship    = new ESHIP_Api();
         }
 
         public function enqueue_styles($hook) 
@@ -119,6 +122,10 @@
         }
 
         public function add_menu_order() {
+            if ($this->no_run_plugin_eship()) {
+                $this->run_notices_eship();
+            }
+
             $this->build_menupage->add_menu_page(
                 'ESHIP',
                 'eShip',
@@ -134,14 +141,17 @@
 
         public function insert_quotations_bulk_eship()
         {
-            $id_token = $this->eship_model->get_data_user_eship('id');
-            if ($id_token) {
-                $actions['eship_quotations'] = 'Create multiple shipments';
-                return $actions;
+            if (!$this->no_run_plugin_eship()) {
+                $id_token = $this->eship_model->get_data_user_eship('id');
+                if ($id_token) {
+                    $actions['eship_quotations'] = 'Create multiple shipments';
+                    return $actions;
+                }
             }
+
         }
 
-        public  function get_quotations_bulk_eship()
+        public function get_quotations_bulk_eship()
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
                 $count  = implode(',', $_GET['post']);
@@ -151,7 +161,7 @@
             }
         }
 
-        public  function search_data_eship()
+        public function search_data_eship()
         {
             if (isset($_GET['countEship'])) {
                 $orders_eship = $_GET['countEship'];
@@ -160,9 +170,44 @@
 
         }
 
+        public function check_connect_woo_message_eship()
+        {
+            $test = new ESHIP_Woocommerce_Api();
+            $check = $test->test();
+
+            if (isset($check['error'])) {
+                $notices = new ESHIP_Admin_Notices($check['message']);
+                $notices->error_message();
+            }
+        }
+
+        public function run_notices_eship()
+        {
+            add_action( 'admin_notices', [$this, 'check_connect_woo_message_eship'] );
+        }
+
+        public function no_run_plugin_eship()
+        {
+            $test = new ESHIP_Woocommerce_Api();
+            $check = $test->test();
+
+            if (isset($check['error'])) {
+                return TRUE;
+            } else {
+                return FALSE;
+            }
+        }
+
         public function eship_dashboard()
         {
             $config_data = array();
+            if ($this->no_run_plugin_eship()) {
+                $this->run_notices_eship();
+            }
+
+            $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
+                             <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
+                             "Settings" and click on "View your API Key".';
             $dimensions = $this->eship_model->get_dimensions_eship();
             if ($user_eship = $this->eship_model->get_data_user_eship()) {
                 $config_data = array(
@@ -197,25 +242,27 @@
 
         public function add_meta_boxes_eship()
         {
-            $register_view  = 'view_buttons_eship';
-            $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
+            if (!$this->no_run_plugin_eship()) {
+                $register_view  = 'view_buttons_eship';
+                $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
 
-            if (empty($this->eship_model->get_data_user_eship())) {
-                $register_view  = 'view_register_eship';
-                $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
+                if (empty($this->eship_model->get_data_user_eship())) {
+                    $register_view  = 'view_register_eship';
+                    $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
+                }
+
+                $meta_box = array(
+                    'id'        => 'woocommerce-order-eship',
+                    'title'     => $register_title,
+                    'callback'  => [$this, $register_view],
+                    'view'      => 'shop_order',
+                    'context'   => 'side',
+                    'priority'  => 'high'
+                );
+
+                $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
+                $add_meta_box->run();
             }
-
-            $meta_box = array(
-                'id'        => 'woocommerce-order-eship',
-                'title'     => $register_title,
-                'callback'  => [$this, $register_view],
-                'view'      => 'shop_order',
-                'context'   => 'side',
-                'priority'  => 'high'
-            );
-
-            $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
-            $add_meta_box->run();
         }
 
         public function view_buttons_eship()
@@ -263,7 +310,7 @@
             $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
             $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
             $modal_shipment_pdf = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/shipment_sheet.php';
-            
+
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
@@ -483,26 +530,71 @@
             }
         }
 
+        public function get_api_key_eship(){
+            $api  = $this->api_key_eship->getCredentials();
+            $json = json_decode($api['body']);
+            return $json->consumer_secret;
+        }
+
         public function insert_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result = $this->eship_model->insert_data_store_eship($_POST);
 
-            if ($result) {
-                $response = array(
-                    'result'    => 'Exito',
-                    //'res'       => $result,
-                    'redirect'  => TRUE,
-                    'error'     => FALSE,
-                    'code'      => 201
-                );
-            } else  {
-                $response = array(
-                    'result'    => 'Error',
-                    //'res'       => $result,
-                    'error'     => TRUE,
-                    'code'      => 404
-                );
+            if (isset($_POST['token']) && ! empty($_POST['token'])) {
+                $exist_api_key = $this->api_key_eship->getCredentials($_POST['token']);
+                if ($exist_api_key) {
+                    if (! isset($exist_api_key['body'])) {
+                        $response = array(
+                            'message'   => 'No se retorno el body',
+                            'result'    => FALSE,
+                            'error'     => TRUE,
+                            'updateEffect' => TRUE,
+                            'code'      => 500
+                        );
+                    } else {
+                        $api_eship = json_decode($exist_api_key['body']);
+
+                        if (isset($api_eship->error)) {
+                            $response = array(
+                                'message'   => $api_eship->error,
+                                'result'    => FALSE,
+                                'updateEffect' => TRUE,
+                                'error'     => TRUE,
+                                'code'      => 500
+                            );
+                        } else {
+                            $insert_db = $this->eship_model->insert_data_store_eship($_POST);
+                            if ($insert_db) {
+                                $response = array(
+                                    'message'      => 'Your service is connnect',
+                                    'result'       => $insert_db,
+                                    //'exist_api_key' => $api_eship,
+                                    'updateEffect' => TRUE,
+                                    'error'        => FALSE,
+                                    'code'         => 200
+                                );
+                            } else {
+                                $response = array(
+                                    'message'   => 'Fail to insert data on table',
+                                    'result'       => $insert_db,
+                                    //'exist_api_key' => $api_eship,
+                                    'updateEffect' => TRUE,
+                                    'error'     => TRUE,
+                                    'code'      => 500
+                                );
+                            }
+                        }
+                    }
+
+                } else  {
+                    $response = array(
+                        'message'       => 'Api Key is neccesary',
+                        'result'        => FALSE,
+                        'error'         => TRUE,
+                        'updateEffect'  => TRUE,
+                        'code'          => 404
+                    );
+                }
             }
 
             echo json_encode($response);
