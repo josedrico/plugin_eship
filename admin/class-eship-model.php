@@ -31,28 +31,14 @@ class ESHIP_Model {
                     } else {
                         return FALSE;
                     }
+
                 case 'token':
                     if (isset($results[0]->token_eship) && !empty($results[0]->token_eship)) {
                         return $results[0]->token_eship;
                     } else  {
                         return  FALSE;
                     }
-                case 'cs':
-                    //test 'cs_fc047f331954ffa83623ed0f47c927afee406438';
-                    //mac 'cs_46c0207837b87425d850fff14656ffef0621b4bc';
-                    if (isset($results[0]->consumer_secret) && !empty($results[0]->consumer_secret)) {
-                        return $results[0]->consumer_secret;
-                    } else {
-                        return FALSE;
-                    }
-                case 'ck':
-                    //test 'ck_e1e2f573ca6d3237a02a7442952fa37806ef47ea';
-                    //mac 'ck_8fc0c1a4fbc9fd2137a6b75c2728908f9346eb15';
-                    if (isset($results[0]->consumer_key) && !empty($results[0]->consumer_key)){
-                        return $results[0]->consumer_key;
-                    } else  {
-                        return FALSE;
-                    }
+
                 case 'dimension':
                     if (isset($results[0]->dimensions) && !empty($results[0]->dimensions)){
                         return $results[0]->dimensions;
@@ -87,23 +73,19 @@ class ESHIP_Model {
     {
         $result = FALSE;
         if(current_user_can('manage_options')) {
-            $adm = wp_get_current_user();
+            //$adm = wp_get_current_user();
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'add_token') {
                 $columns = [
-                    'email'             => $adm->user_email,
+                    'email'             => $email,//$adm->user_email,
                     'token_eship'       => $token,
-                    'consumer_secret'   => $cs,
-                    'consumer_key'      => $ck,
                     'name'              => $name,
                     'phone'             => $phone,
                     'dimensions'        => (int)$dimensions
                 ];
 
                 $format = [
-                    "%s",
-                    "%s",
                     "%s",
                     "%s",
                     "%s",
@@ -127,9 +109,7 @@ class ESHIP_Model {
 
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'token_eship'       => sanitize_text_field($token),
-                        'consumer_key'      => sanitize_text_field($ck),
-                        'consumer_secret'   => sanitize_text_field($cs),
+                        'api_key_eship'       => sanitize_text_field($token),
                         'phone'             => sanitize_text_field($phone),
                         'name'              => sanitize_text_field($name),
                         'email'             => sanitize_email($email),
@@ -139,8 +119,6 @@ class ESHIP_Model {
                         'id' => $user
                     ),
                     array(
-                        '%s',
-                        '%s',
                         '%s',
                         '%s',
                         '%s',
