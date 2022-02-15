@@ -13,9 +13,9 @@ class ESHIP_Admin_Notices
 {
     protected $messsage;
 
-    public function __construct($messsage)
+    public function __construct($message)
     {
-        $this->messsage = $messsage;
+        $this->messsage = $message;
     }
 
     public function success_message()
@@ -34,9 +34,5 @@ class ESHIP_Admin_Notices
             <p><?php _e( $this->messsage ); ?></p>
         </div>
         <?php
-    }
-
-    public function run($data) {
-        add_action( 'admin_notices', [$this, $data['callback']] );
     }
 }
