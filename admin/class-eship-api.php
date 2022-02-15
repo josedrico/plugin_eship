@@ -21,7 +21,6 @@ class ESHIP_Api {
 
     private function setApiKey()
     {
-        //eship_prod_835261c341f8465b2
         $tb = new ESHIP_Model();
         $this->api_key = $tb->get_data_user_eship('token');
     }
@@ -53,5 +52,23 @@ class ESHIP_Api {
                 'api-key'       => $this->api_key
             )
         ));
+    }
+
+    public function getCredentials($data = FALSE) {
+        if ($data) {
+            return wp_remote_get($this->url . 'credentials-woo', array(
+                'headers' => array(
+                    'content-Type'  => 'Application/json',
+                    'api-key'       => $data
+                )
+            ));
+        } else {
+            return wp_remote_get($this->url . 'credentials-woo', array(
+                'headers' => array(
+                    'content-Type'  => 'Application/json',
+                    'api-key'       => $this->api_key
+                )
+            ));
+        }
     }
 }
