@@ -44,6 +44,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
+                <div id="orders-multiple-eship-div" style="display: none;"></div>
                 <table id="orders-multiple-eship-pdf" class="table" style="display: none;">
                     <thead>
                     <tr>

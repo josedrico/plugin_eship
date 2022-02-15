@@ -1,9 +1,9 @@
 <?php
 namespace EshipAdmin;
 
+use EshipAdmin\ESHIP_Model;
 use EshipAdmin\ESHIP_Woocommerce_Api;
 use EshipAdmin\ESHIP_Api;
-use EshipAdmin\ESHIP_Model;
 use EshipAdmin\ESHIP_Admin_Notices;
 
 /**
@@ -31,15 +31,15 @@ class ESHIP_Quotation {
         $tb = new ESHIP_Model();
         $data = array(
             'name'      => $tb->get_data_user_eship('name'),//$data['name'],
-            'company'   => $data['company'], //optional
-            'street1'   => $data['address'],
-            'street2'   => $data['address2'], //optional
-            'city'      => $data['city'],
-            'zip'       => $data['zip'],
-            'state'     => $data['state'],
-            'country'   => $data['country'], //ISO 2 country code
+            'company'   => (isset($data['company']))? $data['company'] : '', //optional
+            'street1'   => (isset($data['address']))? $data['address'] : '',
+            'street2'   => (isset($data['address2']))? $data['address2'] : '', //optional
+            'city'      => (isset($data['city']))? $data['city'] : '',
+            'zip'       => (isset($data['zip']))? $data['zip'] : '',
+            'state'     => (isset($data['state']))? $data['state'] : '',
+            'country'   => (isset($data['country']))? $data['country'] : '', //ISO 2 country code
             'phone'     => $tb->get_data_user_eship('phone'),//$data['phone'],
-            'email'     => $data['email'], //optional
+            'email'     => $tb->get_data_user_eship('email')
         );
 
         return $data;
@@ -48,15 +48,15 @@ class ESHIP_Quotation {
     private function setAddressTo($data)
     {
         $data = array(
-            'name'      => $data->first_name . " " . $data->last_name,
+            'name'      => (isset($data->first_name) && isset($data->last_name))? $data->first_name . " " . $data->last_name : '',
             'company'   => (isset($data->company))? $data->company : '', //optional
-            'street1'   => $data->address_1,
+            'street1'   => (isset($data->address_1))? $data->address_1 : '',
             'street2'   => (isset($data->address_2))? $data->address_2 : '', //optional
-            'city'      => $data->city,
-            'zip'       => $data->postcode,
-            'state'     => $data->state,
-            'country'   => $data->country, //ISO 2 country code
-            'phone'     => $data->phone,
+            'city'      => (isset($data->city))? $data->city : '',
+            'zip'       => (isset($data->postcode))? $data->postcode : '',
+            'state'     => (isset($data->state))? $data->state : '',
+            'country'   => (isset($data->country))? $data->country : '', //ISO 2 country code
+            'phone'     => (isset($data->phone))? $data->phone : '',
             'email'     => (isset($data->email))? $data->email : '' , //optional
         );
 
@@ -65,21 +65,38 @@ class ESHIP_Quotation {
 
     private function setParcels($data)
     {
-        $parcels = array();
-        $data_gral = $this->woocommerce_api->getGeneral();
-        $data_gral = json_decode($data_gral);
+        $parcels    = array();
+        $data_gral  = $this->woocommerce_api->getGeneral();
+        $data_gral  = json_decode($data_gral);
+        $tb         = new ESHIP_Model();
+        $dim_active = $tb->get_data_user_eship('dimension');
+        $dim_qry    = $tb->get_dimensions_eship();
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
-            array_push($parcels, array(
-                'length'        => $product['dimensions']->length,
-                'width'         => $product['dimensions']->width,
-                'height'        => $product['dimensions']->height,
-                'distance_unit' => $data_gral->dimension_unit,//'cm'
-                'weight'        => $product['weight'],
-                'mass_unit'     => $data_gral->weight_unit,
-                'reference'     => 'reference'//
-            ));
+            if ($dim_active && $dim_qry ) {
+
+                $dimensions = array(
+                    'length'        => $product['dimensions']->length,
+                    'width'         => $product['dimensions']->width,
+                    'height'        => $product['dimensions']->height,
+                    'distance_unit' => $data_gral->dimension_unit,//'cm'
+                    'weight'        => $product['weight'],
+                    'mass_unit'     => $data_gral->weight_unit,
+                    'reference'     => 'reference'//
+                );
+            } else {
+                $dimensions = array(
+                    'length'        => (isset($dim_qry[0]->length_dim))? $dim_qry[0]->length_dim : '',
+                    'width'         => (isset($dim_qry[0]->width_dim))? $dim_qry[0]->width_dim : '',
+                    'height'        => (isset($dim_qry[0]->height_dim))? $dim_qry[0]->height_dim : '',
+                    'distance_unit' => (isset($dim_qry[0]->unit_dim))? $dim_qry[0]->unit_dim : '',
+                    'weight'        => (isset($dim_qry[0]->weight_w))? $dim_qry[0]->weight_w : '',
+                    'mass_unit'     => (isset($dim_qry[0]->unit_w))? $dim_qry[0]->unit_w : '',
+                    'reference'     => 'reference'//
+                );
+            }
+            array_push($parcels, $dimensions);
         }
         return $parcels;
     }
@@ -99,13 +116,13 @@ class ESHIP_Quotation {
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
             array_push($items, array(
-                'quantity'      => $key->quantity,
-                'description'   => $key->name,
-                'SKU'           => $key->sku,
-                'price'         => $key->price,
-                'weight'        => $product['weight'],
-                'currency'      => $data_gral->currency_code,//$key->currency, //“MXN”, “USD”
-                'store_id'      => $product['id']//$key->store_id
+                'quantity'      => (isset($key->quantity))? $key->quantity : '',
+                'description'   => (isset($key->name))? $key->name : '',
+                'SKU'           => (isset($key->sku))? $key->sku : '',
+                'price'         => (isset($key->price))? $key->price : '',
+                'weight'        => (isset($product['weight']))? $product['weight'] : '',
+                'currency'      => (isset($data_gral->currency_code))? $data_gral->currency_code : '',//$key->currency, //“MXN”, “USD”
+                'store_id'      => (isset($product['id']))? $product['id'] : ''//$key->store_id
             ));
         }
 
@@ -115,7 +132,7 @@ class ESHIP_Quotation {
     private function setOrderInfo($data)
     {
         $arr = array(
-            'order_num'         => $data->number,
+            'order_num'         => (isset($data->number))? $data->number : '',
             'paid'              => ($data->status != 'pending')? TRUE : FALSE,
             'fulfilled'         => FALSE,
             'store'             => 'woo',

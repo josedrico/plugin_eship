@@ -66,6 +66,13 @@ class ESHIP_Model {
                     } else  {
                         return FALSE;
                     }
+
+                case 'email':
+                    if (isset($results[0]->email)) {
+                        return $results[0]->email;
+                    } else  {
+                        return FALSE;
+                    }
                 default:
                     if (isset($results) && count($results) > 0) {
                         return $results;
@@ -91,7 +98,7 @@ class ESHIP_Model {
                     'consumer_key'      => $ck,
                     'name'              => $name,
                     'phone'             => $phone,
-                    'dimensions'        => $dimensions
+                    'dimensions'        => (int)$dimensions
                 ];
 
                 $format = [
@@ -104,7 +111,6 @@ class ESHIP_Model {
                     "%d"
                 ];
                 $result = $this->db->insert(ESHIP_TB, $columns, $format);
-
             }
         }
 
@@ -216,7 +222,7 @@ class ESHIP_Model {
                     'unit_dim'      => $unitDimensionsEship,
                     'weight_w'      => (float)$weightEship,
                     'unit_w'        => $unitWeigthEship,
-                    'status'        => ($statusEship == 'true')? 1 : 0,
+                    'status'        => 1,
                     'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                 ];
 
@@ -249,8 +255,8 @@ class ESHIP_Model {
 
                 $result = $this->db->update(
                     ESHIP_TB_DIM,
-                    array('status' => $status),
-                    array('id' => $dim)
+                    ['status' => $status],
+                    ['id' => $dimId]
                 );
 
                 $this->db->flush();
@@ -269,7 +275,6 @@ class ESHIP_Model {
                         'unit_dim'      => $unitDimensionsEship,
                         'weight_w'      => (float)$weightEship,
                         'unit_w'        => $unitWeigthEship,
-                        'status'        => $statusEship,
                         'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                     ),
                     array('id' => $dim)

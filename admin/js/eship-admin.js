@@ -79,7 +79,7 @@
             let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
-            let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
+            //let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
 
             $("#tokenEshipModalForm").validate({
                 rules: {
@@ -107,7 +107,7 @@
                     label.addClass("valid").css('color','green').text('Valid')
                 },
                 submitHandler: function(form) {
-                    console.log(form);
+                    //console.log(form);
                     let $data = {
                         method: 'POST',
                         url: eshipData.url,
@@ -119,7 +119,7 @@
                             ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
-                            dimensions: formCheckboxCompany,
+                            dimensions: 1,
                             typeAction: 'add_token'
                         },
                         type: 'json'
@@ -205,6 +205,7 @@
             data: $data.content,
             dataType: $data.type,
             success: function (data) {
+                console.log(data);
                 if (data.error == false) {
                     if (data.redirect) {
                         $('#loader-light').show()
@@ -214,6 +215,9 @@
                             swal({
                                 title: "Done!",
                                 icon: "success",
+                            }).then((value) => {
+                                //console.log(value)
+                                location.reload();
                             });
                         } else  {
                             swal({
@@ -275,7 +279,7 @@
 
     function getQuotationEship() {
         $('button[href="#dashBoardEshipModalToggle"]').on('click', function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             let order =  $('button[href="#dashBoardEshipModalToggle"]').data('order');
             //console.log(order);
             $.ajax({
@@ -289,7 +293,7 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    //console.log(data);
+                    console.log(data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
                         $('#orders-list').append(messageApi({
@@ -453,7 +457,7 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        //console.log(data);
+                        console.log(data);
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
@@ -473,7 +477,7 @@
                         if (! data.error) {
                             let newArr = [];
                             $.each(data.result, function (i,o) {
-                                console.log(i, o);
+                                //console.log(i, o);
                                 let provArr = [];
                                 $.each(o.rates, function (index, prov) {
                                     //console.log(prov.provider);
@@ -492,7 +496,7 @@
                                 });
                             });
 
-                            console.log(newArr);
+                            //console.log(newArr);
                             $('#orders-multiple-eship').show();
                             bsTb({
                                     id: '#orders-multiple-eship',
@@ -501,12 +505,32 @@
                                 },
                                 newArr
                             );
+                        } else {
+                            let html = '';
+                            $.each(data.result, function (index, object) {
+                                console.log(object);
+                                html +=  messageApi({
+                                    Error: data.result
+                                });
+                                /*messageApi({
+                                    Error: data.result
+                                });*/
+                            });
+                            console.log(html);
+                            $('#orders-multiple-eship-div').append(html);
+                            $('#error-eship-dim-w').show();
+                            $('#orders-multiple-eship').hide();
                         }
                     },
-                    error: function (d, x, v) {
-                        console.error('d', d);
-                        console.error('x', x);
-                        console.error('v', v);
+                    error: function (error) {
+                        $('#spinner-eship-orders').remove();
+                        $('#orders-multiple-eship-div').append(
+                            messageApi({
+                                Error: error.responseText
+                            })
+                        );
+                        $('#error-eship-dim-w').show();
+                        console.error('error', error.responseText);
                     }
                 });
             }
@@ -587,6 +611,7 @@
                     if (data.error) {
                         console.log(data);
                     } else {
+                        //$('#error-eship-dim-w').show();
                         $.each(data.result, function (index, object) {
                             //console.log(`object ${object.status}`);
                             let yes = '';
@@ -703,23 +728,6 @@
                                                                         </select>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-12">
-                                                                    <h6>Config Dimensions and Weigth</h6>
-                                                                    <div class="mb-2">
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" id="radioDimEdits1${object.id}" ${yes} name="btnStatusEshipEdit" value="1">
-                                                                            <label class="form-check-label" for="radioDimEdits1${object.id}">
-                                                                                Use this package template
-                                                                            </label>
-                                                                        </div>
-                                                                        <div class="form-check">
-                                                                            <input class="form-check-input" type="radio" id="radioDimEdits2${object.id}" ${no} name="btnStatusEshipEdit" value="0">
-                                                                            <label class="form-check-label" for="radioDimEdits2${object.id}">
-                                                                                Use items weight and dimensions for shipments
-                                                                            </label>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                                 <div class="row g-1 mb-4">
                                                                     <div class="col-12 col-md-6">
                                                                         <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Close</button>
@@ -826,12 +834,6 @@
                     label.addClass("valid").css('color','green').text('Valid')
                 },
                 submitHandler: function(form) {
-                    let rb1 = 0;
-                    //console.log($('#radioDimEdits1').is(':checked'));
-                    if ($('#radioDimEdits1' + dataForm).is(':checked')) {
-                        rb1 = 1
-                    }
-
                     let $data = {
                         method: 'POST',
                         url: eshipData.url,
@@ -846,8 +848,7 @@
                             heightEship: $('#height-input-eship'+ dataForm).val(),
                             unitDimensionsEship: $('#unit-input-eship'+ dataForm).val(),
                             weightEship: $('#weigth-input-eship'+ dataForm).val(),
-                            unitWeigthEship: $('#unitWeigth-input-eship'+ dataForm).val(),
-                            statusEship: rb1
+                            unitWeigthEship: $('#unitWeigth-input-eship'+ dataForm).val()
                         },
                         type: 'json'
                     };
@@ -949,7 +950,6 @@
                     label.addClass("valid").css('color','green').text('Valid')
                 },
                 submitHandler: function(form) {
-                    console.log(form);
                     let $data = {
                         method: 'POST',
                         url: eshipData.url,
@@ -964,10 +964,11 @@
                             unitDimensionsEship: $('#unit-input-eship').val(),
                             weightEship: $('#weigth-input-eship').val(),
                             unitWeigthEship: $('#unitWeigth-input-eship').val(),
-                            statusEship: $('#status-input-eship').prop('checked')
+                            statusEship: 1
                         },
                         type: 'json'
                     };
+                    //console.log($data);
                     ajaxEship($data);
                 }
             });

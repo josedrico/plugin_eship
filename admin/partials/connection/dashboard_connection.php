@@ -25,10 +25,10 @@
                         <button class="nav-link active" id="nav-connection-tab" data-bs-toggle="tab" data-bs-target="#nav-connection" type="button" role="tab" aria-controls="nav-connection" aria-selected="true">
                             Connection
                         </button>
-                        <?php if (isset($user_eship[0]->dimensions)):?>
-                            <button class="nav-link" id="nav-package-tab" data-bs-toggle="tab" data-bs-target="#nav-package" type="button" role="tab" aria-controls="nav-package" aria-selected="false">
-                                Package
-                            </button>
+                        <?php if (!is_null($user_eship)):?>
+                        <button class="nav-link" id="nav-package-tab" data-bs-toggle="tab" data-bs-target="#nav-package" type="button" role="tab" aria-controls="nav-package" aria-selected="false">
+                            Package
+                        </button>
                         <?php endif;?>
                     </div>
                 </nav>
@@ -110,20 +110,20 @@
                                 <h5>Config Dimensions and Weigth</h5>
                                 <div class="mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template">
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship) && $user_eship[0]->dimensions == 0)? 'checked="true"' : 'checked="false"';?>>
                                         <label class="form-check-label" for="radioDimSts1">
                                             Use a package template
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" checked>
-                                        <label class="form-check-label" for="radioDimSts2" value="default">
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship) && $user_eship[0]->dimensions == 1)? 'checked="true"' : 'checked="false"';?>>
+                                        <label class="form-check-label" for="radioDimSts2">
                                             Use items weight and dimensions for shipments
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                            <?php if (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0):?>
+                            <?php if (!$dimensions):?>
                                 <div class="col-12 col-md-6 text-end" data-show-eship-btn>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eshipDimWeModal">
                                         Create dimensions
@@ -131,31 +131,30 @@
                                 </div>
                             <?php endif;?>
                         </div>
-                        <?php if (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0):?>
-                            <div class="row mt-1" data-show-eship-div>
-                                <div class="col-12 mt-2">
-                                    <table id="eship-dim-weigth" class="table table-bordered table-hover">
-                                        <thead>
-                                        <tr>
-                                            <th colspan="5">Dimensions</th>
-                                            <th colspan="4">Weight</th>
-                                        </tr>
-                                        <tr>
-                                            <th data-field="name">Alias</th>
-                                            <th data-field="length_dim">Length</th>
-                                            <th data-field="width_dim">Width</th>
-                                            <th data-field="height_dim">Height</th>
-                                            <th data-field="unit_dim">Unit</th>
-                                            <th data-field="weight_w">weight</th>
-                                            <th data-field="unit_w">Unit</th>
-                                            <th data-field="status">Status</th>
-                                            <th data-field="actions">Actions</th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                </div>
+                        <div class="row mt-1" data-show-eship-div>
+                            <div class="col-12 mt-2">
+                                <div id="error-eship-dim-w" style="display: none;"></div>
+                                <table id="eship-dim-weigth" class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th colspan="5">Dimensions</th>
+                                        <th colspan="4">Weight</th>
+                                    </tr>
+                                    <tr>
+                                        <th data-field="name">Name</th>
+                                        <th data-field="length_dim">Length</th>
+                                        <th data-field="width_dim">Width</th>
+                                        <th data-field="height_dim">Height</th>
+                                        <th data-field="unit_dim">Unit</th>
+                                        <th data-field="weight_w">weight</th>
+                                        <th data-field="unit_w">Unit</th>
+                                        <th data-field="status">Status</th>
+                                        <th data-field="actions">Actions</th>
+                                    </tr>
+                                    </thead>
+                                </table>
                             </div>
-                        <?php endif;?>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -241,23 +240,6 @@
                                             <option value="kg" selected>kg</option>
                                             <option value="lb">lb</option>
                                         </select>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="mb-2">
-                                        <h6>Config Dimensions and Weigth</h6>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" id="radioDimCreate1" name="statusEship" value="1">
-                                            <label class="form-check-label" for="radioDimCreate1">
-                                                Use this package template
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" id="radioDimCreate2" name="statusEship" value="0" checked>
-                                            <label class="form-check-label" for="radioDimCreate2">
-                                                Use items weight and dimensions for shipments
-                                            </label>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="row g-1 mb-4">
