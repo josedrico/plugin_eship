@@ -27,7 +27,7 @@ class ESHIP_Shipment {
 
     public function getShipment()
     {
-        //try {
+        try {
             $uri = 'shipment';
             $timeout = 50;
             $json = json_encode(array(
@@ -43,13 +43,13 @@ class ESHIP_Shipment {
             }
 
             $response = wp_remote_retrieve_body($this->eship_api->post($uri, $json, $timeout));
-            /*
+
         } catch (\Exception $e) {
             $response = array(
                 'error'     => TRUE,
                 'result'    => $e->getMessage()
             );
-        }*/
+        }
         return $response;
     }
 }
