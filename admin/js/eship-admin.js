@@ -1,7 +1,7 @@
 (function($){
-    getQuotationEship();
     modalInsertToken();
     modalUpdateToken();
+    getQuotationEship();
     selectElement();
     clickGetShipment();
     closeReload();
@@ -13,6 +13,44 @@
     clickEditDimEship();
     changeStatusDimEship();
     changeStatusActiveEship();
+
+    function checkErrorsEshipWooConn() {
+        let $data = {
+            method: 'POST',
+            url: eshipData.url,
+            content: {
+                action: 'get_check_woo_errors_eship',
+                nonce: eshipData.security,
+                typeAction: 'check_woo_errors_all'
+            },
+            type: 'json'
+        };
+
+        $.ajax({
+            method: $data.method,
+            url: $data.url,
+            data: $data.content,
+            dataType: $data.type,
+        }).then((data) => {
+            console.log('error', data);
+            if (data.error) {
+                $('#woocommerce-order-eship').remove();
+                $('#bulk-action-selector-top option[value="eship_quotations"]').remove();
+                swal({
+                    title: "Error!",
+                    text: data.message + "\nESHIP",
+                    icon: "error",
+                });
+                return true;
+            } else {
+                return false;
+            }
+
+        }).fail((error)=> {
+            console.error(error)
+            return true;
+        });
+    }
 
     function closeReload() {
         $('#show-pdf-eship').click(function () {
@@ -73,23 +111,19 @@
 
     function modalInsertToken() {
         $('#tokenEshipModalBtn').on('click', function (e) {
+            console.log(checkErrorsEshipWooConn());
             //e.preventDefault();
             let formDataToken = $('#token-input-eship').val();
             let formDataCs = $('#cs-input-eship').val();
             let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
+            let formEmailCompany = $('#email-input-eship').val();
             //let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
 
             $("#tokenEshipModalForm").validate({
                 rules: {
                     apiKeyEship: {
-                        required: true
-                    },
-                    customerSecretEship: {
-                        required: true
-                    },
-                    customerKeyEship: {
                         required: true
                     },
                     phoneCompanyEship: {
@@ -99,7 +133,7 @@
                     nameCompanyEship: {
                         required: true
                     },
-                    activateConfigEship: {
+                    emailCompanyEship: {
                         required: true
                     }
                 },
@@ -119,6 +153,7 @@
                             ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
+                            email: formEmailCompany,
                             dimensions: 1,
                             typeAction: 'add_token'
                         },
@@ -213,7 +248,7 @@
                     } else if (data.updateEffect) {
                         if (!data.error) {
                             swal({
-                                title: "Done!",
+                                title: "Done! " + data.message,
                                 icon: "success",
                             }).then((value) => {
                                 //console.log(value)
@@ -221,19 +256,42 @@
                             });
                         } else  {
                             swal({
-                                title: "Error!",
+                                title: "Error! " + data.message,
                                 icon: "error",
+                            }).then((value) => {
+                                //console.log(value)
+                                location.reload();
                             });
                         }
                     } else {
-                        return data;
+                        swal({
+                            title: "Error! " + data.message,
+                            icon: "error",
+                        }).then((value) => {
+                            //console.log(value)
+                            location.reload();
+                        });
                     }
                 } else {
+                    swal({
+                        title: "Error! " + data.message,
+                        icon: "error",
+                    }).then((value) => {
+                        //console.log(value)
+                        location.reload();
+                    });
                     $('#loader-light').hide()
                 }
             },
             error: function (error) {
                 console.log(error);
+                swal({
+                    title: "Error! " + error,
+                    icon: "error",
+                }).then((value) => {
+                    //console.log(value)
+                    location.reload();
+                });
             }
         });
     }

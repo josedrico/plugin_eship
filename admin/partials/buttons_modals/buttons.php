@@ -1,10 +1,5 @@
 <div id="app-eship-url" class="app-eship" data-url="<?php echo  ESHIP_PLUGIN_DIR_URL;?>">
     <div class="container mt-3">
-        <?php if(isset($error_eship)):?>
-        <div class="alert alert-danger" role="alert" style="display: flex">
-            <?php echo $error_eship;?>
-        </div>
-        <?php endif;?>
         <!-- Button trigger modal -->
         <div class="row">
             <div class="col-12">

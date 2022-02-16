@@ -5,15 +5,10 @@
                 <div id="eship-card" class="card mb-3">
                     <div class="row g-0">
                         <?php if(isset($img_title)):?>
-                            <div class="col-md-4">
-                                <img src="<?php echo $img_title;?>" class="img-fluid rounded-start" alt="...">
+                            <div class="offset-md-8 col-md-4">
+                                <img src="<?php echo $img_title;?>" class="img-fluid rounded-start" alt="Eship Logo">
                             </div>
                         <?php endif;?>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h2 class="card-title">Configs ESHIP</h2>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -23,11 +18,11 @@
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-connection-tab" data-bs-toggle="tab" data-bs-target="#nav-connection" type="button" role="tab" aria-controls="nav-connection" aria-selected="true">
-                            Connection
+                            Connection Settings
                         </button>
                         <?php if (!is_null($user_eship)):?>
                         <button class="nav-link" id="nav-package-tab" data-bs-toggle="tab" data-bs-target="#nav-package" type="button" role="tab" aria-controls="nav-package" aria-selected="false">
-                            Package
+                            Shipments
                         </button>
                         <?php endif;?>
                     </div>
@@ -36,34 +31,26 @@
                     <div class="tab-pane fade show active" id="nav-connection" role="tabpanel" aria-labelledby="nav-connection-tab">
                         <div class="row mt-3">
                             <div class="col-12">
-                                <h3 class="text-center">Connection Configs</h3>
+                                <h3 class="text-center">Connection Settings</h3>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-10 offset-sm-1">
                                 <form method="post" action="" class="row" id="<?php echo $config_data['form']?>" data-user="<?php echo $user_eship[0]->id;?>">
+                                    <?php if (isset($text_api_key)):?>
+
+                                    <div class="col-12 mt-2 mb-2">
+                                        <div class="alert alert-secondary" role="alert">
+                                            <?php echo $text_api_key;?>
+                                        </div>
+                                    </div>
+                                    <?php endif;?>
                                     <div class="col-12 col-md-6">
                                         <div class="mb-2">
                                             <label for="token-input-eship" class="col-form-label">
                                                 API Key:
                                             </label>
-                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->token_eship))? "value='".$user_eship[0]->token_eship."'": '';?>>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-2">
-                                            <label for="cs-input-eship" class="col-form-label">
-                                                Consumer Secret:
-                                            </label>
-                                            <input type="password" class="form-control" id="cs-input-eship" name="customerSecretEship" <?php echo (isset($user_eship[0]->consumer_key))? "value='".$user_eship[0]->consumer_key."'": '';?>>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        <div class="mb-2">
-                                            <label for="ck-input-eship" class="col-form-label">
-                                                Consumer Key:
-                                            </label>
-                                            <input type="password" class="form-control" id="ck-input-eship" name="customerKeyEship" <?php echo (isset($user_eship[0]->consumer_secret))? "value='".$user_eship[0]->consumer_secret."'": '';?>>
+                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='".$user_eship[0]->api_key_eship . "'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -107,7 +94,7 @@
                     <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab">
                         <div class="row mt-4 ms-3" >
                             <div class="col-12 col-md-6">
-                                <h5>Config Dimensions and Weigth</h5>
+                                <h5 class="pt-1 pb-2">Dimensions & Weight Settings</h5>
                                 <div class="mb-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship) && $user_eship[0]->dimensions == 0)? 'checked="true"' : 'checked="false"';?>>
@@ -126,7 +113,7 @@
                             <?php if (!$dimensions):?>
                                 <div class="col-12 col-md-6 text-end" data-show-eship-btn>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eshipDimWeModal">
-                                        Create dimensions
+                                        Create Dimensions
                                     </button>
                                 </div>
                             <?php endif;?>
@@ -166,7 +153,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="eshipDimWeModalLabel">
-                        Create Package Information
+                        Create Package Template
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>

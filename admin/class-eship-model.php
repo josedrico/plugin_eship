@@ -33,8 +33,8 @@ class ESHIP_Model {
                     }
 
                 case 'token':
-                    if (isset($results[0]->token_eship) && !empty($results[0]->token_eship)) {
-                        return $results[0]->token_eship;
+                    if (isset($results[0]->api_key_eship) && !empty($results[0]->api_key_eship)) {
+                        return $results[0]->api_key_eship;
                     } else  {
                         return  FALSE;
                     }
@@ -78,25 +78,25 @@ class ESHIP_Model {
 
             if ($typeAction == 'add_token') {
                 $columns = [
+                    'dimensions'        => (int)$dimensions,
                     'email'             => $email,//$adm->user_email,
-                    'token_eship'       => $token,
                     'name'              => $name,
                     'phone'             => $phone,
-                    'dimensions'        => (int)$dimensions
+                    'api_key_eship'     => $token,
                 ];
 
                 $format = [
+                    "%d",
                     "%s",
                     "%s",
                     "%s",
-                    "%s",
-                    "%d"
+                    "%s"
                 ];
                 $result = $this->db->insert(ESHIP_TB, $columns, $format);
             }
         }
 
-        return $result;
+        return $data;//$result;
     }
 
     public function update_data_store_eship($data)
@@ -109,7 +109,7 @@ class ESHIP_Model {
 
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'api_key_eship'       => sanitize_text_field($token),
+                        'api_key_eship'     => sanitize_text_field($token),
                         'phone'             => sanitize_text_field($phone),
                         'name'              => sanitize_text_field($name),
                         'email'             => sanitize_email($email),

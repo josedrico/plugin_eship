@@ -30,7 +30,7 @@ class ESHIP_Quotation {
     {
         $tb = new ESHIP_Model();
         $data = array(
-            'name'      => $tb->get_data_user_eship('name'),//$data['name'],
+            'name'      => ($tb->get_data_user_eship('name') != NULL)? $tb->get_data_user_eship('name') : $data['name'],
             'company'   => (isset($data['company']))? $data['company'] : '', //optional
             'street1'   => (isset($data['address']))? $data['address'] : '',
             'street2'   => (isset($data['address2']))? $data['address2'] : '', //optional
@@ -38,8 +38,8 @@ class ESHIP_Quotation {
             'zip'       => (isset($data['zip']))? $data['zip'] : '',
             'state'     => (isset($data['state']))? $data['state'] : '',
             'country'   => (isset($data['country']))? $data['country'] : '', //ISO 2 country code
-            'phone'     => $tb->get_data_user_eship('phone'),//$data['phone'],
-            'email'     => $tb->get_data_user_eship('email')
+            'phone'     => ($tb->get_data_user_eship('phone'))? $tb->get_data_user_eship('phone') : '',//$data['phone'],
+            'email'     => ($tb->get_data_user_eship('email'))? $tb->get_data_user_eship('email') : ''
         );
 
         return $data;
@@ -65,8 +65,14 @@ class ESHIP_Quotation {
 
     private function setParcels($data)
     {
-        $parcels    = array();
-        $data_gral  = $this->woocommerce_api->getGeneral();
+        $parcels   = array();
+        $data_gral = $this->woocommerce_api->getGeneral();
+        /*
+        if (isset($data_gral['error'])){
+            return $data_gral;
+        }
+        */
+
         $data_gral  = json_decode($data_gral);
         $tb         = new ESHIP_Model();
         $dim_active = $tb->get_data_user_eship('dimension');
@@ -74,18 +80,13 @@ class ESHIP_Quotation {
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
-            if ($dim_active && $dim_qry ) {
+            /*
+            if (isset($product['error'])) {
+                return $product;
+            }
+            */
 
-                $dimensions = array(
-                    'length'        => $product['dimensions']->length,
-                    'width'         => $product['dimensions']->width,
-                    'height'        => $product['dimensions']->height,
-                    'distance_unit' => $data_gral->dimension_unit,//'cm'
-                    'weight'        => $product['weight'],
-                    'mass_unit'     => $data_gral->weight_unit,
-                    'reference'     => 'reference'//
-                );
-            } else {
+            if ($dim_active == 0 && $dim_qry) {
                 $dimensions = array(
                     'length'        => (isset($dim_qry[0]->length_dim))? $dim_qry[0]->length_dim : '',
                     'width'         => (isset($dim_qry[0]->width_dim))? $dim_qry[0]->width_dim : '',
@@ -93,9 +94,20 @@ class ESHIP_Quotation {
                     'distance_unit' => (isset($dim_qry[0]->unit_dim))? $dim_qry[0]->unit_dim : '',
                     'weight'        => (isset($dim_qry[0]->weight_w))? $dim_qry[0]->weight_w : '',
                     'mass_unit'     => (isset($dim_qry[0]->unit_w))? $dim_qry[0]->unit_w : '',
-                    'reference'     => 'reference'//
+                    'reference'     => ''//
+                );
+            } else {
+                $dimensions = array(
+                    'length'        => $product['dimensions']->length,
+                    'width'         => $product['dimensions']->width,
+                    'height'        => $product['dimensions']->height,
+                    'distance_unit' => $data_gral->dimension_unit,
+                    'weight'        => $product['weight'],
+                    'mass_unit'     => $data_gral->weight_unit,
+                    'reference'     => ''//
                 );
             }
+
             array_push($parcels, $dimensions);
         }
         return $parcels;
@@ -115,6 +127,11 @@ class ESHIP_Quotation {
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
+            /*
+            if (isset($product['error'])) {
+                return $product;
+            }*/
+
             array_push($items, array(
                 'quantity'      => (isset($key->quantity))? $key->quantity : '',
                 'description'   => (isset($key->name))? $key->name : '',
@@ -150,15 +167,44 @@ class ESHIP_Quotation {
     public function create($id)
     {
         try {
-            $address_store          = $this->woocommerce_api->getStoreAddressApi();
-            $eship_address_store    = $this->setAddressFrom($address_store);
-            $order                  = $this->woocommerce_api->getOrderApi($id);
-            $address_shipping       = $order->shipping;
+            $address_store = $this->woocommerce_api->getStoreAddressApi();
+            if (isset($address_store['error'])) {
+                return json_encode($address_store);
+            }
+
+            $eship_address_store = $this->setAddressFrom($address_store);
+            $order = $this->woocommerce_api->getOrderApi($id);
+            if (isset($order['error']) && $order['error']) {
+                return json_encode($order);
+            }
+
+            $address_shipping  = $order->shipping;
             $eship_address_shipping = $this->setAddressTo($address_shipping);
             $line_items             = $order->line_items;
-            $eship_line_items       = $this->setItems($line_items);
-            $eship_parcels          = $this->setParcels($line_items);
-            $body                   = array();
+            /*
+            if (isset($line_items) && empty($line_items)) {
+                return json_encode( array(
+                    'error'     => TRUE,
+                    'result'    => 'Line Items',
+                    'message'   => 'No line items'
+                ));
+            }
+            */
+            $eship_line_items = $this->setItems($line_items);
+            /*
+            if (isset($eship_line_items['error'])) {
+                return json_encode($eship_line_items);
+            }
+            */
+
+            $eship_parcels    = $this->setParcels($line_items);
+            /*
+            if (isset($eship_parcels['error'])) {
+                return json_encode($eship_parcels);
+            }
+            */
+
+            $body = array();
 
             array_push($body, array(
                 'address_from'  => $eship_address_store,
@@ -168,21 +214,17 @@ class ESHIP_Quotation {
                 'parcels'       => $eship_parcels
             ));
 
-            $json      = json_encode($body[0]);
-            /*echo "<pre>";
-            var_dump(json_decode($json));
-            echo "</pre>";
-            die();*/
-            $response  = wp_remote_retrieve_body($this->eship_api->post('quotation', $json));
-            //var_dump($response);
-            //die();
+            $json = json_encode($body[0]);
+            var_dump($order);
+            die();
+            return wp_remote_retrieve_body($this->eship_api->post('quotation', $json));
+
         } catch (\Exception $e) {
-            $response = json_encode( array(
+            return json_encode( array(
                 'error'     => TRUE,
-                'result'    => $e->getMessage()
+                'result'    => 'Create Quotation',
+                'message'   => $e->getMessage()
             ));
         }
-
-        return $response;
     }
 }

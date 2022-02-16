@@ -27,9 +27,7 @@ class ESHIP_Activator {
         $sql = "CREATE TABLE IF NOT EXISTS " . ESHIP_TB . "(
             id int(11) NOT NULL AUTO_INCREMENT,
             email varchar(255) NOT NULL,
-            token_eship varchar(100) NOT NULL,
-            consumer_key varchar(255) NOT NULL,
-            consumer_secret varchar(255) NOT NULL,
+            api_key_eship varchar(100) NOT NULL,
             phone varchar(20) NOT NULL,
             name varchar(255) NOT NULL,
             dimensions smallint(1) NOT NULL,

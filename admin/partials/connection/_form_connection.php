@@ -31,19 +31,7 @@
                         <label for="token-input-eship" class="col-form-label">
                             API Key:
                         </label>
-                        <input type="password" class="form-control" id="token-input-eship" data-form="eship-register" name="apiKeyEship" <?php if(isset($form_data[0]->token_eship)):?>value="<?php echo $form_data[0]->token_eship;?>"<?php endif;?>>
-                    </div>
-                    <div class="mb-2">
-                        <label for="cs-input-eship" class="col-form-label">
-                            Consumer Secret:
-                        </label>
-                        <input type="password" class="form-control" id="cs-input-eship" data-form="eship-register" name="customerSecretEship" <?php if(isset($form_data[0]->consumer_secret)):?>value="<?php echo $form_data[0]->consumer_secret;?>"<?php endif;?>>
-                    </div>
-                    <div class="mb-2">
-                        <label for="ck-input-eship" class="col-form-label">
-                            Consumer Key:
-                        </label>
-                        <input type="password" class="form-control" id="ck-input-eship" data-form="eship-register" name="customerKeyEship" <?php if(isset($form_data[0]->consumer_key)):?>value="<?php echo $form_data[0]->consumer_key;?>"<?php endif;?>>
+                        <input type="password" class="form-control" id="token-input-eship" data-form="eship-register" name="apiKeyEship" <?php if(isset($form_data[0]->api_key_eship)):?>value="<?php echo $form_data[0]->api_key_eship;?>"<?php endif;?>>
                     </div>
                     <div class="mb-2">
                         <label for="phone-input-eship" class="col-form-label">
@@ -56,13 +44,6 @@
                             Name Company:
                         </label>
                         <input type="text" class="form-control" id="name-input-eship" data-form="eship-register" name="nameCompanyEship" <?php if(isset($form_data[0]->name)):?>value="<?php echo $form_data[0]->name;?>"<?php endif;?>>
-                    </div>
-                    <div class="mb-2">
-                        <h4 class="mt-1">Config Dimensions & Weigth</h4>
-                        <label for="activate-config-input-eship" class="col-form-label">
-                            <input class="form-check-input" type="checkbox" id="activate-config-input-eship" aria-label="Activate" name="activateConfigEship" <?php if(isset($form_data[0]->dimensions ) && $form_data[0]->dimensions == 1):?>checked<?php endif;?>>
-                            Activate dimension and weigth to every product.
-                        </label>
                     </div>
                     <div class="row g-1 mb-4">
                         <div class="col-12 col-md-6">

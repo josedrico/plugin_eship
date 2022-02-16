@@ -2,6 +2,7 @@
 namespace EshipAdmin;
 
 use EshipAdmin\ESHIP_Model;
+use EshipAdmin\ESHIP_Api;
 use Automattic\WooCommerce\Client;
 use EshipAdmin\ESHIP_Admin_Notices;
 
@@ -36,10 +37,31 @@ class ESHIP_Woocommerce_Api {
         return $this->url;
     }
 
+    private function getCredentialsEship($type)
+    {
+        $eship_api = new ESHIP_Api();
+        $api = $eship_api->getCredentials();
+
+        if (isset($api['body'])) {
+            $res = json_decode($api['body']);
+            switch ($type) {
+                case 'cs':
+                    return $res->consumer_secret;
+                case 'ck':
+                    return $res->consumer_key;
+                default:
+                    return 'No credetendials data';
+            }
+        } else  {
+            return FALSE;
+        }
+
+    }
+
     private function setConsumerKey()
     {
-        $tb = new ESHIP_Model();
-        $this->consumer_key = $tb->get_data_user_eship('ck');
+        //$this->consumer_key = $this->getCredentialsEship('ck');
+        $this->consumer_key = 'ck_a94b24d41f187ff0ec59a89d75f696dd0d27dd97';
     }
 
     private function getConsumerKey()
@@ -47,10 +69,10 @@ class ESHIP_Woocommerce_Api {
         return $this->consumer_key;
     }
 
-    private  function  setConsumerSecret()
+    private  function setConsumerSecret()
     {
-        $tb = new ESHIP_Model();
-        $this->consumer_secret = $tb->get_data_user_eship('cs');
+        //$this->consumer_secret = $this->getCredentialsEship('cs');
+        $this->consumer_secret = 'cs_d091de7424078810bb9029899aa59b9e1f770498';
     }
 
     private function getConsumerSecret()
@@ -110,13 +132,20 @@ class ESHIP_Woocommerce_Api {
                         }
 
                     default:
-                        return (( !empty($order) )? $order : FALSE);
+                        return $order;
                 }
+            } else {
+                return array(
+                    'error'   => TRUE,
+                    'message' => 'Order Woocommerce',
+                    'result'  => $order,
+                );
             }
         } catch (\Exception $e) {
-            return  array(
-                'error'     => TRUE,
-                'result'    => $e->getMessage()
+            return array(
+                'error'   => TRUE,
+                'message' => $e->getMessage(),
+                'result'  => 'Order data',
             );
         }
 
@@ -174,8 +203,8 @@ class ESHIP_Woocommerce_Api {
 
         } catch (\Exception $e) {
             return  array(
-                'error'     => TRUE,
-                'result'    => $e->getMessage()
+                'error'   => TRUE,
+                'message' => $e->getMessage()
             );
         }
 
@@ -206,77 +235,113 @@ class ESHIP_Woocommerce_Api {
 
     public function getStoreAddressApi()
     {
-        $address    = $this->woocommerce->get('settings/general/woocommerce_store_address');
-        $address2   = $this->woocommerce->get('settings/general/woocommerce_store_address_2');
-        $city       = $this->woocommerce->get('settings/general/woocommerce_store_city');
-        $country    = $this->woocommerce->get('settings/general/woocommerce_default_country');
-        $zip        = $this->woocommerce->get('settings/general/woocommerce_store_postcode');
+        try {
+            $address    = $this->woocommerce->get('settings/general/woocommerce_store_address');
+            $address2   = $this->woocommerce->get('settings/general/woocommerce_store_address_2');
+            $city       = $this->woocommerce->get('settings/general/woocommerce_store_city');
+            $country    = $this->woocommerce->get('settings/general/woocommerce_default_country');
+            $zip        = $this->woocommerce->get('settings/general/woocommerce_store_postcode');
 
-        if (! empty($country) && isset($country->value)) {
-            $countries = $this->getCountryApi($country->value);
+            if (! empty($country) && isset($country->value)) {
+                $countries = $this->getCountryApi($country->value);
+            }
+
+            $result = array(
+                'name'      => (!empty(get_bloginfo()))? get_bloginfo() : '',
+                'address'   => (isset($address->value) && !empty($address->value) )? $address->value : '',
+                'address2'  => (isset($address2->value) && !empty($address2->value) )? $address2->value : '',
+                'city'      => (isset($city->value) && !empty($city->value) )? $city->value : '',
+                'country'   => (isset($countries[0]['country_code']) )? $countries[0]['country_code'] : '',
+                'state'     => (isset($countries[0]['state_code']) )? $countries[0]['state_code'] : '',
+                'zip'       => (isset($zip->value) && !empty($zip->value) )? $zip->value : '',
+                'email'     => (!empty(get_option('admin_email')))? get_option('admin_email') : '',
+                'company'   => (!empty(get_bloginfo()))? get_bloginfo() : ''
+            );
+        } catch (\Exception $e) {
+            return  array(
+                'error'   => TRUE,
+                'message' => $e->getMessage(),
+                'result'  => 'Store Address'
+            );
         }
-
-        $result = array(
-            'name'      => (!empty(get_bloginfo()))? get_bloginfo() : '',
-            'address'   => (isset($address->value) && !empty($address->value) )? $address->value : FALSE,
-            'address2'  => (isset($address2->value) && !empty($address2->value) )? $address2->value : FALSE,
-            'city'      => (isset($city->value) && !empty($city->value) )? $city->value : FALSE,
-            'country'   => (isset($countries[0]['country_code']) )? $countries[0]['country_code'] : FALSE,
-            'state'     => (isset($countries[0]['state_code']) )? $countries[0]['state_code'] : FALSE,
-            'zip'       => (isset($zip->value) && !empty($zip->value) )? $zip->value : FALSE,
-            'email'     => (!empty(get_option('admin_email')))? get_option('admin_email') : '',
-            'company'   => (!empty(get_bloginfo()))? get_bloginfo() : ''
-        );
 
         return $result;
     }
 
     public function getProductApi($id)
     {
-        $product = $this->woocommerce->get('products/' . $id);
-        return array(
-            'product_id'        => $product->id,
-            'name'              => (! empty($product->name))? trim(htmlentities($product->name)) : FALSE,
-            'sku'               => (! empty($product->sku))? trim($product->sku) : FALSE,
-            'price'             => (! empty($product->price))? trim($product->price) : FALSE,
-            'regular_price'     => (! empty($product->regular_price))? trim($product->regular_price) : FALSE,
-            'sale_price'        => (! empty($product->sale_price))? trim($product->sale_price) : FALSE,
-            'description'       => (! empty($product->description))? trim(htmlentities($product->description)) : FALSE,
-            'short_description' => (! empty($product->short_description))? trim(htmlentities($product->short_description)) : FALSE,
-            'weight'            => (! empty($product->weight))? trim($product->weight) : FALSE,
-            'dimensions'        => (! empty($product->dimensions))? $product->dimensions : FALSE,
-            'shipping_required' => (! empty($product->shipping_required))? trim($product->shipping_required) : FALSE,
-            'shipping_taxable'  => (! empty($product->shipping_taxable))? trim($product->shipping_taxable) : FALSE,
-            'shipping_class'    => (! empty($product->shipping_class))? trim(htmlentities($product->shipping_class)) : FALSE,
-            'shipping_class_id' => (! empty($product->shipping_class_id))? trim($product->shipping_class_id) : FALSE,
-            'images'            => (! empty($product->images))? $product->images : FALSE,
-            'variations'        => (! empty($product->variations) )? $product->variations : FALSE,
-        );
+        try {
+            $product = $this->woocommerce->get('products/' . $id);
+            if ($product){
+                return array(
+                    'product_id'        => $product->id,
+                    'name'              => (! empty($product->name))? trim(htmlentities($product->name)) : FALSE,
+                    'sku'               => (! empty($product->sku))? trim($product->sku) : FALSE,
+                    'price'             => (! empty($product->price))? trim($product->price) : FALSE,
+                    'regular_price'     => (! empty($product->regular_price))? trim($product->regular_price) : FALSE,
+                    'sale_price'        => (! empty($product->sale_price))? trim($product->sale_price) : FALSE,
+                    'description'       => (! empty($product->description))? trim(htmlentities($product->description)) : FALSE,
+                    'short_description' => (! empty($product->short_description))? trim(htmlentities($product->short_description)) : FALSE,
+                    'weight'            => (! empty($product->weight))? trim($product->weight) : FALSE,
+                    'dimensions'        => (! empty($product->dimensions))? $product->dimensions : FALSE,
+                    'shipping_required' => (! empty($product->shipping_required))? trim($product->shipping_required) : FALSE,
+                    'shipping_taxable'  => (! empty($product->shipping_taxable))? trim($product->shipping_taxable) : FALSE,
+                    'shipping_class'    => (! empty($product->shipping_class))? trim(htmlentities($product->shipping_class)) : FALSE,
+                    'shipping_class_id' => (! empty($product->shipping_class_id))? trim($product->shipping_class_id) : FALSE,
+                    'images'            => (! empty($product->images))? $product->images : FALSE,
+                    'variations'        => (! empty($product->variations) )? $product->variations : FALSE,
+                );
+            } else  {
+                return array(
+                    'error'   => TRUE,
+                    'message' => 'No product data',
+                    'result'  => 'Product Woocommerce API'
+                );
+            }
+
+        } catch (\Exception $e) {
+            return array(
+                'error'   => TRUE,
+                'message' => $e->getMessage(),
+                'result'  => 'Product dimensions'
+            );
+        }
     }
 
     public function test()
     {
-        return  $this->woocommerce->get('');
+        //return $this->woocommerce->get('');
+
+        try {
+            return $this->woocommerce->get('');
+        } catch (\Exception $e) {
+            return  array(
+                'error'   => TRUE,
+                'message' => $e->getMessage()
+            );
+        }
+
     }
 
     public function getGeneral() {
-        $result = $this->woocommerce->get('data/continents');
-        $north_america = $result[4];
-        $data = array();
-        foreach ($north_america->countries  as $key) {
-            //var_dump($key->code);
-            if ($key->code == 'MX'){
-                //var_dump($key);
-                array_push($data, $key);
+        try {
+            $result = $this->woocommerce->get('data/continents');
+            $north_america = $result[4];
+            $data = array();
+            foreach ($north_america->countries  as $key) {
+                if ($key->code == 'MX'){
+                    array_push($data, $key);
+                }
             }
-            /*
-            if ($key->code == 'US'){
-                //var_dump($key);
-                array_push($data, $key);
-            }
-            */
+            return json_encode($data[0]);
+
+        } catch (\Exception $e) {
+            return array(
+                'error'   => TRUE,
+                'message' => $e->getMessage(),
+                'result'  => 'Store Address'
+            );
         }
-        $result = json_encode($data[0]);
-        return $result;
+
     }
 }
