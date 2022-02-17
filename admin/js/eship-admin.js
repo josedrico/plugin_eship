@@ -4,7 +4,6 @@
     getQuotationEship();
     selectElement();
     clickGetShipment();
-    closeReload();
     modalOrdersEship();
     modalShipmentEship();
     getDimensionsEship();
@@ -13,6 +12,7 @@
     clickEditDimEship();
     changeStatusDimEship();
     changeStatusActiveEship();
+    closeReload();
 
     function checkErrorsEshipWooConn() {
         let $data = {
@@ -111,11 +111,9 @@
 
     function modalInsertToken() {
         $('#tokenEshipModalBtn').on('click', function (e) {
-            console.log(checkErrorsEshipWooConn());
+            //console.log(checkErrorsEshipWooConn());
             //e.preventDefault();
             let formDataToken = $('#token-input-eship').val();
-            let formDataCs = $('#cs-input-eship').val();
-            let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
@@ -149,8 +147,6 @@
                             action: 'insert_token_eship',
                             nonce: eshipData.security,
                             token: formDataToken,
-                            cs: formDataCs,
-                            ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
                             email: formEmailCompany,
@@ -170,23 +166,14 @@
             //console.log('updateDataEshipModalBtn');
             //e.preventDefault();
             let formDataToken = $('#token-input-eship').val();
-            let formDataCs = $('#cs-input-eship').val();
-            let formDataCk = $('#ck-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
-            let formCheckboxCompany = $('#activate-config-input-eship').prop('checked');
             let user =  $('#updateDataEshipModalForm').data('user');
 
             $("#updateDataEshipModalForm").validate({
                 rules: {
                     apiKeyEship: {
-                        required: true
-                    },
-                    customerSecretEship: {
-                        required: true
-                    },
-                    customerKeyEship: {
                         required: true
                     },
                     phoneCompanyEship: {
@@ -197,9 +184,6 @@
                         required: true
                     },
                     emailCompanyEship: {
-                        required: true
-                    },
-                    activateConfigEship: {
                         required: true
                     }
                 },
@@ -215,8 +199,6 @@
                             action: 'update_token_eship',
                             nonce: eshipData.security,
                             token: formDataToken,
-                            cs: formDataCs,
-                            ck: formDataCk,
                             phone: formPhoneCompany,
                             name: formNameCompany,
                             email: formEmailCompany,

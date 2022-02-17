@@ -67,11 +67,7 @@ class ESHIP_Quotation {
     {
         $parcels   = array();
         $data_gral = $this->woocommerce_api->getGeneral();
-        /*
-        if (isset($data_gral['error'])){
-            return $data_gral;
-        }
-        */
+
 
         $data_gral  = json_decode($data_gral);
         $tb         = new ESHIP_Model();
@@ -80,11 +76,6 @@ class ESHIP_Quotation {
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
-            /*
-            if (isset($product['error'])) {
-                return $product;
-            }
-            */
 
             if ($dim_active == 0 && $dim_qry) {
                 $dimensions = array(
@@ -127,10 +118,6 @@ class ESHIP_Quotation {
 
         foreach ($data as $key) {
             $product = $this->woocommerce_api->getProductApi($key->product_id);
-            /*
-            if (isset($product['error'])) {
-                return $product;
-            }*/
 
             array_push($items, array(
                 'quantity'      => (isset($key->quantity))? $key->quantity : '',
@@ -148,12 +135,18 @@ class ESHIP_Quotation {
 
     private function setOrderInfo($data)
     {
+        $method_title = 'FLAT';
+        $total = 0;
+        if (!empty($data->shippings_lines)) {
+            $method_title = $data->shippings_lines[0]->method_title;
+        }
+
         $arr = array(
             'order_num'         => (isset($data->number))? $data->number : '',
             'paid'              => ($data->status != 'pending')? TRUE : FALSE,
             'fulfilled'         => FALSE,
             'store'             => 'woo',
-            'shipment'          => 'FLAT',//$data->shipping_lines,
+            'shipment'          => $method_title,//$data->shipping_lines,
             'total_price'       => $data->total,
             'subtotal_price'    => ((float)$data->total - (float)$data->total_tax),
             'total_tax'         => $data->total_tax,
@@ -167,43 +160,14 @@ class ESHIP_Quotation {
     public function create($id)
     {
         try {
-            $address_store = $this->woocommerce_api->getStoreAddressApi();
-            if (isset($address_store['error'])) {
-                return json_encode($address_store);
-            }
-
+            $address_store      = $this->woocommerce_api->getStoreAddressApi();
             $eship_address_store = $this->setAddressFrom($address_store);
-            $order = $this->woocommerce_api->getOrderApi($id);
-            if (isset($order['error']) && $order['error']) {
-                return json_encode($order);
-            }
-
-            $address_shipping  = $order->shipping;
+            $order              = $this->woocommerce_api->getOrderApi($id);
+            $address_shipping   = $order->shipping;
             $eship_address_shipping = $this->setAddressTo($address_shipping);
-            $line_items             = $order->line_items;
-            /*
-            if (isset($line_items) && empty($line_items)) {
-                return json_encode( array(
-                    'error'     => TRUE,
-                    'result'    => 'Line Items',
-                    'message'   => 'No line items'
-                ));
-            }
-            */
-            $eship_line_items = $this->setItems($line_items);
-            /*
-            if (isset($eship_line_items['error'])) {
-                return json_encode($eship_line_items);
-            }
-            */
-
-            $eship_parcels    = $this->setParcels($line_items);
-            /*
-            if (isset($eship_parcels['error'])) {
-                return json_encode($eship_parcels);
-            }
-            */
-
+            $line_items         = $order->line_items;
+            $eship_line_items   = $this->setItems($line_items);
+            $eship_parcels      = $this->setParcels($line_items);
             $body = array();
 
             array_push($body, array(
@@ -215,8 +179,7 @@ class ESHIP_Quotation {
             ));
 
             $json = json_encode($body[0]);
-            var_dump($order);
-            die();
+
             return wp_remote_retrieve_body($this->eship_api->post('quotation', $json));
 
         } catch (\Exception $e) {
