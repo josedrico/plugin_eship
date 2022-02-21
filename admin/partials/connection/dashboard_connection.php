@@ -64,7 +64,7 @@
                                     <div class="col-12 col-md-6">
                                         <div class="mb-2">
                                             <label for="name-input-eship" class="col-form-label">
-                                                Name Company:
+                                                Company Name:
                                             </label>
                                             <input type="text" class="form-control" id="name-input-eship" name="nameCompanyEship" <?php echo (isset($user_eship[0]->name))? "value='".$user_eship[0]->name."'": '';?>>
                                         </div>
@@ -72,7 +72,7 @@
                                     <div class="col-12 col-md-6">
                                         <div class="mb-2">
                                             <label for="email-input-eship" class="col-form-label">
-                                                E-mail Company:
+                                                Company E-mail:
                                             </label>
                                             <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='".$user_eship[0]->email."'": '';?>>
                                         </div>
@@ -91,19 +91,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab">
+                    <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab" data-dimensions="<?php echo (isset($user_eship[0]->dimensions))? $user_eship[0]->dimensions : '';?>">
                         <div class="row mt-4 ms-3" >
                             <div class="col-12 col-md-6">
                                 <h5 class="pt-1 pb-2">Dimensions & Weight Settings</h5>
                                 <div class="mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship) && $user_eship[0]->dimensions == 0)? 'checked="true"' : 'checked="false"';?>>
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0)? 'checked' : '';?>>
                                         <label class="form-check-label" for="radioDimSts1">
                                             Use a package template
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship) && $user_eship[0]->dimensions == 1)? 'checked="true"' : 'checked="false"';?>>
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 1)? 'checked' : '';?>>
                                         <label class="form-check-label" for="radioDimSts2">
                                             Use items weight and dimensions for shipments
                                         </label>
