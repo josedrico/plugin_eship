@@ -237,9 +237,7 @@
         public function eship_dashboard()
         {
             $config_data = array();
-            $text_api_key = 'To obtain your eShip API key, you login into your eShip account 
-                             <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
-                             "Settings" and click on "View your API Key".';
+            $text_api_key = 'To obtain your API key, login into your eShip account <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key';
             $dimensions = $this->eship_model->get_dimensions_eship();
             //var_dump($dimensions[0]);
             if ($user_eship = $this->eship_model->get_data_user_eship()) {
@@ -441,8 +439,8 @@
                     );
                 } else  {
                     $response = array(
-                        'result'    => $result->message,
-                        'res'       => $result,
+                        'result'    => $result,
+                        'res'       => (isset($result['error']))? $result['message'] : $result,
                         'message'   => '',
                         'error'     => TRUE,
                         'code'      => 404
@@ -464,6 +462,7 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
             $data = array();
+
             if (isset($_POST['typeAction'])) {
                 $orders = (isset($_POST['orders']))? explode(',', $_POST['orders']) : FALSE;
                 if (is_array($orders)) {
@@ -479,15 +478,15 @@
                         array_push($data, $result);
                     }
                     $response = array(
-                        'result'    => $data,
-                        'error'     => FALSE,
-                        'code'      => 201
+                        'result' => $data,
+                        'error'  => FALSE,
+                        'code'   => 201
                     );
                 } else {
                     $response = array(
-                        'result'    => 'Sin ordenes',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result' => 'Sin ordenes',
+                        'error'  => TRUE,
+                        'code'   => 404
                     );
                 }
             } else {
@@ -507,6 +506,7 @@
             check_ajax_referer('eship_sec', 'nonce');
             $response = array();
             $shipments = array();
+            $billings = array();
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
@@ -517,6 +517,10 @@
                         for ($i = 0; $i < count($content); $i++) {
                             $order = explode("_", $content[$i]['value']);
                             array_push($shipments, $order[0]);
+                            $order_woo = new ESHIP_Woocommerce_Api();
+                            $billing = $order_woo->getOrderApi($order[1]);
+                            $name = $billing->billing->firts_name . ' ' . $billing->billing->last_name;
+                            array_push($billings, $name);
                         }
                         $shipment = new ESHIP_Shipment($shipments, TRUE);
                         $res = $shipment->getShipment();
@@ -527,6 +531,7 @@
                 if ($result) {
                     $response = array(
                         'result'    => $result,
+                        'res'       => $billings,
                         'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201
@@ -534,7 +539,6 @@
                 } else  {
                     $response = array(
                         'result'    => 'No se generaron tus guías',
-                        'res'       => $res,
                         'redirect'  => FALSE,
                         'error'     => TRUE,
                         'code'      => 404
@@ -683,6 +687,7 @@
                         'res'       => $result,//$dim_content,
                         //'post'       => $_POST,
                         //'dim_content'  => $dim_content,
+                        'message'   => 'Your data is update',
                         'updateEffect' => $result,
                         'error'     => FALSE,
                         'code'      => 201
@@ -691,6 +696,7 @@
                     $response = array(
                         'result'    => 'No updated',
                         'res'       => $result,
+                        'message'   => 'Your data not is update',
                         'error'     => TRUE,
                         'code'      => 404
                     );
@@ -783,7 +789,8 @@
                     $response = array(
                         'result'    => 'Done!',
                         'updateEffect' => $result,
-                        'data' => $_POST,
+                        //'data' => $_POST,
+                        'message' => 'Your data update.',
                         //'redirect'  => TRUE,
                         'error'     => FALSE,
                         'code'      => 201
@@ -791,8 +798,9 @@
                 } else  {
                     $response = array(
                         'result'    => 'No updated',
-                        'res'       => $result,
-                        'data' => $_POST,
+                        //'res'       => $result,
+                        //'data' => $_POST,
+                        'message' => 'Your data not is update',
                         'error'     => TRUE,
                         'code'      => 404
                     );
@@ -806,16 +814,18 @@
                 if ($result) {
                     $response = array(
                         'result'    => 'Done!',
-                        'res'       => $result,
+                        //'res'       => $result,
                         'redirect'  => TRUE,
                         'error'     => FALSE,
+                        'message' => 'Your data update',
                         'code'      => 201
                     );
                 } else  {
                     $response = array(
                         'result'    => 'No updated',
-                        'res'       => $result,
+                        //'res'       => $result,
                         'error'     => TRUE,
+                        'message' => 'Your data no update',
                         'code'      => 404
                     );
                 }
@@ -844,12 +854,14 @@
                     //'res'       => $res,
                     'redirect'  => TRUE,
                     'error'     => FALSE,
+                    'message' => 'Your data is deleted',
                     'code'      => 201
                 );
             } else  {
                 $response = array(
                     'result'    => 'No deleted',
                     'error'     => TRUE,
+                    'message' => 'Your data not is deleted',
                     'code'      => 404
                 );
             }
