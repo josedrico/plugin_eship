@@ -230,7 +230,7 @@
                     } else if (data.updateEffect) {
                         if (!data.error) {
                             swal({
-                                title: "Done! " + data.message,
+                                title: "Done! " + ((typeof data.message != 'undefined')? data.message : ''),
                                 icon: "success",
                             }).then((value) => {
                                 //console.log(value)
@@ -238,7 +238,7 @@
                             });
                         } else  {
                             swal({
-                                title: "Error! " + data.message,
+                                title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                                 icon: "error",
                             }).then((value) => {
                                 //console.log(value)
@@ -247,7 +247,7 @@
                         }
                     } else {
                         swal({
-                            title: "Error! " + data.message,
+                            title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                             icon: "error",
                         }).then((value) => {
                             //console.log(value)
@@ -256,7 +256,7 @@
                     }
                 } else {
                     swal({
-                        title: "Error! " + data.message,
+                        title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                         icon: "error",
                     }).then((value) => {
                         //console.log(value)
@@ -485,7 +485,7 @@
             let modalShow = document.getElementById('ordersQuotationsEshipModalToggle');
             modal.show(modalShow);
             let orders =  $('#ordersQuotationsEshipModalToggle').data('orders-eship');
-            if (orders != 'undefined' && orders != '') {
+            if (typeof orders != 'undefined' && orders != '') {
                 $.ajax({
                     method: 'POST',
                     url:  eshipData.url,
@@ -580,7 +580,7 @@
     function modalShipmentEship(){
         $('#ordersQuotationsEshipModalToggleBtn').on('click', function () {
             let select = $('#ordersModalForms').serializeArray();
-            console.log(select);
+            //console.log(select);
             if (select.length > 0) {
                 $.ajax({
                     method: 'POST',
@@ -593,22 +593,35 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log(data.result);
+                        console.log(data);
                         $('#spinner-eship-orders-pdf').remove();
                         if (! data.error && data.result.status == 'SUCCESS'){
                             let newArr = [];
+                            let nameUser = data.res;
                             let fulfillment = data.result.batch_labels;
                             $.each(fulfillment, function (i,o) {
                                //console.log('o', o);
                                 if (o.status == 'SUCCESS') {
                                     newArr.push({
                                         order: o.fulfillment.order_num,
-                                        client: 'Not specified',
+                                        client: nameUser[i],
                                         services: o.provider,
                                         trackingNumber: `<a href="${o.tracking_url_provider}" target="_blank">${o.tracking_number}</a>`,
                                         tracking: `<a class="page-title-action btn btn-light" href="${o.label_url}" target="_blank">Label <i class="fas fa-file-pdf"></i></a>`,
                                         //label_url
                                         //tracking_url_provider
+                                    });
+                                } else {
+                                    $('#orders-multiple-eship-div').show();
+                                    $.each( fulfillment, function (i,o) {
+                                        $.each( o.messages, function (ind,obj) {
+                                            $('#orders-multiple-eship-div').append(messageApi({
+                                                bg: 'alert-white',
+                                                svg: '<span class="dashicons dashicons-info-outline"></span>',
+                                                Error: `<strong>${obj.source}</strong> - ${obj.text}`
+                                            }));
+                                        });
+                                        //console.log('error',o.messages);
                                     });
                                 }
                             });
@@ -646,7 +659,7 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    //console.log(data);
+                    console.log(data);
                     let newArr = [];
                     if (data.error) {
                         console.log(data);
@@ -900,7 +913,7 @@
 
     function changeStatusDimEship(){
         $('#eship-dim-weigth').on('click', 'input[data-status-dim-eship]',function () {
-            if ($(this).data('dim-id') != 'undefined') {
+            if (typeof $(this).data('dim-id') != 'undefined') {
                 let dimId = $(this).data('dim-id');
                 let input = $(this).val();
                 let $data = {
@@ -1014,5 +1027,4 @@
             });
         });
     }
-
 })(jQuery);
