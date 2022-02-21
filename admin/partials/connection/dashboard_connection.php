@@ -97,15 +97,15 @@
                                 <h5 class="pt-1 pb-2">Dimensions & Weight Settings</h5>
                                 <div class="mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0)? 'checked' : '';?>>
-                                        <label class="form-check-label" for="radioDimSts1">
-                                            Use a package template
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 1)? 'checked' : '';?>>
                                         <label class="form-check-label" for="radioDimSts2">
                                             Use items weight and dimensions for shipments
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0)? 'checked' : '';?>>
+                                        <label class="form-check-label" for="radioDimSts1">
+                                            Use a package template
                                         </label>
                                     </div>
                                 </div>
