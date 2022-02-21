@@ -16,9 +16,12 @@
             <div class="modal-body">
                 <div class="container" id="orders-list">
                     <div id="spinner-load-data-q" class="d-flex justify-content-center">
-                        <div class="spinner-border" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <div class="spinner-border" role="status" aria-hidden="true">
+                            <span class="visually-hidden"></span>
                         </div>
+                        <p class="fs-4 fw-bold">
+                            Looking for services
+                        </p>
                     </div>
                     <div class="row">
                         <div class="col-12">
