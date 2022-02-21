@@ -11,6 +11,9 @@
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="fs-4 fw-bold">
+                        Looking for services
+                    </p>
                 </div>
                 <table id="orders-multiple-eship" class="table" style="display: none;">
                     <thead>
@@ -43,8 +46,10 @@
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="fs-4 fw-bold">
+                        Looking for services
+                    </p>
                 </div>
-                <div id="orders-multiple-eship-div" style="display: none;"></div>
                 <table id="orders-multiple-eship-pdf" class="table" style="display: none;">
                     <thead>
                     <tr>
@@ -56,6 +61,7 @@
                     </tr>
                     </thead>
                 </table>
+                <div id="orders-multiple-eship-div" style="display: none;"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
