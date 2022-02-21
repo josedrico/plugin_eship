@@ -1,8 +1,6 @@
 <?php
 namespace EshipAdmin;
 
-use Cassandra\Date;
-
 class ESHIP_Model {
     protected $db;
 
@@ -77,6 +75,7 @@ class ESHIP_Model {
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'add_token') {
+
                 $columns = [
                     'dimensions'        => (int)$dimensions,
                     'email'             => $email,//$adm->user_email,
