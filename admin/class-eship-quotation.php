@@ -45,19 +45,97 @@ class ESHIP_Quotation {
         return $data;
     }
 
-    private function setAddressTo($data)
+    private function setAddressTo($data, $shippings_lines = FALSE)
     {
+        $mail = '';
+        if (isset($data->email) && !empty($data->email)) {
+            $mail = $data->email;
+        } else {
+            $mail = $shippings_lines->email;
+        }
+
+        $phone = '';
+        if (isset($data->phone) && !empty($data->phone)) {
+            $phone = $data->phone;
+        } else {
+            $phone = $shippings_lines->phone;
+        }
+
+        $name = '';
+        if (isset($data->first_name) && !empty($data->first_name)) {
+            $name = $data->first_name;
+        } else {
+            $name = $shippings_lines->first_name;
+        }
+
+        $last_name = '';
+        if (isset($data->last_name) && !empty($data->last_name)) {
+            $last_name = $data->last_name;
+        } else {
+            $last_name = $shippings_lines->last_name;
+        }
+
+        $company = '';
+        if (isset($data->company) && !empty($data->company)) {
+            $company = $data->company;
+        } else {
+            $company = $shippings_lines->company;
+        }
+
+        $address_1 = '';
+        if (isset($data->address_1) && !empty($data->address_1)) {
+            $address_1 = $data->address_1;
+        } else {
+            $address_1 = $shippings_lines->address_1;
+        }
+
+        $address_2 = '';
+        if (isset($data->address_2) && !empty($data->address_2)) {
+            $address_2 = $data->address_2;
+        } else {
+            $address_2 = $shippings_lines->address_2;
+        }
+
+
+        $city = '';
+        if (isset($data->city) && !empty($data->city)) {
+            $city = $data->city;
+        } else {
+            $city = $shippings_lines->city;
+        }
+
+        $postcode = '';
+        if (isset($data->postcode) && !empty($data->postcode)) {
+            $postcode = $data->postcode;
+        } else {
+            $postcode = $shippings_lines->postcode;
+        }
+
+        $state = '';
+        if (isset($data->state) && !empty($data->state)) {
+            $state = $data->state;
+        } else {
+            $state = $shippings_lines->state;
+        }
+
+        $country = '';
+        if (isset($data->country) && !empty($data->country)) {
+            $country = $data->country;
+        } else {
+            $country = $shippings_lines->country;
+        }
+
         $data = array(
-            'name'      => (isset($data->first_name) && isset($data->last_name))? $data->first_name . " " . $data->last_name : '',
-            'company'   => (isset($data->company))? $data->company : '', //optional
-            'street1'   => (isset($data->address_1))? $data->address_1 : '',
-            'street2'   => (isset($data->address_2))? $data->address_2 : '', //optional
-            'city'      => (isset($data->city))? $data->city : '',
-            'zip'       => (isset($data->postcode))? $data->postcode : '',
-            'state'     => (isset($data->state))? $data->state : '',
-            'country'   => (isset($data->country))? $data->country : '', //ISO 2 country code
-            'phone'     => (isset($data->phone))? $data->phone : '',
-            'email'     => (isset($data->email))? $data->email : '' , //optional
+            'name'      => $name . ' ' . $last_name,
+            'company'   => $company, //optional
+            'street1'   => $address_1,
+            'street2'   => $address_2, //optional
+            'city'      => $city,
+            'zip'       => $postcode,
+            'state'     => $state,
+            'country'   => $country, //ISO 2 country code
+            'phone'     => $phone,
+            'email'     => $mail //optional
         );
 
         return $data;
@@ -145,6 +223,7 @@ class ESHIP_Quotation {
             'order_num'         => (isset($data->number))? $data->number : '',
             'paid'              => ($data->status != 'pending')? TRUE : FALSE,
             'fulfilled'         => FALSE,
+            //'shipping'          => $data->shipping,
             'store'             => 'woo',
             'shipment'          => $method_title,//$data->shipping_lines,
             'total_price'       => $data->total,
@@ -163,8 +242,7 @@ class ESHIP_Quotation {
             $address_store      = $this->woocommerce_api->getStoreAddressApi();
             $eship_address_store = $this->setAddressFrom($address_store);
             $order              = $this->woocommerce_api->getOrderApi($id);
-            $address_shipping   = $order->shipping;
-            $eship_address_shipping = $this->setAddressTo($address_shipping);
+            $eship_address_shipping = $this->setAddressTo($order->shipping, $order->billing);
             $line_items         = $order->line_items;
             $eship_line_items   = $this->setItems($line_items);
             $eship_parcels      = $this->setParcels($line_items);
