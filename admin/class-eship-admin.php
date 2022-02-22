@@ -138,10 +138,16 @@
 
         public function insert_quotations_bulk_eship()
         {
+            $check_dim = $this->eship_model->get_dimensions_eship();
             $id_token = $this->eship_model->get_data_user_eship('id');
-            if ($id_token) {
+            if ($id_token && $check_dim) {
                 $actions['eship_quotations'] = 'Create multiple shipments';
                 return $actions;
+            } else {
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $adm_notice = new ESHIP_Admin_Notices($text);
+                $adm_notice->error_message();
+                add_action( 'admin_notices',[$this, 'error_message'] );
             }
 
         }
@@ -281,51 +287,60 @@
 
         public function view_buttons_eship()
         {
-            $pdf_arr                = array();
-            $button_quotation_eship = 'Ship Now';
+            $check_dim = $this->eship_model->get_dimensions_eship();
+            $id_token = $this->eship_model->get_data_user_eship('id');
+            if ($check_dim && $id_token) {
+                $pdf_arr                = array();
+                $button_quotation_eship = 'Ship Now';
 
-            if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                $order          = $_GET['post'];
-                $pdf            = new ESHIP_Woocommerce_Api();
-                $pdf_exist      = $pdf->getOrderApi($order);
-                $check_metadata = $pdf_exist->meta_data;
+                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                    $order          = $_GET['post'];
+                    $pdf            = new ESHIP_Woocommerce_Api();
+                    $pdf_exist      = $pdf->getOrderApi($order);
+                    $check_metadata = $pdf_exist->meta_data;
 
-                if (! empty($pdf_exist->meta_data) && count($pdf_exist->meta_data) > 0) {
-                    foreach ($pdf_exist->meta_data  as $key) {
-                        if ($key->key == 'tracking_number') {
-                            $pdf_arr['tracking_number'] = $key->value;
+                    if (! empty($pdf_exist->meta_data) && count($pdf_exist->meta_data) > 0) {
+                        foreach ($pdf_exist->meta_data  as $key) {
+                            if ($key->key == 'tracking_number') {
+                                $pdf_arr['tracking_number'] = $key->value;
+                            }
+
+                            if ($key->key == 'provider') {
+                                $pdf_arr['provider'] = $key->value;
+                            }
+
+                            if ($key->key == 'tracking_link') {
+                                $pdf_arr['tracking_link'] = $key->value;
+                            }
                         }
+                    }
 
-                        if ($key->key == 'provider') {
-                            $pdf_arr['provider'] = $key->value;
+                    $arr_total = array_filter(
+                        $pdf_arr,
+                        function ($var) {
+                            if (empty($var)) {
+                                return $var;
+                            }
                         }
+                    );
 
-                        if ($key->key == 'tracking_link') {
-                            $pdf_arr['tracking_link'] = $key->value;
-                        }
+                    if (empty($arr_total)) {
+                        $button_quotation_eship     = 'Create Another Label';
+                        $modal_shipment_pdf_show    = TRUE;
                     }
                 }
 
-                $arr_total = array_filter(
-                    $pdf_arr,
-                    function ($var) {
-                        if (empty($var)) {
-                            return $var;
-                        }
-                    }
-                );
+                $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+                $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+                $modal_shipment_pdf = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/shipment_sheet.php';
 
-                if (empty($arr_total)) {
-                    $button_quotation_eship     = 'Create Another Label';
-                    $modal_shipment_pdf_show    = TRUE;
-                }
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
+            } else {
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $adm_notice = new ESHIP_Admin_Notices($text);
+                $adm_notice->error_message();
+                add_action( 'admin_notices',[$this, 'error_message'] );
             }
-
-            $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
-            $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
-            $modal_shipment_pdf = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/shipment_sheet.php';
-
-            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
         }
 
         public function view_register_eship()
@@ -359,10 +374,7 @@
                 if($typeAction == 'create_shipment') {
                     $shipment   = new ESHIP_Shipment($rateId);
                     $result     = $shipment->getShipment();
-                    //var_dump($result);
-                    //die();
                     $result     = json_decode($result);
-                    #TODO Idea Register el documento en la base de datos
                 }
 
                 if ($result) {
@@ -417,8 +429,8 @@
                 $result = json_decode($result);
 
                 if ($result && !(isset($result->error))) {
-                    $woo            = new ESHIP_Woocommerce_Api();
-                    $update_order   = FALSE;
+                    $woo          = new ESHIP_Woocommerce_Api();
+                    $update_order = FALSE;
                     if ($result->object_id) {
                         $update_order = $woo->setOrderApi(
                             $_POST['order_id'],
@@ -518,8 +530,21 @@
                             $order = explode("_", $content[$i]['value']);
                             array_push($shipments, $order[0]);
                             $order_woo = new ESHIP_Woocommerce_Api();
-                            $billing = $order_woo->getOrderApi($order[1]);
-                            $name = $billing->billing->firts_name . ' ' . $billing->billing->last_name;
+                            $billings = $order_woo->getOrderApi($order[1]);
+
+                            if (! empty($billing->billing->firts_name)) {
+                                $name_final = $billing->billing->firts_name;
+                            } else  {
+                                $name_final = $billings->shipping->first_name;
+                            }
+
+                            if (! empty($billing->billing->last_name)) {
+                                $last_name = $billing->billing->last_name;
+                            } else  {
+                                $last_name = $billings->shipping->last_name;
+                            }
+
+                            $name = $name_final . ' ' . $last_name;
                             array_push($billings, $name);
                         }
                         $shipment = new ESHIP_Shipment($shipments, TRUE);
@@ -649,58 +674,56 @@
                 }
             }
 
-            if ($_POST['typeAction'] == 'update_status_dimension') {
-                $id_token    = $this->eship_model->get_data_user_eship('id');
-                $dim_content = $this->eship_model->get_dimensions_eship();
+            /*
+             * Check if exist a config on table
+             * */
+            $check_dim = $this->eship_model->get_dimensions_eship();
+            if($check_dim) {
+                if ($_POST['typeAction'] == 'update_status_dimension') {
+                    $id_token    = $this->eship_model->get_data_user_eship('id');
 
-                if ($_POST['status'] == 'default') {
-                    $dim_token = 1;
-                    if ($dim_content) {
-                        $this->eship_model->update_dimension_eship(array(
-                            'status' => 0,
-                            'dimId'  => $dim_content[0]->id,
-                            'typeAction' => 'update_status_dimension'
-                        ));
+                    if ($_POST['status'] == 'default') {
+                        $dim_token = 1;
+                    } else if ($_POST['status'] == 'template') {
+                        $dim_token = 0;
+                    }
+
+                    $result = $this->eship_model->update_data_store_eship(array(
+                        'id'         => $id_token,
+                        'dimensions' => $dim_token,
+                        'typeAction' => 'update_dimension_token'
+                    ));
+
+                    if ($result) {
+                        $response = array(
+                            'result'    => 'Done!',
+                            'res'       => $result,//$dim_content,
+                            //'post'       => $_POST,
+                            //'dim_content'  => $dim_content,
+                            'message'   => 'Your data is update',
+                            'updateEffect' => $result,
+                            'error'     => FALSE,
+                            'code'      => 201
+                        );
+                    } else  {
+                        $response = array(
+                            'result'    => 'No updated',
+                            'res'       => $result,
+                            'message'   => 'Your data not is update',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        );
                     }
                 }
-
-                if ($_POST['status'] == 'template') {
-                    $dim_token = 0;
-                    if ($dim_content) {
-                        $this->eship_model->update_dimension_eship(array(
-                            'status' => 1,
-                            'dimId'  => $dim_content[0]->id,
-                            'typeAction' => 'update_status_dimension'
-                        ));
-                    }
-                }
-
-                $result = $this->eship_model->update_data_store_eship(array(
-                    'id'         => $id_token,
-                    'dimensions' => $dim_token,
-                    'typeAction' => 'update_dimension_token'
-                ));
-
-                if ($result) {
-                    $response = array(
-                        'result'    => 'Done!',
-                        'res'       => $result,//$dim_content,
-                        //'post'       => $_POST,
-                        //'dim_content'  => $dim_content,
-                        'message'   => 'Your data is update',
-                        'updateEffect' => $result,
-                        'error'     => FALSE,
-                        'code'      => 201
-                    );
-                } else  {
-                    $response = array(
-                        'result'    => 'No updated',
-                        'res'       => $result,
-                        'message'   => 'Your data not is update',
-                        'error'     => TRUE,
-                        'code'      => 404
-                    );
-                }
+            } else {
+                $response = array(
+                    'result'  => array(
+                        'resource' => 'eshipDimWeModal'
+                    ),
+                    'message' => 'Your dimensions of your packages are not configured, please create your dimensions',
+                    'error'   => TRUE,
+                    'code'    => 404
+                );
             }
 
             echo json_encode($response);
@@ -772,37 +795,21 @@
             $result = $this->eship_model->update_dimension_eship($_POST);
 
             if ($_POST['typeAction'] == 'update_status_dimension') {
-                $id_token = $this->eship_model->get_data_user_eship('id');
-                if ($_POST['status'] == 1) {
-                    $dim_token = 0;
-                } else {
-                    $dim_token = 1;
-                }
-
-                $update_token = $this->eship_model->update_data_store_eship(array(
-                    'id'            => $id_token,
-                    'dimensions'    => $dim_token,
-                    'typeAction'    => 'update_dimension_token'
-                ));
 
                 if ($result == 1) {
                     $response = array(
                         'result'    => 'Done!',
                         'updateEffect' => $result,
-                        //'data' => $_POST,
-                        'message' => 'Your data update.',
-                        //'redirect'  => TRUE,
+                        'message'   => 'Your data update.',
                         'error'     => FALSE,
                         'code'      => 201
                     );
                 } else  {
                     $response = array(
-                        'result'    => 'No updated',
-                        //'res'       => $result,
-                        //'data' => $_POST,
+                        'result'  => 'No updated',
                         'message' => 'Your data not is update',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'error'   => TRUE,
+                        'code'    => 404
                     );
                 }
 
@@ -813,20 +820,18 @@
             if ($_POST['typeAction'] == 'update_dimensions') {
                 if ($result) {
                     $response = array(
-                        'result'    => 'Done!',
-                        //'res'       => $result,
-                        'redirect'  => TRUE,
-                        'error'     => FALSE,
-                        'message' => 'Your data update',
-                        'code'      => 201
+                        'result'   => 'Done!',
+                        'redirect' => TRUE,
+                        'error'    => FALSE,
+                        'message'  => 'Your data update',
+                        'code'     => 201
                     );
                 } else  {
                     $response = array(
-                        'result'    => 'No updated',
-                        //'res'       => $result,
-                        'error'     => TRUE,
+                        'result'  => 'No updated',
+                        'error'   => TRUE,
                         'message' => 'Your data no update',
-                        'code'      => 404
+                        'code'    => 404
                     );
                 }
 

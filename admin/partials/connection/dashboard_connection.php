@@ -124,19 +124,19 @@
                                 <table id="eship-dim-weigth" class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th colspan="5">Dimensions</th>
-                                        <th colspan="4">Weight</th>
+                                        <th colspan="5" data-align="center">Dimensions</th>
+                                        <th colspan="4" data-align="center">Weight</th>
                                     </tr>
                                     <tr>
-                                        <th data-field="name">Name</th>
-                                        <th data-field="length_dim">Length</th>
-                                        <th data-field="width_dim">Width</th>
-                                        <th data-field="height_dim">Height</th>
-                                        <th data-field="unit_dim">Unit</th>
-                                        <th data-field="weight_w">weight</th>
-                                        <th data-field="unit_w">Unit</th>
-                                        <th data-field="status">Status</th>
-                                        <th data-field="actions">Actions</th>
+                                        <th data-field="name" data-align="center">Name</th>
+                                        <th data-field="length_dim" data-align="center">Length</th>
+                                        <th data-field="width_dim" data-align="center">Width</th>
+                                        <th data-field="height_dim" data-align="center">Height</th>
+                                        <th data-field="unit_dim" data-align="center">Unit</th>
+                                        <th data-field="weight_w" data-align="center">weight</th>
+                                        <th data-field="unit_w" data-align="center">Unit</th>
+                                        <th data-field="status" data-align="center">Method</th>
+                                        <th data-field="actions" data-align="center">Actions</th>
                                     </tr>
                                     </thead>
                                 </table>

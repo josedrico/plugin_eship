@@ -144,41 +144,53 @@ class ESHIP_Quotation {
     private function setParcels($data)
     {
         $parcels   = array();
-        $data_gral = $this->woocommerce_api->getGeneral();
-
-
+        $data_gral = $this->woocommerce_api->getGeneral();+
         $data_gral  = json_decode($data_gral);
         $tb         = new ESHIP_Model();
         $dim_active = $tb->get_data_user_eship('dimension');
         $dim_qry    = $tb->get_dimensions_eship();
 
-        foreach ($data as $key) {
-            $product = $this->woocommerce_api->getProductApi($key->product_id);
-
-            if ($dim_active == 0 && $dim_qry) {
-                $dimensions = array(
-                    'length'        => (isset($dim_qry[0]->length_dim))? $dim_qry[0]->length_dim : '',
-                    'width'         => (isset($dim_qry[0]->width_dim))? $dim_qry[0]->width_dim : '',
-                    'height'        => (isset($dim_qry[0]->height_dim))? $dim_qry[0]->height_dim : '',
-                    'distance_unit' => (isset($dim_qry[0]->unit_dim))? $dim_qry[0]->unit_dim : '',
-                    'weight'        => (isset($dim_qry[0]->weight_w))? $dim_qry[0]->weight_w : '',
-                    'mass_unit'     => (isset($dim_qry[0]->unit_w))? $dim_qry[0]->unit_w : '',
-                    'reference'     => ''//
-                );
-            } else {
-                $dimensions = array(
-                    'length'        => $product['dimensions']->length,
-                    'width'         => $product['dimensions']->width,
-                    'height'        => $product['dimensions']->height,
-                    'distance_unit' => $data_gral->dimension_unit,
-                    'weight'        => $product['weight'],
-                    'mass_unit'     => $data_gral->weight_unit,
-                    'reference'     => ''//
-                );
-            }
-
+        if ($dim_active == 0 && $dim_qry[0]->status == 0) {
+            $dimensions = array(
+                'length'        => $dim_qry[0]->length_dim,
+                'width'         => $dim_qry[0]->width_dim,
+                'height'        => $dim_qry[0]->height_dim,
+                'distance_unit' => $dim_qry[0]->unit_dim,
+                'weight'        => $dim_qry[0]->weight_w,
+                'mass_unit'     => $dim_qry[0]->unit_w,
+                'reference'     => ''//
+            );
             array_push($parcels, $dimensions);
+        } else {
+
+            foreach ($data as $key) {
+                if ($dim_active == 0 && $dim_qry[0]->status == 1) {
+                    $dimensions = array(
+                        'length'        => $dim_qry[0]->length_dim,
+                        'width'         => $dim_qry[0]->width_dim,
+                        'height'        => $dim_qry[0]->height_dim,
+                        'distance_unit' => $dim_qry[0]->unit_dim,
+                        'weight'        => $dim_qry[0]->weight_w,
+                        'mass_unit'     => $dim_qry[0]->unit_w,
+                        'reference'     => ''//
+                    );
+                } else {
+                    $product = $this->woocommerce_api->getProductApi($key->product_id);
+                    $dimensions = array(
+                        'length'        => $product['dimensions']->length,
+                        'width'         => $product['dimensions']->width,
+                        'height'        => $product['dimensions']->height,
+                        'distance_unit' => $data_gral->dimension_unit,
+                        'weight'        => $product['weight'],
+                        'mass_unit'     => $data_gral->weight_unit,
+                        'reference'     => ''//
+                    );
+                }
+
+                array_push($parcels, $dimensions);
+            }
         }
+
         return $parcels;
     }
 

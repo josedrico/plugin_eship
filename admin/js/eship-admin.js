@@ -236,13 +236,13 @@
                                 //console.log(value)
                                 location.reload();
                             });
-                        } else  {
+                        } else {
                             swal({
                                 title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                                 icon: "error",
                             }).then((value) => {
-                                //console.log(value)
                                 location.reload();
+                                //console.log(value)
                             });
                         }
                     } else {
@@ -250,7 +250,6 @@
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                             icon: "error",
                         }).then((value) => {
-                            //console.log(value)
                             location.reload();
                         });
                     }
@@ -259,8 +258,14 @@
                         title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                         icon: "error",
                     }).then((value) => {
-                        //console.log(value)
-                        location.reload();
+                        if (typeof data.result.resource != 'undefined' && data.result.resource == 'eshipDimWeModal') {
+                            console.log(data.result);
+                            let modal = new bootstrap.Modal(document.getElementById('eshipDimWeModal'));
+                            let modalShow = document.getElementById('eshipDimWeModal');
+                            modal.show(modalShow);
+                        } else {
+                            location.reload();
+                        }
                     });
                     $('#loader-light').hide()
                 }
@@ -464,13 +469,6 @@
                         Error: `<strong>${o.source}</strong> - ${o.text}`
                     }));
                 });
-                /*
-                bsTb({
-                    id: '#custom-eship-messages',
-                    search: false,
-                    pagination: false
-                }, result.messages);
-                 */
             }
         }
     }
@@ -684,15 +682,15 @@
                                 unit_dim: object.unit_dim,
                                 weight_w: object.weight_w,
                                 unit_w: object.unit_w,
-                                status: `<div class="btn-group" role="group" aria-label="EShip Status">
+                                status: `<div class="btn-group-vertical" role="group" aria-label="EShip Status">
                                           <input data-status-dim-eship data-dim-id="${object.id}" type="radio" class="btn-check" name="btnStatusEship${index}" value="1" id="btnradio${index}_yes" autocomplete="off" ${yes}>
-                                          <label class="btn btn-outline-primary" for="btnradio${index}_yes">
-                                            <span class="dashicons dashicons-yes"></span>
+                                          <label class="btn btn-outline-primary w-100" for="btnradio${index}_yes">
+                                                <span class="dashicons dashicons-products"></span> Per product
                                           </label>
                                         
                                           <input data-status-dim-eship data-dim-id="${object.id}" type="radio" class="btn-check" name="btnStatusEship${index}" value="0" id="btnradio${index}_no" autocomplete="off" ${no}>
                                           <label class="btn btn-outline-primary" for="btnradio${index}_no">
-                                            <span class="dashicons dashicons-dismiss"></span>
+                                            <span class="dashicons dashicons-archive"></span> Per Order
                                           </label>
                                         </div>`,
                                 actions: `<button type="button" data-eship="edit" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editEshipDimModal${object.id}">
@@ -916,6 +914,7 @@
             if (typeof $(this).data('dim-id') != 'undefined') {
                 let dimId = $(this).data('dim-id');
                 let input = $(this).val();
+                console.log(input);
                 let $data = {
                     method: 'POST',
                     url: eshipData.url,
