@@ -530,18 +530,14 @@
                             $order = explode("_", $content[$i]['value']);
                             array_push($shipments, $order[0]);
                             $order_woo = new ESHIP_Woocommerce_Api();
-                            $billings = $order_woo->getOrderApi($order[1]);
+                            $billing = $order_woo->getOrderApi($order[1]);
 
-                            if (! empty($billing->billing->firts_name)) {
+                            if (! empty($billing->billing->firts_name) && !empty($billing->billing->last_name)) {
                                 $name_final = $billing->billing->firts_name;
-                            } else  {
-                                $name_final = $billings->shipping->first_name;
-                            }
-
-                            if (! empty($billing->billing->last_name)) {
                                 $last_name = $billing->billing->last_name;
                             } else  {
-                                $last_name = $billings->shipping->last_name;
+                                $name_final = $billing->shipping->first_name;
+                                $last_name = $billing->shipping->last_name;
                             }
 
                             $name = $name_final . ' ' . $last_name;
