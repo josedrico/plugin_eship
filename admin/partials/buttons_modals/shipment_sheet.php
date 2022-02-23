@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div>
                     <div class="ratio ratio-16x9">
-                        <iframe src="<?php echo (isset($pdf_arr['tracking_link']))? $pdf_arr['tracking_link'] : '';?>" title="<?php echo (isset($pdf_arr['provider']))? $pdf_arr['provider'] : '';?>" allowfullscreen></iframe>
+                        <iframe src="<?php echo $pdf_arr['tracking_link'];?>" title="<?php echo $pdf_arr['provider'];?>" allowfullscreen></iframe>
                     </div>
                 </div>
             </div>

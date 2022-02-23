@@ -57,6 +57,10 @@
             location.reload();
         });
 
+        $('#shipmentPdfModal .btn-close').click(function(){
+            location.reload();
+        });
+
         $('#show-pdf-eship-top').click(function () {
             location.reload();
         })
@@ -395,6 +399,7 @@
                             $.each(data.result.messages, function (index, object) {
                                 newObj.push({
                                     source: `${imgCarriersPacks({
+                                        width: 'w-15',
                                         src: object.provider_image_75,//(object.source).toLowerCase(),
                                         url
                                     })}`,
@@ -427,7 +432,7 @@
             $('.message-api').show();
         } else {
             if (result.rates != 'undefined') {
-                //console.log('result', result.rates);
+                console.log('imagen', result.rates);
                 $.each(result.rates, function (index, object) {
                     //console.log(object);
                     let heigth = '';
@@ -435,6 +440,11 @@
                     if (object.provider == 'UPS') {
                         heigth = 'h-25'
                         width = 'w-10'
+                    }
+
+                    if (object.provider == 'FedEx') {
+                        width = 'w-15'
+                        heigth = 'h-15'
                     }
                     newMessage.push({
                         carrier: `${imgCarriersPacks({

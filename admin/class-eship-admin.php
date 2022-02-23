@@ -516,9 +516,9 @@
         public function get_shipments_orders_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $response = array();
-            $shipments = array();
-            $billings = array();
+            $response   = array();
+            $shipments  = array();
+            $billings   = array();
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
@@ -552,7 +552,7 @@
                 if ($result) {
                     $response = array(
                         'result'    => $result,
-                        'res'       => $billings,
+                        //'res'       => $billings,
                         'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201

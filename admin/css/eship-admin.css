@@ -25,6 +25,14 @@
     width: 10% !important;
 }
 
+.w-15 {
+    width: 15% !important;
+}
+
+.h-15 {
+    height: 15% !important;
+}
+
 .app-eship p {
     color: #333333;
 }
