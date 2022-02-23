@@ -2,7 +2,9 @@
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ordersQuotationsEshipModalToggleLabel">Select to Services</h5>
+                <h5 class="modal-title" id="ordersQuotationsEshipModalToggleLabel">
+                    <i class="fas fa-shipping-fast"></i> Select to Services
+                </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
