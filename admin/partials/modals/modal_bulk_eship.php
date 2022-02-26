@@ -1,4 +1,4 @@
-<div class="modal fade" id="ordersQuotationsEshipModalToggle" aria-hidden="true" aria-labelledby="ordersQuotationsEshipModalToggleLabel" tabindex="-1" data-orders-eship="<?php echo (isset($orders_eship))? $orders_eship : '';?>">
+    <div class="modal fade" id="ordersQuotationsEshipModalToggle" aria-hidden="true" aria-labelledby="ordersQuotationsEshipModalToggleLabel" tabindex="-1" data-orders-eship="<?php echo (isset($orders_eship))? $orders_eship : '';?>">
     <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
@@ -49,7 +49,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <p class="fs-4 fw-bold">
-                        Looking for services
+                        Looking for labels
                     </p>
                 </div>
                 <table id="orders-multiple-eship-pdf" class="table" style="display: none;">
