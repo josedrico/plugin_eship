@@ -195,6 +195,16 @@ class ESHIP_Woocommerce_Api {
                         )
                     );
                     break;
+                case 'meta_data_tracking_url':
+                    $data = array(
+                        'meta_data' => array(
+                            array(
+                                'key'    => 'tracking_url',
+                                'value'  => $data['tracking_url'],
+                            )
+                        )
+                    );
+                    break;
                 default:
                     $data = FALSE;
                     break;
