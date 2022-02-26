@@ -71,6 +71,9 @@
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                    <p class="fs-4 fw-bold">
+                        Creating Labels
+                    </p>
                 </div>
                 <div class="create-shipment">
 
