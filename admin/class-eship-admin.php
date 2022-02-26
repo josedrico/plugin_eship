@@ -291,7 +291,7 @@
             $id_token = $this->eship_model->get_data_user_eship('id');
             if ($check_dim && $id_token) {
                 $pdf_arr                = array();
-                $button_quotation_eship = 'Ship Now';
+                $button_quotation_eship = 'Create Label';
 
                 if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
                     $order          = $_GET['post'];
@@ -312,6 +312,10 @@
                             if ($key->key == 'tracking_link') {
                                 $pdf_arr['tracking_link'] = $key->value;
                             }
+
+                            if ($key->key == 'tracking_url') {
+                                $pdf_arr['tracking_url'] = $key->value;
+                            }
                         }
                     }
 
@@ -324,9 +328,9 @@
                         }
                     );
 
-                    if (empty($arr_total)) {
-                        $button_quotation_eship     = 'Create Another Label';
-                        $modal_shipment_pdf_show    = TRUE;
+                    if (!empty($pdf_arr) && !empty($pdf_arr['tracking_link'])) {
+                        $button_quotation_eship  = 'Create Another Label';
+                        $modal_shipment_pdf_show = TRUE;
                     }
                 }
 
@@ -397,6 +401,11 @@
                             $order,
                             array('tracking_link' => $result->label_url),
                             'meta_data_tracking_link'
+                        );
+                        $tracking_url = $woo->setOrderApi(
+                            $order,
+                            array('tracking_url' => $result->tracking_url_provider),
+                            'meta_data_tracking_url'
                         );
                     }
                     $response = array(
@@ -519,6 +528,7 @@
             $response   = array();
             $shipments  = array();
             $billings   = array();
+            $orders     = array();
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
@@ -531,7 +541,7 @@
                             array_push($shipments, $order[0]);
                             $order_woo = new ESHIP_Woocommerce_Api();
                             $billing = $order_woo->getOrderApi($order[1]);
-
+                            array_push($orders, array('meta_data' => $billing->meta_data, 'id' => $billing->id));
                             if (! empty($billing->billing->firts_name) && !empty($billing->billing->last_name)) {
                                 $name_final = $billing->billing->firts_name;
                                 $last_name = $billing->billing->last_name;
@@ -552,7 +562,8 @@
                 if ($result) {
                     $response = array(
                         'result'    => $result,
-                        //'res'       => $billings,
+                        'res'       => $billings,
+                        'orders'    => $orders,
                         'redirect'  => FALSE,
                         'error'     => FALSE,
                         'code'      => 201
