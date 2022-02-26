@@ -448,7 +448,7 @@
                     }
                     newMessage.push({
                         carrier: `${imgCarriersPacks({
-                            src: object.provider_image_75,//(object.provider).toLowerCase(),
+                            src: object.provider_image_75,
                             url,
                             heigth,
                             width
