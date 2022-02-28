@@ -510,10 +510,10 @@
 
                         let selectFun = function (data) {
                             let html = `<select class="form-select" aria-label="Select to carrier" name="order${data.increment}">`;
-                            html += `<option data-object-eship="" selected>Open this select menu</option>`;
                             let rates = data.rates;
                             if (rates != 'undefined') {
                                 $.each(rates, function (i, o) {
+                                    //console.log(i);
                                     html += `<option value="${o.rate_id}_${data.orderId}_${data.id}">${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
                                 });
                             }

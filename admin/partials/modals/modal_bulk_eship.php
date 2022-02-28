@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ordersQuotationsEshipModalToggleLabel">
-                    <i class="fas fa-shipping-fast"></i> Select to Services
+                    <i class="fas fa-shipping-fast"></i> Select Services
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -59,7 +59,7 @@
                         <th data-field="client">Client</th>
                         <th data-field="services">Services</th>
                         <th data-field="trackingNumber"># Tracking</th>
-                        <th data-field="tracking">Tracking Guide</th>
+                        <th data-field="tracking">Shipping Label</th>
                     </tr>
                     </thead>
                 </table>
