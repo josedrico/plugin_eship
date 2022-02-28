@@ -514,7 +514,11 @@
                             if (rates != 'undefined') {
                                 $.each(rates, function (i, o) {
                                     //console.log(i);
-                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}">${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
+                                    let sel = '';
+                                    if (i == 0) {
+                                        sel = 'selected';
+                                    }
+                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}" ${sel}>${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
                                 });
                             }
                             html += `</select>`;
