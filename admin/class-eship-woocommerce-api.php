@@ -60,7 +60,9 @@ class ESHIP_Woocommerce_Api {
 
     private function setConsumerKey()
     {
-        $this->consumer_key = $this->getCredentialsEship('ck');
+        //$this->consumer_key = $this->getCredentialsEship('ck');
+        $this->consumer_key = 'ck_a94b24d41f187ff0ec59a89d75f696dd0d27dd97';
+        //$this->consumer_key = 'ck_1472b48e4e137bc3c3a7fd9c431b6dfaad133683';
     }
 
     private function getConsumerKey()
@@ -70,7 +72,9 @@ class ESHIP_Woocommerce_Api {
 
     private  function setConsumerSecret()
     {
-        $this->consumer_secret = $this->getCredentialsEship('cs');
+        //$this->consumer_secret = $this->getCredentialsEship('cs');
+        $this->consumer_secret = 'cs_d091de7424078810bb9029899aa59b9e1f770498';
+        //$this->consumer_secret = 'cs_61df83d7d3112abb6839f3cc53a5991bb8e56129';
     }
 
     private function getConsumerSecret()
