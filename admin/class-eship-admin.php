@@ -601,7 +601,7 @@
                     if (! isset($exist_api_key['body'])) {
                         $response = array(
                             'message'   => 'No se retorno el body',
-                            'result'    => FALSE,
+                            'result'    => $exist_api_key,
                             'error'     => TRUE,
                             'updateEffect' => TRUE,
                             'code'      => 500
@@ -616,29 +616,39 @@
 
 
                         if (isset($api_eship->error)) {
+                            if ($api_eship->error == 'API Key authentication failed.') {
+                                $message = 'Your eShip api key is wrong. Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                            } else  {
+                                $message = $api_eship->error;
+                            }
                             $response = array(
-                                'message'   => $api_eship->error,
-                                'result'    => FALSE,
+                                'message'   => $message,
+                                'result'    => $exist_api_key,
                                 'updateEffect' => TRUE,
                                 'error'     => TRUE,
                                 'code'      => 500
                             );
                         } else {
-                            $insert_db = $this->eship_model->insert_data_store_eship($_POST);
+                            if (empty($api_eship->consumer_secret)) {
+                                $message = 'Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                            } else  {
+                                $insert_db = $this->eship_model->insert_data_store_eship($_POST);
+                                $message = 'Fail to insert data on table';
+                            }
+
                             if ($insert_db) {
                                 $response = array(
                                     'message'      => 'Your service is connnect',
-                                    'result'       => $insert_db,
+                                    'result'       => $api_eship,
                                     'updateEffect' => TRUE,
                                     'error'        => FALSE,
                                     'code'         => 200
                                 );
                             } else {
                                 $response = array(
-                                    'message'       => 'Fail to insert data on table',
-                                    'result'        => $insert_db,
+                                    'message'       => $message,
+                                    'result'        => $api_eship,
                                     'res'           => $_POST,
-                                    'exist_api_key' => $api_eship,
                                     'updateEffect'  => TRUE,
                                     'error'         => TRUE,
                                     'code'          => 500
