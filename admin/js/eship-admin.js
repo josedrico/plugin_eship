@@ -505,11 +505,11 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
-                            let html = `<select class="form-select" aria-label="Select to carrier" name="order${data.increment}">`;
+                            let html = `<select class="form-select" name="order${data.increment}">`;
                             let rates = data.rates;
                             if (rates != 'undefined') {
                                 $.each(rates, function (i, o) {
@@ -518,7 +518,9 @@
                                     if (i == 0) {
                                         sel = 'selected';
                                     }
-                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}" ${sel}>${o.provider} / ${o.days} days / ${o.base_charge} ${o.currency}</option>`;
+                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}_${o.servicelevel.name}" ${sel}>
+                                            ${o.provider} ${o.servicelevel.name} / ${o.days} days / ${o.base_charge} ${o.currency} 
+                                            </option>`;
                                 });
                             }
                             html += `</select>`;
@@ -592,7 +594,7 @@
     function modalShipmentEship(){
         $('#ordersQuotationsEshipModalToggleBtn').on('click', function () {
             let select = $('#ordersModalForms').serializeArray();
-            //console.log(select);
+            //console.log('modalShipmentEship', select);
             if (select.length > 0) {
                 $.ajax({
                     method: 'POST',
@@ -605,21 +607,22 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         $('#spinner-eship-orders-pdf').remove();
                         if (! data.error && data.result.status == 'SUCCESS'){
                             let newArr = [];
                             let nameUser = data.res;
+                            let types = data.types;
                             let fulfillment = data.result.batch_labels;
                             $.each(fulfillment, function (i,o) {
-                               //console.log('o', o);
+                                //console.log('o', o);
                                 if (o.status == 'SUCCESS') {
                                     newArr.push({
                                         order: o.fulfillment.order_num,
                                         client: nameUser[i],
-                                        services: o.provider,
+                                        services: `<strong>${o.provider}</strong> ${types[i]}`,
                                         trackingNumber: `<a href="${o.tracking_url_provider}" target="_blank">${o.tracking_number}</a>`,
-                                        tracking: `<a class="page-title-action btn btn-light" href="${o.label_url}" target="_blank">Label <i class="fas fa-file-pdf"></i></a>`,
+                                        tracking: `<a class="page-title-action btn btn-light" href="${o.label_url}" target="_blank">Download Label <i class="fas fa-file-pdf"></i></a>`,
                                         //label_url
                                         //tracking_url_provider
                                     });
