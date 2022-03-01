@@ -8,3 +8,5 @@
 # Ignore Mac DS_Store files
 .DS_Store
 
+# Credenciales
+./admin/class-eship-woocommerce-api.php
