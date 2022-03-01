@@ -529,6 +529,7 @@
             $shipments  = array();
             $billings   = array();
             $orders     = array();
+            $types      = array();
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
@@ -552,6 +553,7 @@
 
                             $name = $name_final . ' ' . $last_name;
                             array_push($billings, $name);
+                            array_push($types, $order[3]);
                         }
                         $shipment = new ESHIP_Shipment($shipments, TRUE);
                         $res = $shipment->getShipment();
@@ -563,6 +565,7 @@
                     $response = array(
                         'result'    => $result,
                         'res'       => $billings,
+                        'types'     => $types,
                         'orders'    => $orders,
                         'redirect'  => FALSE,
                         'error'     => FALSE,
