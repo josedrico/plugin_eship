@@ -72,7 +72,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <p class="fs-4 fw-bold">
-                        Creating Labels
+                        Creating Label
                     </p>
                 </div>
                 <div class="create-shipment">

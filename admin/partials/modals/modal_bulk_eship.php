@@ -49,7 +49,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <p class="fs-4 fw-bold">
-                        Looking for labels
+                        Creating Labels
                     </p>
                 </div>
                 <table id="orders-multiple-eship-pdf" class="table" style="display: none;">
