@@ -37,11 +37,11 @@
                         <div class="row">
                             <div class="col-sm-10 offset-sm-1">
                                 <form method="post" action="" class="row" id="<?php echo $config_data['form']?>" data-user="<?php echo $user_eship[0]->id;?>">
-                                    <?php if (isset($text_api_key)):?>
+                                    <?php if (isset($instructions_ak)):?>
 
                                     <div class="col-12 mt-2 mb-2">
                                         <div class="alert alert-secondary" role="alert">
-                                            <?php echo $text_api_key;?>
+                                            <?php echo $instructions_ak ;?>
                                         </div>
                                     </div>
                                     <?php endif;?>
@@ -114,6 +114,9 @@
                                 <div class="col-12 col-md-6 text-end" data-show-eship-btn>
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eshipDimWeModal">
                                         Create Dimensions
+                                        <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem; display: none;">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
                                     </button>
                                 </div>
                             <?php endif;?>

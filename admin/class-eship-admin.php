@@ -138,10 +138,10 @@
 
         public function eship_dashboard()
         {
-            $config_data = array();
-            $text_api_key = 'To obtain your API key, login into your eShip account <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key';
-            $dimensions = $this->eship_model->get_dimensions_eship();
-            //var_dump($dimensions[0]);
+            $config_data  = array();
+            $instructions_ak = 'To obtain your API key, login into your eShip account <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key';
+            $dimensions   = $this->eship_model->get_dimensions_eship();
+
             if ($user_eship = $this->eship_model->get_data_user_eship()) {
                 $config_data = array(
                     'btn' => 'updateDataEshipModalBtn',
@@ -241,38 +241,86 @@
                 }
 
             } else  {
-                $response = array(
-                    'message'       => 'Api Key is neccesary',
-                    'result'        => FALSE,
-                    'error'         => TRUE,
-                    'updateEffect'  => TRUE,
-                    'code'          => 404
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $exist_api_key,
+                        'show'      => FALSE,
+                        'message'   => 'Api Key is neccesary',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    ),
+                    TRUE
                 );
             }
-
-            echo json_encode($response);
-            wp_die();
         }
 
         public function update_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result     = $this->eship_model->update_data_store_eship($_POST);
-            $response   = array();
+            $check_api_key = $this->api_key_eship->getCredentials($_POST['token']);
+
             if ($_POST['typeAction'] == 'update_token') {
-                if ($result) {
-                    $response = array(
-                        'result'    => 'Done!',
-                        'redirect'  => TRUE,
-                        'error'     => FALSE,
-                        'code'      => 201
+                if (! isset($exist_api_key['body'])) {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => $check_api_key,
+                            'show'      => FALSE,
+                            'message'   => 'Failed to establish connection with eShip.',
+                            'error'     => TRUE,
+                            'code'      => 500
+                        ),
+                        TRUE
                     );
-                } else  {
-                    $response = array(
-                        'result'    => 'No updated',
-                        'error'     => TRUE,
-                        'code'      => 404
-                    );
+                } else {
+                    if (isset($api_eship->error)) {
+                        if ($api_eship->error == 'API Key authentication failed.') {
+                            $message = 'Your eShip api key is wrong. Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                        } else  {
+                            $message = $api_eship->error;
+                        }
+
+                        $this->response(
+                            array(
+                                'result'    => NULL,
+                                'test'      => $exist_api_key,
+                                'show'      => FALSE,
+                                'message'   => $message,
+                                'error'     => TRUE,
+                                'code'      => 404
+                            ),
+                            TRUE
+                        );
+                    } else {
+                        $result = $this->eship_model->update_data_store_eship($_POST);
+                        if ($result) {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'test'      => $check_api_key,
+                                    'show'      => FALSE,
+                                    'message'   => 'Your data is updated.',
+                                    'error'     => FALSE,
+                                    'code'      => 201
+                                ),
+                                TRUE
+                            );
+                        } else  {
+
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'test'      => $check_api_key,
+                                    'show'      => FALSE,
+                                    'message'   => 'No updated data.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                ),
+                                TRUE
+                            );
+                        }
+                    }
                 }
             }
 
@@ -325,6 +373,164 @@
                     'message' => 'Your dimensions of your packages are not configured, please create your dimensions',
                     'error'   => TRUE,
                     'code'    => 404
+                );
+            }
+        }
+
+        public function get_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->get_dimensions_eship();
+            if ($result) {
+
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $result,
+                        'show'      => FALSE,
+                        'message'   => 'Success.',
+                        'error'     => FALSE,
+                        'code'      => 200
+                    ),
+                    TRUE
+                );
+
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $result,
+                        'show'      => FALSE,
+                        'message'   => 'You do not have any configuration registered. please register it.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    ),
+                    TRUE
+                );
+            }
+        }
+
+        public function insert_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result     = $this->eship_model->insert_dimensions_eship($_POST);
+            $id_token   = $this->eship_model->get_data_user_eship('id');
+
+            $res = $this->eship_model->update_data_store_eship(array(
+                'id'         => $id_token,
+                'dimensions' => 0,
+                'typeAction' => 'update_dimension_token'
+            ));
+
+            if ($result) {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => array(
+                            $result,
+                            $res
+                        ),
+                        'show'      => FALSE,
+                        'message'   => 'Your data was successfully registered.',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    ),
+                    TRUE
+                );
+            } else  {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $result,
+                        'show'      => FALSE,
+                        'message'   => 'Your data was not recorded.',
+                        'error'     => TRUE,
+                        'code'      => 500
+                    ),
+                    TRUE
+                );
+            }
+        }
+
+        public function update_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->update_dimension_eship($_POST);
+
+            if ($_POST['typeAction'] == 'update_status_dimension') {
+
+                if ($result == 1) {
+                    $response = array(
+                        'result'    => 'Done!',
+                        'updateEffect' => $result,
+                        'message'   => 'Your data update.',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'  => 'No updated',
+                        'message' => 'Your data not is update',
+                        'error'   => TRUE,
+                        'code'    => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
+
+            if ($_POST['typeAction'] == 'update_dimensions') {
+                if ($result) {
+                    $response = array(
+                        'result'   => 'Done!',
+                        'redirect' => TRUE,
+                        'error'    => FALSE,
+                        'message'  => 'Your data update',
+                        'code'     => 201
+                    );
+                } else  {
+                    $response = array(
+                        'result'  => 'No updated',
+                        'error'   => TRUE,
+                        'message' => 'Your data no update',
+                        'code'    => 404
+                    );
+                }
+
+                echo json_encode($response);
+                wp_die();
+            }
+        }
+
+        public function delete_dimensions_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $result = $this->eship_model->delete_dimension_eship($_POST);
+
+            if ($result) {
+                $id_token = $this->eship_model->get_data_user_eship('id');
+
+                $res = $this->eship_model->update_data_store_eship(array(
+                    'id'         => $id_token,
+                    'dimensions' => 1,
+                    'typeAction' => 'update_dimension_token'
+                ));
+
+                $response = array(
+                    'result'    => 'Done!',
+                    //'res'       => $res,
+                    'redirect'  => TRUE,
+                    'error'     => FALSE,
+                    'message' => 'Your data is deleted',
+                    'code'      => 201
+                );
+            } else  {
+                $response = array(
+                    'result'    => 'No deleted',
+                    'error'     => TRUE,
+                    'message' => 'Your data not is deleted',
+                    'code'      => 404
                 );
             }
 
