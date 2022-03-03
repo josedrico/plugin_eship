@@ -261,7 +261,7 @@
             $check_api_key = $this->api_key_eship->getCredentials($_POST['token']);
 
             if ($_POST['typeAction'] == 'update_token') {
-                if (! isset($exist_api_key['body'])) {
+                if (is_null($check_api_key) && empty($check_api_key['body'])) {
                     $this->response(
                         array(
                             'result'    => NULL,
@@ -274,6 +274,7 @@
                         TRUE
                     );
                 } else {
+                    $api_eship = $check_api_key['body'];
                     if (isset($api_eship->error)) {
                         if ($api_eship->error == 'API Key authentication failed.') {
                             $message = 'Your eShip api key is wrong. Please follow the instructions to connect your eShip account to this WooCommerce Store';
@@ -284,7 +285,7 @@
                         $this->response(
                             array(
                                 'result'    => NULL,
-                                'test'      => $exist_api_key,
+                                'test'      => $api_eship,
                                 'show'      => FALSE,
                                 'message'   => $message,
                                 'error'     => TRUE,
@@ -345,34 +346,44 @@
                     ));
 
                     if ($result) {
-                        $response = array(
-                            'result'    => 'Done!',
-                            'res'       => $result,//$dim_content,
-                            //'post'       => $_POST,
-                            //'dim_content'  => $dim_content,
-                            'message'   => 'Your data is update',
-                            'updateEffect' => $result,
-                            'error'     => FALSE,
-                            'code'      => 201
+                        $this->response(
+                            array(
+                                'result'    => NULL,
+                                'test'      => $check_api_key,
+                                'show'      => FALSE,
+                                'message'   => 'Your data is update.',
+                                'error'     => FALSE,
+                                'code'      => 201
+                            ),
+                            TRUE
                         );
                     } else  {
-                        $response = array(
-                            'result'    => 'No updated',
-                            'res'       => $result,
-                            'message'   => 'Your data not is update',
-                            'error'     => TRUE,
-                            'code'      => 404
+                        $this->response(
+                            array(
+                                'result'    => NULL,
+                                'test'      => $check_api_key,
+                                'show'      => FALSE,
+                                'message'   => 'Your data not is updated.',
+                                'error'     => TRUE,
+                                'code'      => 500
+                            ),
+                            TRUE
                         );
                     }
                 }
             } else {
-                $response = array(
-                    'result'  => array(
-                        'resource' => 'eshipDimWeModal'
+                $this->response(
+                    array(
+                        'result'    => array(
+                            'resource' => 'eshipDimWeModal'
+                        ),
+                        'test'      => $check_api_key,
+                        'show'      => FALSE,
+                        'message'   => 'Your dimensions of your packages are not configured, please create your dimensions.',
+                        'error'     => TRUE,
+                        'code'      => 500
                     ),
-                    'message' => 'Your dimensions of your packages are not configured, please create your dimensions',
-                    'error'   => TRUE,
-                    'code'    => 404
+                    TRUE
                 );
             }
         }
@@ -385,7 +396,7 @@
 
                 $this->response(
                     array(
-                        'result'    => NULL,
+                        'result'    => $result,
                         'test'      => $result,
                         'show'      => FALSE,
                         'message'   => 'Success.',
@@ -460,6 +471,7 @@
             if ($_POST['typeAction'] == 'update_status_dimension') {
 
                 if ($result == 1) {
+                    /*
                     $response = array(
                         'result'    => 'Done!',
                         'updateEffect' => $result,
@@ -467,17 +479,39 @@
                         'error'     => FALSE,
                         'code'      => 201
                     );
+                    */
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => $result,
+                            'show'      => FALSE,
+                            'message'   => 'Your data was successfully updated.',
+                            'error'     => FALSE,
+                            'code'      => 201
+                        ),
+                        TRUE
+                    );
                 } else  {
+                    /*
                     $response = array(
                         'result'  => 'No updated',
                         'message' => 'Your data not is update',
                         'error'   => TRUE,
                         'code'    => 404
                     );
+                    */
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => $result,
+                            'show'      => FALSE,
+                            'message'   => 'Your data not is updated.',
+                            'error'     => TRUE,
+                            'code'      => 500
+                        ),
+                        TRUE
+                    );
                 }
-
-                echo json_encode($response);
-                wp_die();
             }
 
             if ($_POST['typeAction'] == 'update_dimensions') {
