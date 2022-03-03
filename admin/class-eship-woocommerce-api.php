@@ -1,6 +1,14 @@
 <?php
 namespace EshipAdmin;
 
+/**
+ * Class for connection to the woocommerce api rest
+ *
+ * @since      1.0.0
+ * @package    ESHIP
+ * @author     juanmaleal
+ */
+
 use EshipAdmin\ESHIP_Model;
 use EshipAdmin\ESHIP_Api;
 use Automattic\WooCommerce\Client;

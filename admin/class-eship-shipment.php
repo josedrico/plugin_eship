@@ -27,6 +27,9 @@ class ESHIP_Shipment {
         $this->multiple  = $multiple;
     }
 
+    /*
+     * Download shipment
+     * */
     public function getShipment()
     {
         try {
