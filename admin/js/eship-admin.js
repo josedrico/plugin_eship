@@ -11,6 +11,11 @@
     deleteDimensionsEship();
     changeStatusDimEship();
     changeStatusActiveEship();
+    modalQuotationsEship();
+    modalShipmentsEship();
+    getQuotationEship();
+    getShipmentEship();
+    closeReloadEship();
 
     /**
      * Abstract
@@ -73,6 +78,39 @@
             pageSize: "25",
             data: data
         });
+    }
+
+    function messageApi(data, id = false) {
+        return `<div ${(id)? "id=" + id : ''} class="alert ${(data.bg != undefined)? data.bg : 'alert-danger'} alert-dismissible fade show ${(data.margin != 'undefined')? data.margin : FALSE}" role="alert">
+                ${(data.svg != 'undefined')? data.svg : FALSE } ${data.Error}
+            </div>`;
+    }
+
+    function imgCarriersPacks(data) {
+        return `<img class="img-fluid ${data.heigth} ${data.width}" src="${data.src}">`;
+    }
+
+    function createPdfIframe(data) {
+        return `<p>
+                Tracking number: <a href="https://app.myeship.co/en/track/track?no=${data.tracking_number}" target="_blank">${data.tracking_number}</a>
+            </p>
+            <div class="ratio ratio-16x9">
+              <iframe src="${data.label_url}" title="${data.provider}" allowfullscreen></iframe>
+            </div>`;
+    }
+
+    function closeReloadEship() {
+        $('#show-pdf-eship').click(function () {
+            location.reload();
+        });
+
+        $('#shipmentPdfModal .btn-close').click(function(){
+            location.reload();
+        });
+
+        $('#show-pdf-eship-top').click(function () {
+            location.reload();
+        })
     }
 
     /**
@@ -551,6 +589,334 @@
                 type: 'json'
             };
             ajaxEship($data);
+        });
+    }
+
+    function modalQuotationsEship(){
+
+        let url = window.location;
+        let str = url.href;
+        let segment = str.split(/countEship/i);
+
+        if (segment.length > 1) {
+            let modal = new bootstrap.Modal(document.getElementById('ordersQuotationsEshipModalToggle'));
+            let modalShow = document.getElementById('ordersQuotationsEshipModalToggle');
+            modal.show(modalShow);
+            let orders = $('#ordersQuotationsEshipModalToggle').data('orders-eship');
+            $('#ordersQuotationsEshipModalToggleBtn').attr('disabled', true);
+
+            if (typeof orders != 'undefined' && (orders != '' || orders != 0)) {
+                $.ajax({
+                    method: 'POST',
+                    url:  eshipData.url,
+                    data: {
+                        action: 'get_quotations_orders_eship',
+                        nonce: eshipData.security,
+                        orders,
+                        typeAction: 'add_quotations_orders'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#ordersQuotationsEshipModalToggleBtn').attr('disabled', false);
+                        console.log('modalQuotationsEship', data);
+                        $('#spinner-eship-orders').remove();
+
+                        let selectFun = function (data) {
+                            let html = `<select class="form-select" name="order${data.increment}">`;
+                            let rates = data.rates;
+                            if (rates != 'undefined') {
+                                $.each(rates, function (i, o) {
+                                    let sel = '';
+                                    if (i == 0) {
+                                        sel = 'selected';
+                                    }
+                                    html += `<option value="${o.rate_id}_${data.orderId}_${data.id}_${o.servicelevel.name}" ${sel}>
+                                            ${o.provider} ${o.servicelevel.name} / ${o.days} days / ${o.base_charge} ${o.currency} 
+                                            </option>`;
+                                });
+                            }
+                            html += `</select>`;
+
+                            return html;
+                        };
+
+                        if (! data.error) {
+                            let newArr = [];
+                            $.each(data.result, function (i,o) {
+                                let provArr = [];
+                                $.each(o.rates, function (index, prov) {
+                                    provArr.push(prov.provider);
+                                });
+
+                                newArr.push({
+                                    order: `${o.order_id} (${o.date_final})`,
+                                    ship: 'Not specified',//`${(provArr.length > 0)? provArr.join(' / ') : provArr.join('')}`,
+                                    services: `${selectFun({
+                                        increment: i,
+                                        id: o.object_id,
+                                        rates: o.rates,
+                                        orderId: o.order_id
+                                    })}`,
+                                });
+                            });
+
+                            $('#orders-multiple-eship').show();
+                            bsTb({
+                                    id: '#orders-multiple-eship',
+                                    search: false,
+                                    pagination: false
+                                },
+                                newArr
+                            );
+
+                        } else {
+                            let html = '';
+                            $.each(data.result, function (index, object) {
+                                html +=  messageApi({
+                                    Error: data.result
+                                });
+                            });
+
+                            $('#orders-multiple-eship-div').append(html);
+                            $('#error-eship-dim-w').show();
+                            $('#orders-multiple-eship').hide();
+                        }
+                    },
+                    error: function (error) {
+                        $('#spinner-eship-orders').remove();
+                        $('#orders-multiple-eship-div').append(
+                            messageApi({
+                                Error: error.responseText
+                            })
+                        );
+                        $('#error-eship-dim-w').show();
+                        console.error('error', error.responseText);
+                    }
+                });
+            }
+        }
+    }
+
+    function modalShipmentsEship(){
+        $('#ordersQuotationsEshipModalToggleBtn').on('click', function () {
+            let select = $('#ordersModalForms').serializeArray();
+
+            if (select.length > 0) {
+                $.ajax({
+                    method: 'POST',
+                    url:  eshipData.url,
+                    data: {
+                        action: 'get_shipments_orders_eship',
+                        nonce: eshipData.security,
+                        content: select,
+                        typeAction: 'add_shipments'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('modalShipmentsEship', data);
+                        $('#spinner-eship-orders-pdf').remove();
+                        let status = data.result;
+                        console.log('status', status.result.status);
+                        if (! data.error && status.result.status == "SUCCESS"){
+                            let result = data.result;
+                            console.log('result', result);
+                            let newArr = [];
+                            let nameUser = result.res;
+                            let types = result.types;
+                            let fulfillment = result.result.batch_labels;
+
+                            $.each(fulfillment, function (i,o) {
+                                if (o.status == 'SUCCESS') {
+                                    newArr.push({
+                                        order: o.fulfillment.order_num,
+                                        client: nameUser[i],
+                                        services: `<strong>${o.provider}</strong> ${types[i]}`,
+                                        trackingNumber: `<a href="${o.tracking_url_provider}" target="_blank">${o.tracking_number}</a>`,
+                                        tracking: `<a class="page-title-action btn btn-light" href="${o.label_url}" target="_blank">Download Label <i class="fas fa-file-pdf"></i></a>`,
+                                    });
+                                } else {
+                                    $('#orders-multiple-eship-div').show();
+                                    $.each( fulfillment, function (i,o) {
+                                        $.each( o.messages, function (ind,obj) {
+                                            $('#orders-multiple-eship-div').append(messageApi({
+                                                bg: 'alert-white',
+                                                svg: '<span class="dashicons dashicons-info-outline"></span>',
+                                                Error: `<strong>${obj.source}</strong> - ${obj.text}`
+                                            }));
+                                        });
+                                    });
+                                }
+                            });
+                            $('#orders-multiple-eship-pdf').show();
+                            $('#ordersMultipleLabels').append(`<a class="btn btn-secondary" target="_blank" href="${result.result.batch_labels_url}">Download</a>`);
+                            bsTb({
+                                    id: '#orders-multiple-eship-pdf',
+                                    search: false,
+                                    pagination: false
+                                },
+                                newArr
+                            );
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    }
+
+    function getQuotationEship() {
+        $('button[href="#dashBoardEshipModalToggle"]').on('click', function () {
+            let order =  $('button[href="#dashBoardEshipModalToggle"]').data('order');
+            $.ajax({
+                method: 'POST',
+                url:  eshipData.url,
+                data: {
+                    action: 'get_quotation_eship',
+                    nonce: eshipData.security,
+                    order_id: order,
+                    typeAction: 'add_quotation'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log('getQuotationEship', data);
+                    $('#spinner-load-data-q').remove();
+                    if (data.error) {
+                        $('#orders-list').append(messageApi({
+                            Error: data.result
+                        }));
+                    } else {
+                        if (typeof data.result.object_id != 'undefined') {
+                            eshipBtTbQuotation({
+                                result: data.result,
+                                order: order
+                            });
+                        }
+                    }
+                },
+                error: function (error) {
+                    console.error('d', error);
+                }
+            });
+        });
+    }
+
+    function eshipBtTbQuotation($data) {
+        $('#spinner-load-data-q').remove();
+        let url = $('#app-eship-url').data('url');
+        let newMessage = [];
+        let result = $data.result;
+
+        if (typeof result != 'undefined' && result.hasOwnProperty('Status') && result.Error) {
+            $('#dashBoardEshipModalToggleLabel > i').remove();
+            $('#dashBoardEshipModalToggleLabel > span').remove();
+            $('#dashBoardEshipModalToggleLabel').html(`<span id="title-error-api" class="text-danger"><i class="fas fa-exclamation-circle"></i>${result.Status}</span>`);
+            $('.message-api').html(messageApi(result));
+            $('.message-api').show();
+        } else {
+            if (typeof result.rates != 'undefined') {
+                console.log('eshipBtTbQuotation', result.rates);
+                $.each(result.rates, function (index, object) {
+                    let heigth = '';
+                    let width = 'w-25'
+                    if (object.provider == 'UPS') {
+                        heigth = 'h-25'
+                        width = 'w-10'
+                    }
+
+                    if (object.provider == 'FedEx') {
+                        width = 'w-15'
+                        heigth = 'h-15'
+                    }
+                    newMessage.push({
+                        carrier: `${imgCarriersPacks({
+                            src: object.provider_image_75,
+                            url,
+                            heigth,
+                            width
+                        })}`,
+                        service: `<strong>${object.provider}</strong> ${object.servicelevel.name}`,
+                        estimatedDelivery	: `${object.days} days`,
+                        amount	: `${object.amount} ${object.currency}`,
+                        action	: `<button name="shipment" data-order="${$data.order}" data-shipment="${object.rate_id}" class="page-title-action shipment" data-bs-target="#shipmentModalToggle2" data-bs-toggle="modal">Create Label</button>`
+                    })
+
+                });
+                $('#custom-eship-rates').show();
+                bsTb({
+                        id: '#custom-eship-rates',
+                        search: false,
+                        pagination: false
+                    },
+                    newMessage
+                );
+            }
+
+            if (typeof result.messages != 'undefined') {
+                $('#custom-eship-messages').show();
+                $.each( result.messages, function (i,o) {
+                    $('#custom-eship-messages').append(messageApi({
+                        bg: 'alert-white',
+                        svg: '<span class="dashicons dashicons-info-outline"></span>',
+                        Error: `<strong>${o.source}</strong> - ${o.text}`
+                    }));
+                });
+            }
+        }
+    }
+
+    function getShipmentEship() {
+        $('#dashBoardEshipModalToggle').on('click', 'button[name="shipment"]',function (e) {
+            e.preventDefault();
+            let url = $('#app-eship-url').data('url');
+            let data = $(this).data('shipment');
+            let order = $(this).data('order');
+
+            if (data != '') {
+                $.ajax({
+                    method: 'POST',
+                    url: eshipData.url,
+                    data: {
+                        action: 'get_shipment_eship',
+                        nonce: eshipData.security,
+                        rateId: data,
+                        order,
+                        typeAction: 'create_shipment'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log('getShipmentEship', data);
+
+                        let newObj = [];
+
+                        if (data.result.status != 'ERROR') {
+                            $('#spinner-load-data').remove();
+                            $('#shipmentModalToggleLabel2').html(`Your Label`);
+                            $('.create-shipment').html(createPdfIframe(data.result));
+                        } else {
+                            $('#spinner-load-data').remove();
+                            $('#shipmentModalToggleLabel2').html(`ERROR`);
+                            $.each(data.result.messages, function (index, object) {
+                                newObj.push({
+                                    source: `${imgCarriersPacks({
+                                        width: 'w-15',
+                                        src: object.provider_image_75,
+                                        url
+                                    })}`,
+                                    text: object.text
+                                });
+                            });
+                            $('#pack-eship-messages').show();
+                            bsTb({
+                                id: '#pack-eship-messages',
+                                search: false,
+                                pagination: false
+                            }, newObj);
+                        }
+                    }
+                });
+            }
         });
     }
 
