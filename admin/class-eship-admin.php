@@ -424,39 +424,53 @@
         public function insert_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result     = $this->eship_model->insert_dimensions_eship($_POST);
-            $id_token   = $this->eship_model->get_data_user_eship('id');
+            if ($_POST['typeAction'] == 'add_dimensions') {
+                $result     = $this->eship_model->insert_dimensions_eship($_POST);
+                $id_token   = $this->eship_model->get_data_user_eship('id');
 
-            $res = $this->eship_model->update_data_store_eship(array(
-                'id'         => $id_token,
-                'dimensions' => 0,
-                'typeAction' => 'update_dimension_token'
-            ));
+                $res = $this->eship_model->update_data_store_eship(array(
+                    'id'         => $id_token,
+                    'dimensions' => 0,
+                    'typeAction' => 'update_dimension_token'
+                ));
 
-            if ($result) {
-                $this->response(
-                    array(
-                        'result'    => NULL,
-                        'test'      => array(
-                            $result,
-                            $res
+                if ($result) {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => array(
+                                $result,
+                                $res
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Your data was successfully registered.',
+                            'error'     => FALSE,
+                            'code'      => 201
                         ),
-                        'show'      => FALSE,
-                        'message'   => 'Your data was successfully registered.',
-                        'error'     => FALSE,
-                        'code'      => 201
-                    ),
-                    TRUE
-                );
-            } else  {
+                        TRUE
+                    );
+                } else  {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => $result,
+                            'show'      => FALSE,
+                            'message'   => 'Your data was not recorded.',
+                            'error'     => TRUE,
+                            'code'      => 500
+                        ),
+                        TRUE
+                    );
+                }
+            } else {
                 $this->response(
                     array(
                         'result'    => NULL,
-                        'test'      => $result,
+                        'test'      => NULL,
                         'show'      => FALSE,
-                        'message'   => 'Your data was not recorded.',
+                        'message'   => 'You do not have the necessary permissions.',
                         'error'     => TRUE,
-                        'code'      => 500
+                        'code'      => 404
                     ),
                     TRUE
                 );
@@ -466,18 +480,34 @@
         public function update_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result = $this->eship_model->update_dimension_eship($_POST);
 
             if ($_POST['typeAction'] == 'update_status_dimension' || $_POST['typeAction'] == 'update_dimensions') {
+                $result = $this->eship_model->update_dimensions_eship($_POST);
+
                 if ($result == 1) {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => array(
+                                $result,
+                                $_POST
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Your data was successfully updated.',
+                            'error'     => FALSE,
+                            'code'      => 201
+                        ),
+                        TRUE
+                    );
+                } elseif ($result == 2) {
                     $this->response(
                         array(
                             'result'    => NULL,
                             'test'      => $result,
                             'show'      => FALSE,
-                            'message'   => 'Your data was successfully updated.',
-                            'error'     => FALSE,
-                            'code'      => 201
+                            'message'   => 'Your dont have permisions.',
+                            'error'     => TRUE,
+                            'code'      => 404
                         ),
                         TRUE
                     );
@@ -494,6 +524,18 @@
                         TRUE
                     );
                 }
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $_POST,
+                        'show'      => FALSE,
+                        'message'   => 'You do not have the necessary permissions.',
+                        'error'     => TRUE,
+                        'code'      => 500
+                    ),
+                    TRUE
+                );
             }
         }
 
