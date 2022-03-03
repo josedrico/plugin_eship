@@ -1,20 +1,21 @@
 <?php
 namespace EshipAdmin;
 
+/**
+ * Class that controls quotes.
+ *
+ * @since      1.0.0
+ * @package    ESHIP
+ * @author     juanmaleal
+ *
+ * @property string $woocommerce_api
+ * @property string $eship_api
+ */
+
 use EshipAdmin\ESHIP_Model;
 use EshipAdmin\ESHIP_Woocommerce_Api;
 use EshipAdmin\ESHIP_Api;
 use EshipAdmin\ESHIP_Admin_Notices;
-
-/**
- * Config and queries to api's.
- *
- * @link       https://eship.com
- * @since      1.0.0
- *
- * @package    ESHIP_blank
- * @subpackage ESHIP_blank/admin
- */
 
 class ESHIP_Quotation {
     private $woocommerce_api;

@@ -1,12 +1,13 @@
 <?php
 namespace EshipAdmin;
 /**
- * Ésta clase define los mensajes de error para el administrador
+ * Class for native wordpress notifications
  *
  * @since      1.0.0
  * @package    ESHIP
- * @subpackage ESHIP/includes
- * @author     Juan Manuel Leal <jleal@segmail.co>
+ * @author     juanmaleal
+ *
+ * @property string $message
  */
 
 class ESHIP_Admin_Notices

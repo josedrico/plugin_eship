@@ -1,5 +1,15 @@
 <?php
 namespace EshipAdmin;
+/**
+ * Class for connection to the eShip api rest
+ *
+ * @since      1.0.0
+ * @package    ESHIP
+ * @author     juanmaleal
+ *
+ * @property string $url
+ * @property string $api_key
+ */
 
 use EshipAdmin\ESHIP_Model;
 use EshipAdmin\ESHIP_Admin_Notices;

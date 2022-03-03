@@ -1,5 +1,14 @@
 <?php
 namespace EshipAdmin;
+/**
+ * Class for the model for the wordpress database
+ *
+ * @since      1.0.0
+ * @package    ESHIP
+ * @author     juanmaleal
+ *
+ * @property string $db
+ */
 
 class ESHIP_Model {
     protected $db;

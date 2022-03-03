@@ -11,12 +11,12 @@
      * 
      * @since      1.0.0
      * @package    ESHIP
-     * @subpackage ESHIP/ESHIP_Admin
-     * @author     Juan Manuel Leal <jleal@segmail.co>
+     * @author     juanmaleal
      * 
      * @property string $plugin_name
      * @property string $version
      */
+
     class ESHIP_Admin {
         
         private $plugin_name;

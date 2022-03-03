@@ -1,18 +1,20 @@
 <?php
 
 namespace EshipAdmin;
+/**
+ * Class that controls the generation of shipping guides.
+ *
+ * @since      1.0.0
+ * @package    ESHIP
+ * @author     juanmaleal
+ *
+ * @property string $rate_id
+ * @property string $eship_api
+ * @property string $multiple
+ */
 
 use EshipAdmin\ESHIP_Api;
 
-/**
- * Config and queries to api's.
- *
- * @link       https://eship.com
- * @since      1.0.0
- *
- * @package    ESHIP_blank
- * @subpackage ESHIP_blank/admin
- */
 class ESHIP_Shipment {
     private $rate_id;
     private $eship_api;
