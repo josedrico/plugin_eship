@@ -7,22 +7,11 @@
     use EshipAdmin\ESHIP_Admin_Notices;
 
     /**
-     * La funcionalidad específica de administración del plugin.
-     *
-     * @link       https://eship.com
-     * @since      1.0.0
-     *
-     * @package    ESHIP_blank
-     * @subpackage ESHIP_blank/admin
-     */
-
-    /**
-     * Define el nombre del plugin, la versión y dos métodos para
-     * Encolar la hoja de estilos específica de administración y JavaScript.
+     * Defines the plugin name, version and two methods for enqueue the admin-specific style sheet and JavaScript.
      * 
      * @since      1.0.0
      * @package    ESHIP
-     * @subpackage ESHIP/admin
+     * @subpackage ESHIP/ESHIP_Admin
      * @author     Juan Manuel Leal <jleal@segmail.co>
      * 
      * @property string $plugin_name
@@ -47,6 +36,9 @@
             $this->api_key_eship    = new ESHIP_Api();
         }
 
+        /*
+         * Admin Styles
+         * */
         public function enqueue_styles($hook) 
         {
             //toplevel_page_toplevel_page_ 
@@ -82,7 +74,11 @@
              */
             wp_enqueue_style( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/css/eship-admin.css', array(), $this->version, '' );
         }
-        
+
+
+        /*
+         * Scripts JS
+         * */
         public function enqueue_scripts($hook) 
         {
             if( $hook ) {
@@ -121,6 +117,9 @@
             );
         }
 
+        /*
+         * Menu Adminstration
+         * */
         public function add_menu_order() {
 
             $this->build_menupage->add_menu_page(
@@ -136,6 +135,9 @@
             $this->build_menupage->run();
         }
 
+        /*
+         * Register  and active account eship
+         * */
         public function eship_dashboard()
         {
             $config_data  = array();
@@ -158,6 +160,9 @@
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/dashboard_connection.php';
         }
 
+        /*
+         * Insert api key of eship account on table
+         * */
         public function insert_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -255,6 +260,9 @@
             }
         }
 
+        /*
+         * Update api key of eship account on table
+         * */
         public function update_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -388,6 +396,9 @@
             }
         }
 
+        /*
+         * Query to obtain the data of the dimensions and weights defined by the seller
+         * */
         public function get_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -421,6 +432,9 @@
             }
         }
 
+        /*
+         * Insert a record in the weights and dimensions table.
+         * */
         public function insert_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -477,6 +491,9 @@
             }
         }
 
+        /*
+         * Update a record in the weights and dimensions table.
+         * */
         public function update_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -539,6 +556,9 @@
             }
         }
 
+        /*
+         * Delete a record in the weights and dimensions table.
+         * */
         public function delete_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -553,27 +573,38 @@
                     'typeAction' => 'update_dimension_token'
                 ));
 
-                $response = array(
-                    'result'    => 'Done!',
-                    //'res'       => $res,
-                    'redirect'  => TRUE,
-                    'error'     => FALSE,
-                    'message' => 'Your data is deleted',
-                    'code'      => 201
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => array(
+                            $result,
+                            $res
+                        ),
+                        'show'      => FALSE,
+                        'message'   => 'Your data was successfully updated.',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    ),
+                    TRUE
                 );
             } else  {
-                $response = array(
-                    'result'    => 'No deleted',
-                    'error'     => TRUE,
-                    'message' => 'Your data not is deleted',
-                    'code'      => 404
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $_POST,
+                        'show'      => FALSE,
+                        'message'   => 'Your data not was updated.',
+                        'error'     => TRUE,
+                        'code'      => 500
+                    ),
+                    TRUE
                 );
             }
-
-            echo json_encode($response);
-            wp_die();
         }
 
+        /*
+         * Insert a field in the bulk select.
+         * */
         public function load_options_quotations_bulk_eship()
         {
             if ($this->eship_model->get_data_user_eship('id') && $this->eship_model->get_dimensions_eship()) {
@@ -587,6 +618,9 @@
             }
         }
 
+        /*
+         * Validates that the field exists in the uri.
+         * */
         public function search_orders_eship()
         {
             if (isset($_GET['countEship'])) {
@@ -596,6 +630,9 @@
 
         }
 
+        /*
+         * Rebuild a uri for query.
+         * */
         public function get_quotations_bulk_eship()
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
@@ -605,6 +642,9 @@
             }
         }
 
+        /*
+         * Generate a quote.
+         * */
         public function get_quotations_orders_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -667,6 +707,9 @@
             }
         }
 
+        /*
+         * Generate a shipping guide
+         * */
         public function get_shipments_orders_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -766,6 +809,9 @@
             }
         }
 
+        /*
+         * Add a box to the woocommerc order view.
+         * */
         public function add_meta_boxes_eship()
         {
             $register_view  = 'view_buttons_eship';
@@ -789,6 +835,9 @@
             $add_meta_box->run();
         }
 
+        /*
+         * Generate the modal buttons for the eship box.
+         * */
         public function view_buttons_eship()
         {
             if ($this->eship_model->get_dimensions_eship() && $this->eship_model->get_data_user_eship('id')) {
@@ -849,6 +898,9 @@
             }
         }
 
+        /*
+         * Controls the registration view in case the user does not have an account yet
+         * */
         public function view_register_eship()
         {
             $text_modal_ak          = 'Connect to ESHIP';
@@ -868,6 +920,9 @@
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
+        /*
+         * Generate multiple quotes.
+         * */
         public function get_quotation_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -934,6 +989,9 @@
             }
         }
 
+        /*
+         * Generate multiple shipping guides.
+         * */
         public function get_shipment_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
@@ -1022,6 +1080,9 @@
             }
         }
 
+        /*
+         * Convert the data into format JSON
+         * */
         private function response($data, $test = FALSE)
         {
             if ($test) {
@@ -1048,4 +1109,3 @@
             wp_die();
         }
     }
-
