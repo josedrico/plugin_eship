@@ -488,7 +488,7 @@
                             action: 'update_dimensions_eship',
                             nonce: eshipData.security,
                             typeAction: 'update_dimensions',
-                            dim: dataForm,//$('button[data-dim-btn-id]').data('dim-btn-id'),
+                            dim: dataForm,
                             aliasEship: $('#alias-input-eship' + dataForm).val(),
                             lengthEship: $('#length-input-eship'+ dataForm).val(),
                             widthEship: $('#width-input-eship'+ dataForm).val(),
