@@ -50,7 +50,7 @@
                                             <label for="token-input-eship" class="col-form-label">
                                                 API Key:
                                             </label>
-                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='".$user_eship[0]->api_key_eship . "'": '';?>>
+                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='". sanitize_text_field($user_eship[0]->api_key_eship) . "'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -58,7 +58,7 @@
                                             <label for="phone-input-eship" class="col-form-label">
                                                 Phone:
                                             </label>
-                                            <input type="text" class="form-control" id="phone-input-eship" name="phoneCompanyEship" <?php echo (isset($user_eship[0]->phone))? "value='".$user_eship[0]->phone."'": '';?>>
+                                            <input type="text" class="form-control" id="phone-input-eship" name="phoneCompanyEship" <?php echo (isset($user_eship[0]->phone))? "value='". sanitize_text_field($user_eship[0]->phone) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -66,7 +66,7 @@
                                             <label for="name-input-eship" class="col-form-label">
                                                 Company Name:
                                             </label>
-                                            <input type="text" class="form-control" id="name-input-eship" name="nameCompanyEship" <?php echo (isset($user_eship[0]->name))? "value='".$user_eship[0]->name."'": '';?>>
+                                            <input type="text" class="form-control" id="name-input-eship" name="nameCompanyEship" <?php echo (isset($user_eship[0]->name))? "value='". sanitize_text_field($user_eship[0]->name) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -74,7 +74,7 @@
                                             <label for="email-input-eship" class="col-form-label">
                                                 Company E-mail:
                                             </label>
-                                            <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='".$user_eship[0]->email."'": '';?>>
+                                            <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='". sanitize_text_field($user_eship[0]->email) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="row g-1 mb-4">
