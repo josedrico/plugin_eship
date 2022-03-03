@@ -532,6 +532,454 @@
             wp_die();
         }
 
+        public function load_options_quotations_bulk_eship()
+        {
+            if ($this->eship_model->get_data_user_eship('id') && $this->eship_model->get_dimensions_eship()) {
+                $actions['eship_quotations'] = 'Create multiple shipments';
+                return $actions;
+            } else {
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $adm_notice = new ESHIP_Admin_Notices($text);
+                $adm_notice->error_message();
+                add_action( 'admin_notices',[$this, 'error_message'] );
+            }
+        }
+
+        public function search_orders_eship()
+        {
+            if (isset($_GET['countEship'])) {
+                $orders_eship = $_GET['countEship'];
+            }
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/modals/modal_bulk_eship.php';
+
+        }
+
+        public function get_quotations_bulk_eship()
+        {
+            if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
+                $count  = implode(',', $_GET['post']);
+                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
+                header("Location: " . $url);
+            }
+        }
+
+        public function get_quotations_orders_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+            $data = array();
+
+            if (isset($_POST['typeAction']) == 'add_quotations_orders') {
+                $orders = (isset($_POST['orders']))? explode(',', $_POST['orders']) : FALSE;
+                if (is_array($orders)) {
+                    for ($i = 0; $i < count($orders); $i++) {
+                        $result     = $this->eship_quotation->create($orders[$i], 'date');
+                        $result     = json_decode($result);
+                        $order_woo  = new ESHIP_Woocommerce_Api();
+                        $order      = $order_woo->getOrderApi($orders[$i], 'date');
+                        $result->order_id   = $orders[$i];
+                        $new_data           = new DateTime($order);
+                        $result->date_final = $new_data->format('Y-m-d');
+
+                        array_push($data, $result);
+                    }
+
+                    $this->response(
+                        array(
+                            'result'    => $data,
+                            'test'      => array(
+                                $data,
+                                $result
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Success.',
+                            'error'     => FALSE,
+                            'code'      => 201
+                        ),
+                        TRUE
+                    );
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => $data,
+                            'show'      => FALSE,
+                            'message'   => 'Not orders.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        ),
+                        TRUE
+                    );
+                }
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $data,
+                        'show'      => FALSE,
+                        'message'   => 'The field typeAction is missed.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    ),
+                    TRUE
+                );
+            }
+        }
+
+        public function get_shipments_orders_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+
+            $shipments  = array();
+            $billings   = array();
+            $orders     = array();
+            $types      = array();
+
+            if(current_user_can('manage_options')) {
+                $result = FALSE;
+                extract($_POST, EXTR_OVERWRITE);
+
+                if($typeAction == 'add_shipments') {
+                    if (! empty($content)) {
+                        for ($i = 0; $i < count($content); $i++) {
+                            $order = explode("_", $content[$i]['value']);
+                            array_push($shipments, $order[0]);
+                            $order_woo  = new ESHIP_Woocommerce_Api();
+                            $billing    = $order_woo->getOrderApi($order[1]);
+                            array_push($orders, array('meta_data' => $billing->meta_data, 'id' => $billing->id));
+                            if (! empty($billing->billing->firts_name) && !empty($billing->billing->last_name)) {
+                                $name_final = $billing->billing->firts_name;
+                                $last_name  = $billing->billing->last_name;
+                            } else  {
+                                $name_final = $billing->shipping->first_name;
+                                $last_name  = $billing->shipping->last_name;
+                            }
+
+                            $name = $name_final . ' ' . $last_name;
+                            array_push($billings, $name);
+                            array_push($types, $order[3]);
+                        }
+                        $shipment   = new ESHIP_Shipment($shipments, TRUE);
+                        $res        = $shipment->getShipment();
+                        $result     = json_decode($res);
+                    }
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => NULL,
+                            'show'      => FALSE,
+                            'message'   => 'The field typeAction is missed.',
+                            'error'     => TRUE,
+                            'code'      => 400
+                        ),
+                        TRUE
+                    );
+                }
+
+                if ($result) {
+                    $this->response(
+                        array(
+                            'result'    => array(
+                                'result' => $result,
+                                'res'    => $billings,
+                                'types'  => $types,
+                                'orders' => $orders
+                            ),
+                            'test'      => array(
+                                'result' => $result,
+                                'res'    => $billings,
+                                'types'  => $types,
+                                'orders' => $orders
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Your shipping guides were generated.',
+                            'error'     => FALSE,
+                            'code'      => 201
+                        ),
+                        TRUE
+                    );
+                } else  {
+                    $this->response(
+                        array(
+                            'result'    => array(
+                                'result' => $result,
+                                'res'    => $billings,
+                                'types'  => $types,
+                                'orders' => $orders
+                            ),
+                            'test'      => array(
+                                'result' => $result,
+                                'res'    => $billings,
+                                'types'  => $types,
+                                'orders' => $orders
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Your shipping guides were generated.',
+                            'error'     => TRUE,
+                            'code'      => 400
+                        ),
+                        TRUE
+                    );
+                }
+            }
+        }
+
+        public function add_meta_boxes_eship()
+        {
+            $register_view  = 'view_buttons_eship';
+            $register_title = "<img class='img-thumbnail' style='max-width:75px;' src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "'>";
+
+            if (empty($this->eship_model->get_data_user_eship())) {
+                $register_view  = 'view_register_eship';
+                $register_title = "<img src='" . ESHIP_PLUGIN_DIR_URL . 'admin/img/eship.png' . "' style='max-width:75px;'>";
+            }
+
+            $meta_box = array(
+                'id'        => 'woocommerce-order-eship',
+                'title'     => $register_title,
+                'callback'  => [$this, $register_view],
+                'view'      => 'shop_order',
+                'context'   => 'side',
+                'priority'  => 'high'
+            );
+
+            $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
+            $add_meta_box->run();
+        }
+
+        public function view_buttons_eship()
+        {
+            if ($this->eship_model->get_dimensions_eship() && $this->eship_model->get_data_user_eship('id')) {
+                $pdf_arr                = array();
+                $button_quotation_eship = 'Create Label';
+
+                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
+                    $order          = $_GET['post'];
+                    $pdf            = new ESHIP_Woocommerce_Api();
+                    $pdf_exist      = $pdf->getOrderApi($order);
+                    $check_metadata = $pdf_exist->meta_data;
+
+                    if (! empty($pdf_exist->meta_data) && count($pdf_exist->meta_data) > 0) {
+                        foreach ($pdf_exist->meta_data  as $key) {
+                            if ($key->key == 'tracking_number') {
+                                $pdf_arr['tracking_number'] = $key->value;
+                            }
+
+                            if ($key->key == 'provider') {
+                                $pdf_arr['provider'] = $key->value;
+                            }
+
+                            if ($key->key == 'tracking_link') {
+                                $pdf_arr['tracking_link'] = $key->value;
+                            }
+
+                            if ($key->key == 'tracking_url') {
+                                $pdf_arr['tracking_url'] = $key->value;
+                            }
+                        }
+                    }
+
+                    $arr_total = array_filter(
+                        $pdf_arr,
+                        function ($var) {
+                            if (empty($var)) {
+                                return $var;
+                            }
+                        }
+                    );
+
+                    if (!empty($pdf_arr) && !empty($pdf_arr['tracking_link'])) {
+                        $button_quotation_eship  = 'Create Another Label';
+                        $modal_shipment_pdf_show = TRUE;
+                    }
+                }
+
+                $modal_token        = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+                $modal_custom       = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/modal_custom.php';
+                $modal_shipment_pdf = ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/shipment_sheet.php';
+
+                require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
+            } else {
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $adm_notice = new ESHIP_Admin_Notices($text);
+                $adm_notice->error_message();
+                add_action( 'admin_notices',[$this, 'error_message'] );
+            }
+        }
+
+        public function view_register_eship()
+        {
+            $text_modal_ak          = 'Connect to ESHIP';
+            $text_title_api_key     = 'Register API Key';
+            $text_api_key           = 'To obtain your eShip API key, you login into your eShip account 
+                                        <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
+                                        "Settings" and click on "View your API Key".';
+            $id_api_key             = 'tokenEshipModal';
+            $btn_account_ak_modal   = 'Register API Key';
+            $title_eship_account    = 'I do not have an account of ESHIP';
+            $text_eship_account     = '';
+            $btn_account_ak         = 'I have ESHIP account';
+            $btn_account_ak_text    = '';
+            $btn_account            = 'Register Now';
+            $btn_account_link       = 'https://app.myeship.co/en/login';
+            $modal_token            =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+            require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
+        }
+
+        public function get_quotation_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+
+            if (isset($_POST['order_id'])) {
+                $result = $this->eship_quotation->create($_POST['order_id']);
+                $result = json_decode($result);
+
+                if ($result && !(isset($result->error))) {
+                    $woo          = new ESHIP_Woocommerce_Api();
+                    $update_order = FALSE;
+                    if ($result->object_id) {
+                        $update_order = $woo->setOrderApi(
+                            $_POST['order_id'],
+                            array(
+                                'object_id' => $result->object_id
+                            ),
+                            'meta_data_object_id'
+                        );
+                    }
+
+                    $this->response(
+                        array(
+                            'result'    => $result,
+                            'test'      => array(
+                                'result'    => $result,
+                                'upOrder'   => $update_order,
+                                'order'     => $_POST['order_id']
+                            ),
+                            'show'      => FALSE,
+                            'message'   => 'Your quote is created',
+                            'error'     => FALSE,
+                            'code'      => 201
+                        ),
+                        TRUE
+                    );
+                } else  {
+
+                    $this->response(
+                        array(
+                            'result'    => $result,
+                            'test'      => NULL,
+                            'show'      => FALSE,
+                            'message'   => (isset($result['error']))? $result['message'] : FALSE,
+                            'error'     => TRUE,
+                            'code'      => 404
+                        ),
+                        TRUE
+                    );
+                }
+
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => NULL,
+                        'show'      => FALSE,
+                        'message'   => 'There is no order selected.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    ),
+                    TRUE
+                );
+            }
+        }
+
+        public function get_shipment_eship()
+        {
+            check_ajax_referer('eship_sec', 'nonce');
+
+            if(current_user_can('manage_options')) {
+                $result = FALSE;
+                extract($_POST, EXTR_OVERWRITE);
+
+                if($typeAction == 'create_shipment') {
+                    $shipment   = new ESHIP_Shipment($rateId);
+                    $result     = $shipment->getShipment();
+                    $result     = json_decode($result);
+
+
+                    if ($result) {
+                        $woo = new ESHIP_Woocommerce_Api();
+                        $tracking_number    = FALSE;
+                        $provider           = FALSE;
+                        $tracking_link      = FALSE;
+                        if ($order) {
+                            $tracking_number = $woo->setOrderApi(
+                                $order,
+                                array('tracking_number' => $result->tracking_number),
+                                'meta_data_tracking_number'
+                            );
+                            $provider = $woo->setOrderApi(
+                                $order,
+                                array('provider' => $result->provider),
+                                'meta_data_provider'
+                            );
+                            $tracking_link = $woo->setOrderApi(
+                                $order,
+                                array('tracking_link' => $result->label_url),
+                                'meta_data_tracking_link'
+                            );
+                            $tracking_url = $woo->setOrderApi(
+                                $order,
+                                array('tracking_url' => $result->tracking_url_provider),
+                                'meta_data_tracking_url'
+                            );
+                        }
+
+                        $this->response(
+                            array(
+                                'result'    => $result,
+                                'test'      => array(
+                                    $result,
+                                    $tracking_link,
+                                    $tracking_number,
+                                    $tracking_url,
+                                    $provider
+                                ),
+                                'show'      => FALSE,
+                                'message'   => '',
+                                'error'     => FALSE,
+                                'code'      => 201
+                            ),
+                            TRUE
+                        );
+                    } else  {
+                        $this->response(
+                            array(
+                                'result'    => NULL,
+                                'test'      => NULL,
+                                'show'      => FALSE,
+                                'message'   => 'Your shipping guides were generated.',
+                                'error'     => TRUE,
+                                'code'      => 400
+                            ),
+                            TRUE
+                        );
+                    }
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'test'      => NULL,
+                            'show'      => FALSE,
+                            'message'   => 'The field typeAction is missed.',
+                            'error'     => TRUE,
+                            'code'      => 400
+                        ),
+                        TRUE
+                    );
+                }
+            }
+        }
+
         private function response($data, $test = FALSE)
         {
             if ($test) {
