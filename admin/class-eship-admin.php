@@ -468,18 +468,8 @@
             check_ajax_referer('eship_sec', 'nonce');
             $result = $this->eship_model->update_dimension_eship($_POST);
 
-            if ($_POST['typeAction'] == 'update_status_dimension') {
-
+            if ($_POST['typeAction'] == 'update_status_dimension' || $_POST['typeAction'] == 'update_dimensions') {
                 if ($result == 1) {
-                    /*
-                    $response = array(
-                        'result'    => 'Done!',
-                        'updateEffect' => $result,
-                        'message'   => 'Your data update.',
-                        'error'     => FALSE,
-                        'code'      => 201
-                    );
-                    */
                     $this->response(
                         array(
                             'result'    => NULL,
@@ -492,14 +482,6 @@
                         TRUE
                     );
                 } else  {
-                    /*
-                    $response = array(
-                        'result'  => 'No updated',
-                        'message' => 'Your data not is update',
-                        'error'   => TRUE,
-                        'code'    => 404
-                    );
-                    */
                     $this->response(
                         array(
                             'result'    => NULL,
@@ -512,28 +494,6 @@
                         TRUE
                     );
                 }
-            }
-
-            if ($_POST['typeAction'] == 'update_dimensions') {
-                if ($result) {
-                    $response = array(
-                        'result'   => 'Done!',
-                        'redirect' => TRUE,
-                        'error'    => FALSE,
-                        'message'  => 'Your data update',
-                        'code'     => 201
-                    );
-                } else  {
-                    $response = array(
-                        'result'  => 'No updated',
-                        'error'   => TRUE,
-                        'message' => 'Your data no update',
-                        'code'    => 404
-                    );
-                }
-
-                echo json_encode($response);
-                wp_die();
             }
         }
 
