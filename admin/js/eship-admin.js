@@ -9,6 +9,8 @@
     modalInsertDimensionsEship();
     modalEditDimensionsEship();
     deleteDimensionsEship();
+    changeStatusDimEship();
+    changeStatusActiveEship();
 
     /**
      * Abstract
@@ -494,6 +496,61 @@
                         swal("Your data is safe!");
                     }
                 });
+        });
+    }
+
+    function changeStatusDimEship(){
+        $('#eship-dim-weigth').on('click', 'input[data-status-dim-eship]',function () {
+            if (typeof $(this).data('dim-id') != 'undefined') {
+                let dimId = $(this).data('dim-id');
+                let input = $(this).val();
+
+                let $data = {
+                    method: 'POST',
+                    url: eshipData.url,
+                    content: {
+                        action: 'update_dimensions_eship',
+                        nonce: eshipData.security,
+                        dimId,
+                        status: input,
+                        typeAction: 'update_status_dimension'
+                    },
+                    type: 'json'
+                };
+                ajaxEship($data);
+            }
+        });
+    }
+
+    function changeStatusActiveEship(){
+        $('#radioDimSts2').on('click',function () {
+            let $data = {
+                method: 'POST',
+                url: eshipData.url,
+                content: {
+                    action: 'update_token_eship',
+                    nonce: eshipData.security,
+                    status: 'default',
+                    typeAction: 'update_status_dimension'
+                },
+                type: 'json'
+            };
+            ajaxEship($data);
+        });
+
+        $('#radioDimSts1').on('click',function () {
+            let $data = {
+                method: 'POST',
+                url: eshipData.url,
+                content: {
+                    action: 'update_token_eship',
+                    nonce: eshipData.security,
+                    status: 'template',
+                    typeAction: 'update_status_dimension'
+                },
+                type: 'json'
+            };
+            ajaxEship($data);
         });
     }
 
