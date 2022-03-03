@@ -4,7 +4,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="dashBoardEshipModalToggleLabel">
-                    <i class="fas fa-shipping-fast"></i> Select to service
+                    <i class="fas fa-shipping-fast"></i> Select Service
                     <?php if(!empty($post)): ?>
                         <span class="badge bg-secondary">
                             Order: <?php echo $post;?>
