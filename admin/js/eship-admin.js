@@ -7,6 +7,8 @@
     modalInsertDimensionsEship();
     getDimensionsEship();
     modalInsertDimensionsEship();
+    modalEditDimensionsEship();
+    deleteDimensionsEship();
 
     /**
      * Abstract
@@ -338,6 +340,7 @@
                                             </div>`
                             });
                         });
+                        $('#eship-dim-weigth').show();
                         bsTb({
                             id: '#eship-dim-weigth',
                             search: false,
@@ -404,6 +407,93 @@
                     ajaxEship($data);
                 }
             });
+        });
+    }
+
+    function modalEditDimensionsEship() {
+        $('#eship-dim-weigth').on('click', 'button[data-dim-btn-id]',function () {
+            let dataForm = $(this).data('dim-btn-id');
+            $("#eshipDimEditModalForm" + dataForm).validate({
+                rules: {
+                    aliasEship: {
+                        required: true
+                    },
+                    lengthEship: {
+                        required: true
+                    },
+                    widthEship: {
+                        required: true
+                    },
+                    heightEship: {
+                        required: true
+                    },
+                    unitDimensionsEship: {
+                        required: true
+                    },
+                    weightEship: {
+                        required: true
+                    },
+                    unitWeigthEship: {
+                        required: true
+                    }
+                },
+                success: function(label) {
+                    label.addClass("valid").css('color','green').text('Valid')
+                },
+                submitHandler: function(form) {
+                    let $data = {
+                        method: 'POST',
+                        url: eshipData.url,
+                        content: {
+                            action: 'update_dimensions_eship',
+                            nonce: eshipData.security,
+                            typeAction: 'update_dimensions',
+                            dim: dataForm,//$('button[data-dim-btn-id]').data('dim-btn-id'),
+                            aliasEship: $('#alias-input-eship' + dataForm).val(),
+                            lengthEship: $('#length-input-eship'+ dataForm).val(),
+                            widthEship: $('#width-input-eship'+ dataForm).val(),
+                            heightEship: $('#height-input-eship'+ dataForm).val(),
+                            unitDimensionsEship: $('#unit-input-eship'+ dataForm).val(),
+                            weightEship: $('#weigth-input-eship'+ dataForm).val(),
+                            unitWeigthEship: $('#unitWeigth-input-eship'+ dataForm).val()
+                        },
+                        type: 'json'
+                    };
+                    ajaxEship($data);
+                }
+            });
+        });
+    }
+
+    function deleteDimensionsEship() {
+        $('#eship-dim-weigth').on('click', 'tr button[data-eship="deleted"]',function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover data!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        let delId = $(this).data('dim-delete-id');
+                        let $data = {
+                            method: 'POST',
+                            url: eshipData.url,
+                            content: {
+                                action: 'delete_dimensions_eship',
+                                nonce: eshipData.security,
+                                delId,
+                                typeAction: 'delete_dimension'
+                            },
+                            type: 'json'
+                        };
+
+                        ajaxEship($data);
+                    } else {
+                        swal("Your data is safe!");
+                    }
+                });
         });
     }
 
