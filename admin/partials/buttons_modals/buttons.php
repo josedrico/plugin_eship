@@ -1,4 +1,4 @@
-<div id="app-eship-url" class="app-eship" data-url="<?php echo  ESHIP_PLUGIN_DIR_URL;?>">
+<div id="app-eship-url" class="app-eship" data-url="<?php echo  esc_url(ESHIP_PLUGIN_DIR_URL);?>">
     <div class="container mt-3">
         <!-- Button trigger modal -->
         <div class="row">
