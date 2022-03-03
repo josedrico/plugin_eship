@@ -3,22 +3,22 @@
  * ESHIP Plugin
  *
  * @package           EShipPackage
- * @author            SEGMAIL
- * @copyright         2021 SEGMAIL
- * @license           MIT
+ * @author            https://myeship.co/
+ * @copyright         2022 SEGMAIL
+ * @license           GPLv3
  *
  * @wordpress-plugin
  * Plugin Name:       EShip
- * Plugin URI:        https://eship.com
- * Description:       Plugin to run wordpress and woocommerce.
+ * Plugin URI:        https://myeship.co/
+ * Description:       Create and print shipping labels using preferential rates.
  * Version:           1.0.0
  * Requires at least: 5.6
- * Requires PHP:      7.2
+ * Requires PHP:      7.2.5
  * Author:            SEGMAIL
  * Author URI:        https://segmail.co
  * Text Domain:       eship-slug
- * License:           MIT
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * License:           GPLv3
+ * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
  * Update URI:        https://eship.com
  */
 
