@@ -31,19 +31,19 @@
                         <label for="token-input-eship" class="col-form-label">
                             API Key:
                         </label>
-                        <input type="password" class="form-control" id="token-input-eship" data-form="eship-register" name="apiKeyEship" <?php if(isset($form_data[0]->api_key_eship)):?>value="<?php echo $form_data[0]->api_key_eship;?>"<?php endif;?>>
+                        <input type="password" class="form-control" id="token-input-eship" data-form="eship-register" name="apiKeyEship" <?php if(isset($form_data[0]->api_key_eship)):?>value="<?php echo sanitize_text_field($form_data[0]->api_key_eship);?>"<?php endif;?>>
                     </div>
                     <div class="mb-2">
                         <label for="phone-input-eship" class="col-form-label">
                             Phone:
                         </label>
-                        <input type="text" class="form-control" id="phone-input-eship" data-form="eship-register" name="phoneCompanyEship" <?php if(isset($form_data[0]->phone)):?>value="<?php echo $form_data[0]->phone;?>"<?php endif;?>>
+                        <input type="text" class="form-control" id="phone-input-eship" data-form="eship-register" name="phoneCompanyEship" <?php if(isset($form_data[0]->phone)):?>value="<?php echo sanitize_text_field($form_data[0]->phone);?>"<?php endif;?>>
                     </div>
                     <div class="mb-2">
                         <label for="name-input-eship" class="col-form-label">
                             Name Company:
                         </label>
-                        <input type="text" class="form-control" id="name-input-eship" data-form="eship-register" name="nameCompanyEship" <?php if(isset($form_data[0]->name)):?>value="<?php echo $form_data[0]->name;?>"<?php endif;?>>
+                        <input type="text" class="form-control" id="name-input-eship" data-form="eship-register" name="nameCompanyEship" <?php if(isset($form_data[0]->name)):?>value="<?php echo sanitize_text_field($form_data[0]->name);?>"<?php endif;?>>
                     </div>
                     <div class="row g-1 mb-4">
                         <div class="col-12 col-md-6">
