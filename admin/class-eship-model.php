@@ -77,11 +77,11 @@ class ESHIP_Model {
             if ($typeAction == 'add_token') {
 
                 $columns = [
-                    'dimensions'        => (int)$dimensions,
-                    'email'             => $email,//$adm->user_email,
-                    'name'              => $name,
-                    'phone'             => $phone,
-                    'api_key_eship'     => $token,
+                    'dimensions'        => sanitize_text_field((int)$dimensions),
+                    'email'             => sanitize_email($email),
+                    'name'              => sanitize_text_field(strtoupper($name)),
+                    'phone'             => sanitize_text_field($phone),
+                    'api_key_eship'     => sanitize_text_field($token),
                 ];
 
                 $format = [
@@ -110,12 +110,12 @@ class ESHIP_Model {
                     array(
                         'api_key_eship'     => sanitize_text_field($token),
                         'phone'             => sanitize_text_field($phone),
-                        'name'              => sanitize_text_field($name),
+                        'name'              => sanitize_text_field(strtoupper($name)),
                         'email'             => sanitize_email($email),
                         'dimensions'        => sanitize_text_field($dimensions)
                     ),
                     array(
-                        'id' => $user
+                        'id' => sanitize_text_field($user)
                     ),
                     array(
                         '%s',
@@ -133,10 +133,10 @@ class ESHIP_Model {
             if ($typeAction == 'update_dimension_token') {
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'dimensions' => $dimensions
+                        'dimensions' => sanitize_text_field($dimensions)
                     ),
                     array(
-                        'id' => $id
+                        'id' => sanitize_text_field($id)
                     ),
                     array(
                         '%s'
@@ -150,10 +150,10 @@ class ESHIP_Model {
             if ($typeAction == 'update_dimension_value') {
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'dimensions' => $dimVal
+                        'dimensions' => sanitize_text_field($dimVal)
                     ),
                     array(
-                        'id' => $dim_id
+                        'id' => sanitize_text_field($dim_id)
                     ),
                     array(
                         '%s'
@@ -189,13 +189,13 @@ class ESHIP_Model {
 
             if ($typeAction == 'add_dimensions') {
                 $columns = [
-                    'name'          => $aliasEship,
-                    'length_dim'    => (float)$lengthEship,
-                    'width_dim'     => (float)$widthEship,
-                    'height_dim'    => (float)$heightEship,
-                    'unit_dim'      => $unitDimensionsEship,
-                    'weight_w'      => (float)$weightEship,
-                    'unit_w'        => $unitWeigthEship,
+                    'name'          => sanitize_text_field(strtoupper($aliasEship)),
+                    'length_dim'    => sanitize_text_field((float)$lengthEship),
+                    'width_dim'     => sanitize_text_field((float)$widthEship),
+                    'height_dim'    => sanitize_text_field((float)$heightEship),
+                    'unit_dim'      => sanitize_text_field($unitDimensionsEship),
+                    'weight_w'      => sanitize_text_field((float)$weightEship),
+                    'unit_w'        => sanitize_text_field($unitWeigthEship),
                     'status'        => 1,
                     'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                 ];
@@ -242,16 +242,16 @@ class ESHIP_Model {
                 $result = $this->db->update(
                     ESHIP_TB_DIM,
                     array(
-                        'name'          => $aliasEship,
-                        'length_dim'    => (float)$lengthEship,
-                        'width_dim'     => (float)$widthEship,
-                        'height_dim'    => (float)$heightEship,
-                        'unit_dim'      => $unitDimensionsEship,
-                        'weight_w'      => (float)$weightEship,
-                        'unit_w'        => $unitWeigthEship,
+                        'name'          => sanitize_text_field(strtoupper($aliasEship)),
+                        'length_dim'    => sanitize_text_field((float)$lengthEship),
+                        'width_dim'     => sanitize_text_field((float)$widthEship),
+                        'height_dim'    => sanitize_text_field((float)$heightEship),
+                        'unit_dim'      => sanitize_text_field($unitDimensionsEship),
+                        'weight_w'      => sanitize_text_field((float)$weightEship),
+                        'unit_w'        => sanitize_text_field($unitWeigthEship),
                         'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                     ),
-                    array('id' => $dim)
+                    array('id' => sannitize_text_field($dim))
                 );
 
                 $this->db->flush();
@@ -271,7 +271,7 @@ class ESHIP_Model {
 
                 $result = $this->db->delete(
                     ESHIP_TB_DIM,
-                    array('id' => $delId),
+                    array('id' => sanitize_text_field($delId)),
                     array('%d')
                 );
             }
