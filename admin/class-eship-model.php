@@ -219,27 +219,25 @@ class ESHIP_Model {
         return $result;
     }
 
-    public function update_dimension_eship($data)
+    public function update_dimensions_eship($data)
     {
         $result = 0;
         if(current_user_can('manage_options')) {
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'update_status_dimension') {
-
-                $result = $this->db->update(
+                $id_dim     = sanitize_text_field($dimId);
+                $result     = $this->db->update(
                     ESHIP_TB_DIM,
-                    ['status' => $status],
-                    ['id' => $dimId]
+                    ['status' => sanitize_text_field($status)],
+                    ['id'     => $id_dim]
                 );
-
                 $this->db->flush();
-            }
-
-            if ($typeAction == 'update_dimensions') {
+            } else if ($typeAction == 'update_dimensions') {
                 date_default_timezone_set('America/Mexico_City');
                 $date_timestamp = new \DateTime();
-                $result = $this->db->update(
+                $id_dim         = sanitize_text_field($dim);
+                $result         = $this->db->update(
                     ESHIP_TB_DIM,
                     array(
                         'name'          => sanitize_text_field(strtoupper($aliasEship)),
@@ -251,11 +249,13 @@ class ESHIP_Model {
                         'unit_w'        => sanitize_text_field($unitWeigthEship),
                         'created_at'    => $date_timestamp->format('Y-m-d H:i:s')
                     ),
-                    array('id' => sannitize_text_field($dim))
+                    array('id' => $id_dim)
                 );
 
                 $this->db->flush();
             }
+        } else {
+            $result = 2;
         }
 
         return $result;
