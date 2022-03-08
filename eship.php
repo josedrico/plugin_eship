@@ -19,7 +19,6 @@
  * Text Domain:       eship-slug
  * License:           GPLv3
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.txt
- * Update URI:        https://eship.com
  */
 
 if ( ! defined( 'WPINC' ) ) {
@@ -74,12 +73,12 @@ function run_eship_master() {
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
     run_eship_master();
 } else {
-    function woo_admin_notice__error() {
+    function wa_notice_error_eship() {
         $class = 'notice notice-error';
         $message = __( 'Don`t have woocommerce, it is necesary to ESHIP plugin!', 'sample-text.txt-domain' );
 
         printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
     }
-    add_action( 'admin_notices', 'woo_admin_notice__error' );
+    add_action( 'admin_notices', 'wa_notice_error_eship' );
 
 }
