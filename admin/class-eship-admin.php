@@ -75,7 +75,6 @@
             wp_enqueue_style( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/css/eship-admin.css', array(), $this->version, '' );
         }
 
-
         /*
          * Scripts JS
          * */
@@ -638,7 +637,7 @@
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
                 $count  = implode(',', $_GET['post']);
-                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . sanitize_text_field($count);
+                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
                 header("Location: " . $url);
             }
         }
@@ -1091,7 +1090,6 @@
             if ($test) {
                 $response =  array(
                     'result'    => $data['result'],
-                    'test'      => $data['test'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
                     'error'     => $data['error'],
@@ -1100,6 +1098,7 @@
             } else {
                 $response =  array(
                     'result'    => $data['result'],
+                    'test'      => $data['test'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
                     'error'     => $data['error'],

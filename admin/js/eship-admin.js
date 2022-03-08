@@ -597,7 +597,7 @@
         let url = window.location;
         let str = url.href;
         let segment = str.split(/countEship/i);
-
+        
         if (segment.length > 1) {
             let modal = new bootstrap.Modal(document.getElementById('ordersQuotationsEshipModalToggle'));
             let modalShow = document.getElementById('ordersQuotationsEshipModalToggle');
@@ -780,7 +780,7 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    console.log('getQuotationEship', data);
+                    //console.log('getQuotationEship', data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
                         $('#orders-list').append(messageApi({
