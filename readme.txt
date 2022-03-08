@@ -50,9 +50,5 @@ Make your tracking page and shipping emails unique by adding your brand’s logo
 3. Select "eShip" in the admin menu and activate your eShip account, generating read and write permissions in woocommer api key.
 4. Configure the dimensions and weights of your packages and start using the plugin.
 
-== Screenshots ==
-
-1. Example
-And Backticks for code:
 
 `<?php code(); ?>`
