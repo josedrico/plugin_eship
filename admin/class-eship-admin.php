@@ -101,8 +101,8 @@
              */
             wp_enqueue_script( 'eship_bootstrap_table_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/bootstrap-table/js/bootstrap-table.min.js', array(), '1.19.1', TRUE );
 
-            wp_enqueue_script( 'eship_validation_jquery_admin_js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js', array('jquery'), 'v1.19.3', TRUE );
-            wp_enqueue_script( 'eship_validation_jquery_methods_admin_js', 'https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/additional-methods.min.js', array('jquery'), 'v1.19.3', TRUE );
+            wp_enqueue_script( 'eship_validation_jquery_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/jqueryvalidation/jquery.validate.min.js', array(), 'v1.19.3', TRUE );
+            wp_enqueue_script( 'eship_validation_jquery_methods_admin_js', ESHIP_PLUGIN_DIR_URL . 'helpers/jqueryvalidation/additional-methods.min.js', array(), 'v1.19.3', TRUE );
             wp_enqueue_script( 'eship_sweetalert_js', ESHIP_PLUGIN_DIR_URL . 'helpers/sweetalert/sweetalert.min.js', array(), 'v2.0', TRUE );
 
             wp_enqueue_script( $this->plugin_name, ESHIP_PLUGIN_DIR_URL . 'admin/js/eship-admin.js', array(), $this->version, TRUE );
@@ -140,9 +140,9 @@
          * */
         public function eship_dashboard()
         {
-            $config_data  = array();
-            $instructions_ak = 'To obtain your API key, login into your eShip account <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key';
-            $dimensions   = $this->eship_model->get_dimensions_eship();
+            $config_data     = array();
+            $instructions_ak = TRUE;
+            $dimensions      = $this->eship_model->get_dimensions_eship();
 
             if ($user_eship = $this->eship_model->get_data_user_eship()) {
                 $config_data = array(
