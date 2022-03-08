@@ -7,7 +7,7 @@
                     <i class="fas fa-shipping-fast"></i> Select Service
                     <?php if(!empty($post)): ?>
                         <span class="badge bg-secondary">
-                            Order: <?php echo $post;?>
+                            Order: <?php echo esc_html($post);?>
                         </span>
                     <?php endif;?>
                 </h5>
@@ -37,16 +37,6 @@
                                 </tr>
                                 </thead>
                             </table>
-                            <!--
-                            <table id="custom-eship-messages" class="table mt-5 text-danger">
-                                <thead>
-                                <tr>
-                                    <th data-field="source">Source</th>
-                                    <th data-field="text">Text</th>
-                                </tr>
-                                </thead>
-                            </table>
-                            -->
                             <div id="custom-eship-messages"></div>
                         </div>
                     </div>

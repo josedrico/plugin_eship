@@ -1,4 +1,4 @@
-<div id="app-eship-url" class="container app-eship-config" data-url="<?php echo  ESHIP_PLUGIN_DIR_URL;?>">
+<div id="app-eship-url" class="container app-eship-config" data-url="<?php echo  esc_url(ESHIP_PLUGIN_DIR_URL);?>">
     <div class="mt-3">
         <div class="row">
             <div class="col-12 col-sm-10 offset-sm-1 col-md-6 offset-md-6">
@@ -6,7 +6,7 @@
                     <div class="row g-0">
                         <?php if(isset($img_title)):?>
                             <div class="offset-md-8 col-md-4">
-                                <img src="<?php echo $img_title;?>" class="img-fluid rounded-start" alt="Eship Logo">
+                                <img src="<?php echo esc_url($img_title);?>" class="img-fluid rounded-start" alt="Eship Logo">
                             </div>
                         <?php endif;?>
                     </div>
@@ -36,12 +36,12 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-10 offset-sm-1">
-                                <form method="post" action="" class="row" id="<?php echo $config_data['form']?>" data-user="<?php echo $user_eship[0]->id;?>">
-                                    <?php if (isset($instructions_ak)):?>
+                                <form method="post" action="" class="row" id="<?php echo esc_attr($config_data['form'])?>" data-user="<?php echo esc_attr($user_eship[0]->id);?>">
+                                    <?php if ($instructions_ak):?>
 
                                     <div class="col-12 mt-2 mb-2">
                                         <div class="alert alert-secondary" role="alert">
-                                            <?php echo $instructions_ak ;?>
+                                            To obtain your API key, login into your eShip account <a href="<?php echo esc_url('https://app.myeship.co/');?>" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key
                                         </div>
                                     </div>
                                     <?php endif;?>
@@ -50,7 +50,7 @@
                                             <label for="token-input-eship" class="col-form-label">
                                                 API Key:
                                             </label>
-                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='". sanitize_text_field($user_eship[0]->api_key_eship) . "'": '';?>>
+                                            <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='". esc_attr($user_eship[0]->api_key_eship) . "'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -58,7 +58,7 @@
                                             <label for="phone-input-eship" class="col-form-label">
                                                 Phone:
                                             </label>
-                                            <input type="text" class="form-control" id="phone-input-eship" name="phoneCompanyEship" <?php echo (isset($user_eship[0]->phone))? "value='". sanitize_text_field($user_eship[0]->phone) ."'": '';?>>
+                                            <input type="text" class="form-control" id="phone-input-eship" name="phoneCompanyEship" <?php echo (isset($user_eship[0]->phone))? "value='". esc_attr($user_eship[0]->phone) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -66,7 +66,7 @@
                                             <label for="name-input-eship" class="col-form-label">
                                                 Company Name:
                                             </label>
-                                            <input type="text" class="form-control" id="name-input-eship" name="nameCompanyEship" <?php echo (isset($user_eship[0]->name))? "value='". sanitize_text_field($user_eship[0]->name) ."'": '';?>>
+                                            <input type="text" class="form-control" id="name-input-eship" name="nameCompanyEship" <?php echo (isset($user_eship[0]->name))? "value='". esc_attr($user_eship[0]->name) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6">
@@ -74,12 +74,12 @@
                                             <label for="email-input-eship" class="col-form-label">
                                                 Company E-mail:
                                             </label>
-                                            <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='". sanitize_text_field($user_eship[0]->email) ."'": '';?>>
+                                            <input type="email" class="form-control" id="email-input-eship" name="emailCompanyEship" <?php echo (isset($user_eship[0]->email))? "value='". esc_attr($user_eship[0]->email) ."'": '';?>>
                                         </div>
                                     </div>
                                     <div class="row g-1 mb-4">
                                         <div class="col-12 col-md-6 offset-md-6">
-                                            <button type="submit" class="btn btn-primary w-100" id="<?php echo $config_data['btn'];?>">
+                                            <button type="submit" class="btn btn-primary w-100" id="<?php echo esc_attr($config_data['btn']);?>">
                                                 <span class="dashicons dashicons-saved"></span>
                                                 <div id="loader-light" class="spinner-border text-light" role="status" style="width: 1.2rem; height: 1.2rem; display: none;">
                                                     <span class="visually-hidden">Loading...</span>
@@ -91,19 +91,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab" data-dimensions="<?php echo (isset($user_eship[0]->dimensions))? $user_eship[0]->dimensions : '';?>">
+                    <div class="tab-pane fade" id="nav-package" role="tabpanel" aria-labelledby="nav-package-tab" data-dimensions="<?php echo (isset($user_eship[0]->dimensions))? esc_attr($user_eship[0]->dimensions) : '';?>">
                         <div class="row mt-4 ms-3" >
                             <div class="col-12 col-md-6">
                                 <h5 class="pt-1 pb-2">Dimensions & Weight Settings</h5>
                                 <div class="mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 1)? 'checked' : '';?>>
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts2" value="default" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 1)? esc_attr('checked') : '';?>>
                                         <label class="form-check-label" for="radioDimSts2">
                                             Use items weight and dimensions for shipments
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0)? 'checked' : '';?>>
+                                        <input class="form-check-input" type="radio" name="radioDimSts" id="radioDimSts1" value="template" <?php echo (isset($user_eship[0]->dimensions) && $user_eship[0]->dimensions == 0)? esc_attr('checked') : '';?>>
                                         <label class="form-check-label" for="radioDimSts1">
                                             Use a package template
                                         </label>

@@ -3,8 +3,8 @@
         <!-- Button trigger modal -->
         <div class="row">
             <div class="col-12">
-                <button type="button" class="page-title-action w-100 mt-1" data-bs-toggle="modal" href="#dashBoardEshipModalToggle" role="button" data-order="<?php echo (isset($order))? $order : FALSE;?>">
-                    <?php echo (isset($button_quotation_eship))? $button_quotation_eship : '';?>
+                <button type="button" class="page-title-action w-100 mt-1" data-bs-toggle="modal" href="#dashBoardEshipModalToggle" role="button" data-order="<?php echo (isset($order))? esc_attr($order) : FALSE;?>">
+                    <?php echo (isset($button_quotation_eship))? esc_html($button_quotation_eship) : '';?>
                     <i class="fas fa-shipping-fast"></i>
                 </button>
             </div>
@@ -17,7 +17,7 @@
             <?php if (isset($pdf_arr['tracking_url']) && !empty($pdf_arr['tracking_url'])):?>
             <div class="row">
                 <div class="col-12">
-                    <a href="<?php echo $pdf_arr['tracking_url'];?>" target="_blank">
+                    <a href="<?php echo esc_url($pdf_arr['tracking_url']);?>" target="_blank">
                     <button type="button" class="page-title-action w-100 mt-1">
                         Track Shipment <i class="fas fa-file-pdf"></i>
                     </button>
