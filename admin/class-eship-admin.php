@@ -652,8 +652,9 @@
 
             if (isset($_POST['typeAction']) && sanitize_text_field($_POST['typeAction']) == 'add_quotations_orders') {
                 $clean = sanitize_text_field($_POST['orders']);
-                $orders = (isset($clean))? explode(',', $clean) : FALSE;
-                if (is_array($orders) && !empty($orders)) {
+                $orders = (isset($clean) && strlen($clean) > 0)? explode(',', $clean) : 0;
+
+                if (is_array($orders) && !empty($orders) && count($orders) >  0) {
                     for ($i = 0; $i < count($orders); $i++) {
                         $result     = $this->eship_quotation->create($orders[$i]);
                         $result     = json_decode($result);
