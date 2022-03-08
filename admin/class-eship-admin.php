@@ -167,7 +167,7 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
 
-            $exist_api_key = $this->api_key_eship->getCredentials($_POST['token']);
+            $exist_api_key = $this->api_key_eship->getCredentials(sanitize_text_field($_POST['token']));
             if ($exist_api_key) {
                 if (! isset($exist_api_key['body'])) {
                     $this->response(
@@ -266,9 +266,9 @@
         public function update_token_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $check_api_key = $this->api_key_eship->getCredentials($_POST['token']);
+            $check_api_key = $this->api_key_eship->getCredentials(sanitize_text_field($_POST['token']));
 
-            if ($_POST['typeAction'] == 'update_token') {
+            if (sanitize_text_field($_POST['typeAction']) == 'update_token') {
                 if (is_null($check_api_key) && empty($check_api_key['body'])) {
                     $this->response(
                         array(
@@ -438,7 +438,7 @@
         public function insert_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            if ($_POST['typeAction'] == 'add_dimensions') {
+            if (sanitize_text_field($_POST['typeAction']) == 'add_dimensions') {
                 $result     = $this->eship_model->insert_dimensions_eship($_POST);
                 $id_token   = $this->eship_model->get_data_user_eship('id');
 
@@ -498,7 +498,7 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
 
-            if ($_POST['typeAction'] == 'update_status_dimension' || $_POST['typeAction'] == 'update_dimensions') {
+            if (sanitize_text_field($_POST['typeAction']) == 'update_status_dimension' || sanitize_text_field($_POST['typeAction']) == 'update_dimensions') {
                 $result = $this->eship_model->update_dimensions_eship($_POST);
 
                 if ($result == 1) {
@@ -608,10 +608,11 @@
         public function load_options_quotations_bulk_eship()
         {
             if ($this->eship_model->get_data_user_eship('id') && $this->eship_model->get_dimensions_eship()) {
-                $actions['eship_quotations'] = 'Create multiple shipments';
+                $actions['eship_quotations'] = esc_html('Create multiple shipments');
                 return $actions;
             } else {
-                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $url = get_admin_url() . "admin.php?page=eship_dashboard";
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" . esc_url($url) . "'>here</a>, and select the shipment tab.";
                 $adm_notice = new ESHIP_Admin_Notices($text);
                 $adm_notice->error_message();
                 add_action( 'admin_notices',[$this, 'error_message'] );
@@ -624,7 +625,7 @@
         public function search_orders_eship()
         {
             if (isset($_GET['countEship'])) {
-                $orders_eship = $_GET['countEship'];
+                $orders_eship = sanitize_text_field($_GET['countEship']);
             }
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/modals/modal_bulk_eship.php';
 
@@ -637,7 +638,7 @@
         {
             if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
                 $count  = implode(',', $_GET['post']);
-                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
+                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . sanitize_text_field($count);
                 header("Location: " . $url);
             }
         }
@@ -650,18 +651,18 @@
             check_ajax_referer('eship_sec', 'nonce');
             $data = array();
 
-            if (isset($_POST['typeAction']) == 'add_quotations_orders') {
-                $orders = (isset($_POST['orders']))? explode(',', $_POST['orders']) : FALSE;
-                if (is_array($orders)) {
+            if (isset($_POST['typeAction']) && sanitize_text_field($_POST['typeAction']) == 'add_quotations_orders') {
+                $clean = sanitize_text_field($_POST['orders']);
+                $orders = (isset($clean))? explode(',', $clean) : FALSE;
+                if (is_array($orders) && !empty($orders)) {
                     for ($i = 0; $i < count($orders); $i++) {
-                        $result     = $this->eship_quotation->create($orders[$i], 'date');
+                        $result     = $this->eship_quotation->create($orders[$i]);
                         $result     = json_decode($result);
                         $order_woo  = new ESHIP_Woocommerce_Api();
                         $order      = $order_woo->getOrderApi($orders[$i], 'date');
                         $result->order_id   = $orders[$i];
                         $new_data           = new DateTime($order);
                         $result->date_final = $new_data->format('Y-m-d');
-
                         array_push($data, $result);
                     }
 
@@ -723,10 +724,11 @@
                 $result = FALSE;
                 extract($_POST, EXTR_OVERWRITE);
 
-                if($typeAction == 'add_shipments') {
+                if(sanitize_text_field($typeAction) == 'add_shipments') {
                     if (! empty($content)) {
                         for ($i = 0; $i < count($content); $i++) {
-                            $order = explode("_", $content[$i]['value']);
+                            $clean = sanitize_text_field($content[$i]['value']);
+                            $order = explode("_", $clean);
                             array_push($shipments, $order[0]);
                             $order_woo  = new ESHIP_Woocommerce_Api();
                             $billing    = $order_woo->getOrderApi($order[1]);
@@ -844,8 +846,8 @@
                 $pdf_arr                = array();
                 $button_quotation_eship = 'Create Label';
 
-                if (isset($_GET['post']) && isset($_GET['action']) && $_GET['action'] == 'edit') {
-                    $order          = $_GET['post'];
+                if (isset($_GET['post']) && isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'edit') {
+                    $order          = sanitize_text_field($_GET['post']);
                     $pdf            = new ESHIP_Woocommerce_Api();
                     $pdf_exist      = $pdf->getOrderApi($order);
                     $check_metadata = $pdf_exist->meta_data;
@@ -891,7 +893,8 @@
 
                 require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/buttons_modals/buttons.php';
             } else {
-                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  get_admin_url() . "admin.php?page=eship_dashboard'>here</a>, and select the shipment tab.";
+                $url = get_admin_url() . "admin.php?page=eship_dashboard";
+                $text = "<b>eShip</b> <br>Your package dimensions are not configured, please create your dimensions. Click <a href='" .  esc_url($url) . "'>here</a>, and select the shipment tab.";
                 $adm_notice = new ESHIP_Admin_Notices($text);
                 $adm_notice->error_message();
                 add_action( 'admin_notices',[$this, 'error_message'] );
@@ -928,7 +931,7 @@
             check_ajax_referer('eship_sec', 'nonce');
 
             if (isset($_POST['order_id'])) {
-                $result = $this->eship_quotation->create($_POST['order_id']);
+                $result = $this->eship_quotation->create(sanitize_text_field($_POST['order_id']));
                 $result = json_decode($result);
 
                 if ($result && !(isset($result->error))) {
@@ -1000,8 +1003,8 @@
                 $result = FALSE;
                 extract($_POST, EXTR_OVERWRITE);
 
-                if($typeAction == 'create_shipment') {
-                    $shipment   = new ESHIP_Shipment($rateId);
+                if(sanitize_text_field($typeAction) == 'create_shipment') {
+                    $shipment   = new ESHIP_Shipment(sanitize_text_field($rateId));
                     $result     = $shipment->getShipment();
                     $result     = json_decode($result);
 
