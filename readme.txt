@@ -3,7 +3,7 @@ Contributors: juanmaleal
 Tags: Customer service, Shipping and delivery
 Requires at least: 5.6, Woocommerce
 Tested up to: 5.9
-Stable tag: 5.6
+Stable tag: 1.0.0
 Requires PHP: 7.2.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
