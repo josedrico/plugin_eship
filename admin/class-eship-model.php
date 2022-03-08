@@ -193,7 +193,6 @@ class ESHIP_Model {
         $result = FALSE;
         if(current_user_can('manage_options')) {
             extract($data, EXTR_OVERWRITE);
-            date_default_timezone_set('America/Mexico_City');
             $date_timestamp = new \DateTime();
 
             if ($typeAction == 'add_dimensions') {
@@ -243,7 +242,6 @@ class ESHIP_Model {
                 );
                 $this->db->flush();
             } else if ($typeAction == 'update_dimensions') {
-                date_default_timezone_set('America/Mexico_City');
                 $date_timestamp = new \DateTime();
                 $id_dim         = sanitize_text_field($dim);
                 $result         = $this->db->update(
