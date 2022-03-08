@@ -1,7 +1,7 @@
 === eShip ===
 Contributors: juanmaleal
 Tags: Customer service, Shipping and delivery
-Requires at least: 5.6, Woocommerce
+Requires at least: 5.6
 Tested up to: 5.9
 Stable tag: 1.0.0
 Requires PHP: 7.2.5
@@ -37,12 +37,7 @@ Grow your business by using our time-saving app and get discounted rates by inte
 
 Create labels with just a few clicks by optimizing your process chain.
 
-- Store your addresses in an unlimited address book
-- Save package information to pre-fill your labels
-- Import your Shopify orders and all other major platforms
-- Import CSV files that turn into orders
-- Fill out international customs documents in one step
-- Print up to 100 shipping labels in bulk
+* It is necessary to create an account on the official eShip site and have woocommerce installed
 
 === Customize your client's experience ===
 
