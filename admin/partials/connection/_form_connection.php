@@ -15,7 +15,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="<?php echo (isset($id_api_key))? esc_attr($id_api_key) : 'tokenEshipModal'?>Label">
-                    <?php echo (isset($text_title_api_key))? $text_title_api_key : '';?>
+                    <?php echo (isset($text_title_api_key))? esc_html($text_title_api_key) : '';?>
                     <span class="dashicons dashicons-editor-help"></span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
