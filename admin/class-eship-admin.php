@@ -210,13 +210,105 @@
                     } else {
                         if (empty($api_eship->consumer_secret)) {
                             $message = 'Please follow the instructions to connect your eShip account to this WooCommerce Store';
-                        } else  {
-                            $insert_db = $this->eship_model->insert_data_store_eship($_POST);
+                        } else {
+                            if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                                $type_action = sanitize_text_field($_POST['typeAction']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'typeAction!. This data cannot be empty.',
+                                        'error'     => TRUE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            if (isset($_POST['token']) && !empty($_POST['token'])) {
+                                $token = sanitize_text_field($_POST['token']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'token!. This data cannot be empty.',
+                                        'error'     => FALSE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            if (isset($_POST['name']) && !empty($_POST['name'])) {
+                                $name = sanitize_text_field($_POST['name']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'Phone!. This data cannot be empty.',
+                                        'error'     => FALSE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+                                $phone = sanitize_text_field($_POST['phone']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'Phone!. This data cannot be empty.',
+                                        'error'     => FALSE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            if (isset($_POST['email']) && !empty($_POST['email'])) {
+                                $email = sanitize_text_field($_POST['email']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'Phone!. This data cannot be empty.',
+                                        'error'     => FALSE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            if (isset($_POST['dimensions']) && !empty($_POST['dimensions'])) {
+                                $dimensions = sanitize_text_field($_POST['dimensions']);
+                            } else {
+                                $this->response(
+                                    array(
+                                        'result'    => NULL,
+                                        'show'      => FALSE,
+                                        'message'   => 'Phone!. This data cannot be empty.',
+                                        'error'     => FALSE,
+                                        'code'      => 404
+                                    )
+                                );
+                            }
+
+                            $data  = array(
+                                'typeAction'    => $type_action,
+                                'token'         => $token,
+                                'phone'         => $phone,
+                                'name'          => $name,
+                                'email'         => $email,
+                                'dimensions'    => $dimensions
+                            );
+
+                            $insert_db = $this->eship_model->insert_data_store_eship($data);
                             $message = 'Fail to insert data on table';
                         }
 
                         if ($insert_db) {
-
                             $this->response(
                                 array(
                                     'result'    => NULL,
@@ -243,12 +335,14 @@
                         }
                     }
                 }
-
             } else  {
                 $this->response(
                     array(
                         'result'    => NULL,
-                        'test'      => $exist_api_key,
+                        'test'      => array(
+                            $exist_api_key,
+                            $_POST
+                        ),
                         'show'      => FALSE,
                         'message'   => 'Api Key is neccesary',
                         'error'     => TRUE,
@@ -301,7 +395,101 @@
                             TRUE
                         );
                     } else {
-                        $result = $this->eship_model->update_data_store_eship($_POST);
+                        if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                            $type_action = sanitize_text_field($_POST['typeAction']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'show'      => FALSE,
+                                    'message'   => ' typeAction. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['token']) && !empty($_POST['token'])) {
+                            $token = sanitize_text_field($_POST['token']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'show'      => FALSE,
+                                    'message'   => 'token. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['name']) && !empty($_POST['name'])) {
+                            $name = sanitize_text_field($_POST['name']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'show'      => FALSE,
+                                    'message'   => 'name. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+                            $phone = sanitize_text_field($_POST['phone']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => $_POST,
+                                    'show'      => FALSE,
+                                    'message'   => 'phone. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['email']) && !empty($_POST['email'])) {
+                            $email = sanitize_text_field($_POST['email']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'show'      => FALSE,
+                                    'message'   => 'email. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['user']) && !empty($_POST['user'])) {
+                            $user_ut = sanitize_text_field($_POST['user']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'    => NULL,
+                                    'show'      => FALSE,
+                                    'message'   => 'dimensions. This data cannot be empty.',
+                                    'error'     => TRUE,
+                                    'code'      => 404
+                                )
+                            );
+                        }
+
+                        $data  = array(
+                            'typeAction'    => $type_action,
+                            'token'         => $token,
+                            'phone'         => $phone,
+                            'name'          => $name,
+                            'email'         => $email,
+                            'user'    => $user_ut
+                        );
+
+                        $result = $this->eship_model->update_data_store_eship($data);
+
                         if ($result) {
                             $this->response(
                                 array(
@@ -319,7 +507,10 @@
                             $this->response(
                                 array(
                                     'result'    => NULL,
-                                    'test'      => $check_api_key,
+                                    'test'      => array(
+                                        $_POST,
+                                        $check_api_key
+                                    ),
                                     'show'      => FALSE,
                                     'message'   => 'No updated data.',
                                     'error'     => TRUE,
@@ -337,12 +528,12 @@
              * */
             $check_dim = $this->eship_model->get_dimensions_eship();
             if($check_dim) {
-                if ($_POST['typeAction'] == 'update_status_dimension') {
+                if (sanitize_text_field($_POST['typeAction']) == 'update_status_dimension') {
                     $id_token    = $this->eship_model->get_data_user_eship('id');
 
-                    if ($_POST['status'] == 'default') {
+                    if (sanitize_text_field($_POST['status']) == 'default') {
                         $dim_token = 1;
-                    } else if ($_POST['status'] == 'template') {
+                    } else if (sanitize_text_field($_POST['status']) == 'template') {
                         $dim_token = 0;
                     }
 
@@ -438,7 +629,147 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
             if (sanitize_text_field($_POST['typeAction']) == 'add_dimensions') {
-                $result     = $this->eship_model->insert_dimensions_eship($_POST);
+                if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                    $type_action = sanitize_text_field($_POST['typeAction']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' typeAction. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+
+                if (isset($_POST['aliasEship']) && !empty($_POST['aliasEship'])) {
+                    $aliasEship = sanitize_text_field($_POST['aliasEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' aliasEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['lengthEship']) && !empty($_POST['lengthEship'])) {
+                    $lengthEship = sanitize_text_field($_POST['lengthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' lengthEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['widthEship']) && !empty($_POST['widthEship'])) {
+                    $widthEship = sanitize_text_field($_POST['widthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' widthEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['heightEship']) && !empty($_POST['heightEship'])) {
+                    $heightEship = sanitize_text_field($_POST['heightEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' heightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+
+                if (isset($_POST['unitDimensionsEship']) && !empty($_POST['unitDimensionsEship'])) {
+                    $unitDimensionsEship = sanitize_text_field($_POST['unitDimensionsEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' unitDimensionsEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['weightEship']) && !empty($_POST['weightEship'])) {
+                    $weightEship = sanitize_text_field($_POST['weightEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' weightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['unitWeigthEship']) && !empty($_POST['unitWeigthEship'])) {
+                    $unitWeigthEship = sanitize_text_field($_POST['unitWeigthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' weightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['statusEship']) && !empty($_POST['statusEship'])) {
+                    $status_eship = sanitize_text_field($_POST['statusEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' statusEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                $data = array(
+                    'typeAction'            => $type_action,
+                    'aliasEship'            => $aliasEship,
+                    'lengthEship'           => $lengthEship,
+                    'widthEship'            => $widthEship,
+                    'heightEship'           => $heightEship,
+                    'unitDimensionsEship'   => $unitDimensionsEship,
+                    'weightEship'           => $weightEship,
+                    'unitWeigthEship'       => $unitWeigthEship,
+                    'statusEship'           => $status_eship,
+                );
+
+                $result     = $this->eship_model->insert_dimensions_eship($data);
                 $id_token   = $this->eship_model->get_data_user_eship('id');
 
                 $res = $this->eship_model->update_data_store_eship(array(
@@ -453,7 +784,8 @@
                             'result'    => NULL,
                             'test'      => array(
                                 $result,
-                                $res
+                                $res,
+                                $_POST
                             ),
                             'show'      => FALSE,
                             'message'   => 'Your data was successfully registered.',
@@ -466,7 +798,10 @@
                     $this->response(
                         array(
                             'result'    => NULL,
-                            'test'      => $result,
+                            'test'      => array(
+                                $result,
+                                $_POST
+                            ),
                             'show'      => FALSE,
                             'message'   => 'Your data was not recorded.',
                             'error'     => TRUE,
@@ -497,56 +832,241 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
 
-            if (sanitize_text_field($_POST['typeAction']) == 'update_status_dimension' || sanitize_text_field($_POST['typeAction']) == 'update_dimensions') {
-                $result = $this->eship_model->update_dimensions_eship($_POST);
-
-                if ($result == 1) {
+            if (sanitize_text_field($_POST['typeAction']) == 'update_status_dimension'){
+                if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                    $type_action = sanitize_text_field($_POST['typeAction']);
+                } else {
                     $this->response(
                         array(
                             'result'    => NULL,
-                            'test'      => array(
-                                $result,
-                                $_POST
-                            ),
                             'show'      => FALSE,
-                            'message'   => 'Your data was successfully updated.',
-                            'error'     => FALSE,
-                            'code'      => 201
-                        ),
-                        TRUE
-                    );
-                } elseif ($result == 2) {
-                    $this->response(
-                        array(
-                            'result'    => NULL,
-                            'test'      => $result,
-                            'show'      => FALSE,
-                            'message'   => 'Your dont have permisions.',
+                            'message'   => ' typeAction. This data cannot be empty.',
                             'error'     => TRUE,
                             'code'      => 404
-                        ),
-                        TRUE
+                        )
                     );
-                } else  {
+                }
+
+                if (isset($_POST['dimId']) && !empty($_POST['dimId'])) {
+                    $dim = sanitize_text_field($_POST['dimId']);
+                } else {
                     $this->response(
                         array(
                             'result'    => NULL,
-                            'test'      => $result,
                             'show'      => FALSE,
-                            'message'   => 'Your data not is updated.',
+                            'message'   => ' dimId. This data cannot be empty.',
                             'error'     => TRUE,
-                            'code'      => 500
-                        ),
-                        TRUE
+                            'code'      => 404
+                        )
                     );
                 }
-            } else {
+
+                if (isset($_POST['status'])) {
+                    $statusEship = sanitize_text_field($_POST['status']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' status. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                $data = array(
+                    'typeAction' => $type_action,
+                    'status'     => $statusEship,
+                    'dimId'      => $dim
+                );
+
+                $result = $this->eship_model->update_dimensions_eship($data);
+            }
+
+            if (sanitize_text_field($_POST['typeAction']) == 'update_dimensions') {
+                if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                    $type_action = sanitize_text_field($_POST['typeAction']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' typeAction. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['aliasEship']) && !empty($_POST['aliasEship'])) {
+                    $aliasEship = sanitize_text_field($_POST['aliasEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' aliasEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['lengthEship']) && !empty($_POST['lengthEship'])) {
+                    $lengthEship = sanitize_text_field($_POST['lengthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' lengthEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['widthEship']) && !empty($_POST['widthEship'])) {
+                    $widthEship = sanitize_text_field($_POST['widthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' widthEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['heightEship']) && !empty($_POST['heightEship'])) {
+                    $heightEship = sanitize_text_field($_POST['heightEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' heightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+
+                if (isset($_POST['unitDimensionsEship']) && !empty($_POST['unitDimensionsEship'])) {
+                    $unitDimensionsEship = sanitize_text_field($_POST['unitDimensionsEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' unitDimensionsEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['weightEship']) && !empty($_POST['weightEship'])) {
+                    $weightEship = sanitize_text_field($_POST['weightEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' weightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['unitWeigthEship']) && !empty($_POST['unitWeigthEship'])) {
+                    $unitWeigthEship = sanitize_text_field($_POST['unitWeigthEship']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' weightEship. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                if (isset($_POST['statusEship']) && !empty($_POST['statusEship'])) {
+                    $status_eship = sanitize_text_field($_POST['statusEship']);
+                } else {
+                    $status_eship = FALSE;
+                }
+
+                if (isset($_POST['dim']) && !empty($_POST['dim'])) {
+                    $dim = sanitize_text_field($_POST['dim']);
+                } else {
+                    $this->response(
+                        array(
+                            'result'    => NULL,
+                            'show'      => FALSE,
+                            'message'   => ' dim. This data cannot be empty.',
+                            'error'     => TRUE,
+                            'code'      => 404
+                        )
+                    );
+                }
+
+                $data = array(
+                    'typeAction'            => $type_action,
+                    'aliasEship'            => $aliasEship,
+                    'lengthEship'           => $lengthEship,
+                    'widthEship'            => $widthEship,
+                    'heightEship'           => $heightEship,
+                    'unitDimensionsEship'   => $unitDimensionsEship,
+                    'weightEship'           => $weightEship,
+                    'unitWeigthEship'       => $unitWeigthEship,
+                    'statusEship'           => $status_eship,
+                    'dim'                   => $dim,
+                );
+
+                $result = $this->eship_model->update_dimensions_eship($data);
+            }
+
+            if ($result == 1) {
                 $this->response(
                     array(
                         'result'    => NULL,
-                        'test'      => $_POST,
+                        'test'      => array(
+                            $result
+                        ),
                         'show'      => FALSE,
-                        'message'   => 'You do not have the necessary permissions.',
+                        'message'   => 'Your data was successfully updated.',
+                        'error'     => FALSE,
+                        'code'      => 201
+                    ),
+                    TRUE
+                );
+            } elseif ($result == 2) {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $result,
+                        'show'      => FALSE,
+                        'message'   => 'Your dont have permisions.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    ),
+                    TRUE
+                );
+            } else  {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'test'      => $result,
+                        'show'      => FALSE,
+                        'message'   => 'Your data not is updated.',
                         'error'     => TRUE,
                         'code'      => 500
                     ),
@@ -561,7 +1081,42 @@
         public function delete_dimensions_eship()
         {
             check_ajax_referer('eship_sec', 'nonce');
-            $result = $this->eship_model->delete_dimension_eship($_POST);
+
+            //$delId
+            if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                $type_action = sanitize_text_field($_POST['typeAction']);
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'show'      => FALSE,
+                        'message'   => ' typeAction. This data cannot be empty.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    )
+                );
+            }
+
+            if (isset($_POST['delId']) && !empty($_POST['delId'])) {
+                $delId = sanitize_text_field($_POST['delId']);
+            } else {
+                $this->response(
+                    array(
+                        'result'    => NULL,
+                        'show'      => FALSE,
+                        'message'   => ' delId. This data cannot be empty.',
+                        'error'     => TRUE,
+                        'code'      => 404
+                    )
+                );
+            }
+
+            $data = array(
+                'delId'      => $delId,
+                'typeAction' => $type_action
+            );
+
+            $result = $this->eship_model->delete_dimension_eship($data);
 
             if ($result) {
                 $id_token = $this->eship_model->get_data_user_eship('id');
@@ -635,10 +1190,20 @@
          * */
         public function get_quotations_bulk_eship()
         {
-            if (isset($_GET['action']) && $_GET['action'] == 'eship_quotations') {
-                $count  = implode(',', $_GET['post']);
-                $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
-                header("Location: " . $url);
+            if (isset($_GET['action']) && sanitize_text_field($_GET['action']) == 'eship_quotations') {
+                $get_post = array();
+                if (is_array($_GET['post'])) {
+                    for ($i = 0; $i < count($_GET['post']); $i++) {
+                        if (!empty($_GET['post'][$i])) {
+                            array_push($get_post, sanitize_text_field($_GET['post'][$i]));
+                        }
+                    }
+
+                    $count  = implode(',', $get_post);
+                    $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
+                    header("Location: " . $url);
+                }
+
             }
         }
 
@@ -652,9 +1217,9 @@
 
             if (isset($_POST['typeAction']) && sanitize_text_field($_POST['typeAction']) == 'add_quotations_orders') {
                 $clean = sanitize_text_field($_POST['orders']);
-                $orders = (isset($clean) && strlen($clean) > 0)? explode(',', $clean) : 0;
-
+                $orders = (!empty($clean))? explode(',', $clean) : 0;
                 if (is_array($orders) && !empty($orders) && count($orders) >  0) {
+
                     for ($i = 0; $i < count($orders); $i++) {
                         $result     = $this->eship_quotation->create($orders[$i]);
                         $result     = json_decode($result);
@@ -670,8 +1235,7 @@
                         array(
                             'result'    => $data,
                             'test'      => array(
-                                $data,
-                                $result
+                                $data
                             ),
                             'show'      => FALSE,
                             'message'   => 'Success.',
@@ -931,7 +1495,8 @@
             check_ajax_referer('eship_sec', 'nonce');
 
             if (isset($_POST['order_id'])) {
-                $result = $this->eship_quotation->create(sanitize_text_field($_POST['order_id']));
+                $post_order = sanitize_text_field($_POST['order_id']);
+                $result = $this->eship_quotation->create($post_order);
                 $result = json_decode($result);
 
                 if ($result && !(isset($result->error))) {
@@ -939,7 +1504,7 @@
                     $update_order = FALSE;
                     if ($result->object_id) {
                         $update_order = $woo->setOrderApi(
-                            $_POST['order_id'],
+                            $post_order,
                             array(
                                 'object_id' => $result->object_id
                             ),
@@ -953,7 +1518,7 @@
                             'test'      => array(
                                 'result'    => $result,
                                 'upOrder'   => $update_order,
-                                'order'     => $_POST['order_id']
+                                'order'     => $post_order
                             ),
                             'show'      => FALSE,
                             'message'   => 'Your quote is created',
@@ -1091,6 +1656,7 @@
             if ($test) {
                 $response =  array(
                     'result'    => $data['result'],
+                    'test'      => $data['test'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
                     'error'     => $data['error'],
@@ -1099,14 +1665,12 @@
             } else {
                 $response =  array(
                     'result'    => $data['result'],
-                    'test'      => $data['test'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
                     'error'     => $data['error'],
                     'code'      => $data['code']
                 );
             }
-
 
             echo json_encode($response);
             wp_die();
