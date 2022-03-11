@@ -268,7 +268,7 @@
                             }
 
                             if (isset($_POST['email']) && !empty($_POST['email'])) {
-                                $email = sanitize_text_field($_POST['email']);
+                                $email = sanitize_email($_POST['email']);
                             } else {
                                 $this->response(
                                     array(
@@ -340,8 +340,7 @@
                     array(
                         'result'    => NULL,
                         'test'      => array(
-                            $exist_api_key,
-                            $_POST
+                            $exist_api_key
                         ),
                         'show'      => FALSE,
                         'message'   => 'Api Key is neccesary',
@@ -442,7 +441,7 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => $_POST,
+                                    'result'    => NULL,
                                     'show'      => FALSE,
                                     'message'   => 'phone. This data cannot be empty.',
                                     'error'     => TRUE,
@@ -452,7 +451,7 @@
                         }
 
                         if (isset($_POST['email']) && !empty($_POST['email'])) {
-                            $email = sanitize_text_field($_POST['email']);
+                            $email = sanitize_email($_POST['email']);
                         } else {
                             $this->response(
                                 array(
@@ -485,7 +484,7 @@
                             'phone'         => $phone,
                             'name'          => $name,
                             'email'         => $email,
-                            'user'    => $user_ut
+                            'user'          => $user_ut
                         );
 
                         $result = $this->eship_model->update_data_store_eship($data);
@@ -508,7 +507,6 @@
                                 array(
                                     'result'    => NULL,
                                     'test'      => array(
-                                        $_POST,
                                         $check_api_key
                                     ),
                                     'show'      => FALSE,
@@ -784,8 +782,7 @@
                             'result'    => NULL,
                             'test'      => array(
                                 $result,
-                                $res,
-                                $_POST
+                                $res
                             ),
                             'show'      => FALSE,
                             'message'   => 'Your data was successfully registered.',
@@ -799,8 +796,7 @@
                         array(
                             'result'    => NULL,
                             'test'      => array(
-                                $result,
-                                $_POST
+                                $result
                             ),
                             'show'      => FALSE,
                             'message'   => 'Your data was not recorded.',
@@ -1145,7 +1141,7 @@
                 $this->response(
                     array(
                         'result'    => NULL,
-                        'test'      => $_POST,
+                        'test'      => 'Test me',
                         'show'      => FALSE,
                         'message'   => 'Your data not was updated.',
                         'error'     => TRUE,
@@ -1566,10 +1562,9 @@
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
-                extract($_POST, EXTR_OVERWRITE);
 
-                if(sanitize_text_field($typeAction) == 'create_shipment') {
-                    $shipment   = new ESHIP_Shipment(sanitize_text_field($rateId));
+                if(sanitize_text_field($_POST['typeAction']) == 'create_shipment') {
+                    $shipment   = new ESHIP_Shipment(sanitize_text_field($_POST['rateId']));
                     $result     = $shipment->getShipment();
                     $result     = json_decode($result);
 
@@ -1579,9 +1574,9 @@
                         $tracking_number    = FALSE;
                         $provider           = FALSE;
                         $tracking_link      = FALSE;
-                        if ($order) {
+                        if (sanitize_text_field($_POST['order'])) {
                             $tracking_number = $woo->setOrderApi(
-                                $order,
+                                sanitize_text_field($_POST['order']),
                                 array('tracking_number' => $result->tracking_number),
                                 'meta_data_tracking_number'
                             );
