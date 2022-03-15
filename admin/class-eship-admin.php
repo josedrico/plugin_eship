@@ -1197,7 +1197,10 @@
 
                     $count  = implode(',', $get_post);
                     $url    = admin_url() . 'edit.php?post_type=shop_order&countEship=' . $count;
-                    header("Location: " . $url);
+                    //header("Location: " . $url);
+                    if ( wp_safe_redirect( $url ) ) {
+                        exit;
+                    }
                 }
 
             }
