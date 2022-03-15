@@ -21,7 +21,7 @@ class ESHIP_Model {
 
     public function get_data_user_eship($show_data = FALSE)
     {
-        $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB . ";", OBJECT );
+        $results = $this->db->get_results($this->db->prepare( "SELECT * FROM " . ESHIP_TB . ";"), OBJECT );
 
         if ((count($results) > 0)) {
 
@@ -179,7 +179,7 @@ class ESHIP_Model {
 
     public function get_dimensions_eship()
     {
-        $results = $this->db->get_results( "SELECT * FROM " . ESHIP_TB_DIM . ";", OBJECT );
+        $results = $this->db->get_results( $this->db->prepare("SELECT * FROM " . ESHIP_TB_DIM . ";"), OBJECT );
 
         if (isset($results) && (count($results) > 0)) {
             return $results;
