@@ -66,6 +66,18 @@ class ESHIP_Model {
                     } else  {
                         return FALSE;
                     }
+                case 'ck':
+                    if (isset($results[0]->ck)) {
+                        return $results[0]->ck;
+                    } else  {
+                        return FALSE;
+                    }
+                case 'cs':
+                    if (isset($results[0]->cs)) {
+                        return $results[0]->cs;
+                    } else  {
+                        return FALSE;
+                    }
                 default:
                     if (isset($results) && count($results) > 0) {
                         return $results;
@@ -284,6 +296,68 @@ class ESHIP_Model {
             }
         }
 
+        return $result;
+    }
+
+    public function createColumnCk() {
+        $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . ESHIP_TB ."' AND column_name = 'ck'";
+        $row = $this->db->get_results($sql);
+        if (empty($row)) {
+            return $this->db->query("ALTER TABLE " . ESHIP_TB . " ADD ck varchar(255) DEFAULT NULL");
+        } else  {
+            return FALSE;
+        }
+    }
+
+    public function createColumnCs() {
+        $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . ESHIP_TB ."' AND column_name = 'cs'";
+        $row = $this->db->get_results($sql);
+        if (empty($row)) {
+            return $this->db->query("ALTER TABLE " . ESHIP_TB . " ADD cs varchar(255) DEFAULT NULL");
+        } else  {
+            return FALSE;
+        }
+    }
+
+    public function updateCk($data, $id) {
+        $result = FALSE;
+        if(current_user_can('manage_options')) { 
+            $result = $this->db->update(ESHIP_TB,
+                array(
+                    'ck' => sanitize_text_field($data)
+                ),
+                array(
+                    'id' => sanitize_text_field($id)
+                ),
+                array(
+                    '%s'
+                ),
+                array('%d')
+            );
+
+            $this->db->flush();
+        }
+        return $result;
+    }
+
+    public function updateCs($data, $id) {
+        $result = FALSE;
+        if(current_user_can('manage_options')) { 
+            $result = $this->db->update(ESHIP_TB,
+                array(
+                    'cs' => sanitize_text_field($data)
+                ),
+                array(
+                    'id' => sanitize_text_field($id)
+                ),
+                array(
+                    '%s'
+                ),
+                array('%d')
+            );
+            $this->db->flush();
+        }
+        
         return $result;
     }
 }
