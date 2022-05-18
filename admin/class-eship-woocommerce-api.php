@@ -54,9 +54,24 @@ class ESHIP_Woocommerce_Api {
             $res = json_decode($api['body']);
             switch ($type) {
                 case 'cs':
-                    return $res->consumer_secret;
+                    $tb = new ESHIP_Model();
+                    if (!$tb->get_data_user_eship('cs')) {
+                        $tb->createColumnCs();
+                        $tb->updateCs($res->consumer_secret, $tb->get_data_user_eship('id'));
+                        return $tb->get_data_user_eship('cs');
+                    } else {
+                        return $tb->get_data_user_eship('cs');
+                    }
                 case 'ck':
-                    return $res->consumer_key;
+                    // insertar ck en tabla
+                    $tb = new ESHIP_Model();
+                    if (!$tb->get_data_user_eship('ck')) {
+                        $tb->createColumnCk();
+                        $tb->updateCk($res->consumer_key, $tb->get_data_user_eship('id'));
+                        return $tb->get_data_user_eship('ck');
+                    } else {
+                        return $tb->get_data_user_eship('ck');
+                    }
                 default:
                     return 'No credetendials data';
             }
