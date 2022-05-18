@@ -29,7 +29,7 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                console.log('ajaxEship', data);
+                //console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
                         swal({
@@ -618,7 +618,7 @@
                     dataType: 'json',
                     success: function (data) {
                         $('#ordersQuotationsEshipModalToggleBtn').attr('disabled', false);
-                        console.log('modalQuotationsEship', data);
+                        //console.log('modalQuotationsEship', data);
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
@@ -713,13 +713,13 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log('modalShipmentsEship', data);
+                        //console.log('modalShipmentsEship', data);
                         $('#spinner-eship-orders-pdf').remove();
                         let status = data.result;
-                        console.log('status', status.result.status);
+                        //console.log('status', status.result.status);
                         if (! data.error && status.result.status == "SUCCESS"){
                             let result = data.result;
-                            console.log('result', result);
+                            //console.log('result', result);
                             let newArr = [];
                             let nameUser = result.res;
                             let types = result.types;
@@ -816,7 +816,7 @@
             $('.message-api').show();
         } else {
             if (typeof result.rates != 'undefined') {
-                console.log('eshipBtTbQuotation', result.rates);
+                //console.log('eshipBtTbQuotation', result.rates);
                 $.each(result.rates, function (index, object) {
                     let heigth = '';
                     let width = 'w-25'
@@ -886,7 +886,7 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log('getShipmentEship', data);
+                        //console.log('getShipmentEship', data);
 
                         let newObj = [];
 
