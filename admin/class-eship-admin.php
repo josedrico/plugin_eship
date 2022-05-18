@@ -1421,8 +1421,8 @@
                                 $pdf_arr['tracking_number'] = $key->value;
                             }
 
-                            if ($key->key == 'provider') {
-                                $pdf_arr['provider'] = $key->value;
+                            if ($key->key == 'tracking_provider') {
+                                $pdf_arr['tracking_provider'] = $key->value;
                             }
 
                             if ($key->key == 'tracking_link') {
@@ -1577,6 +1577,8 @@
                         $tracking_number    = FALSE;
                         $provider           = FALSE;
                         $tracking_link      = FALSE;
+                        $tracking_url       = FALSE;
+
                         if (sanitize_text_field($_POST['order'])) {
                             $tracking_number = $woo->setOrderApi(
                                 sanitize_text_field($_POST['order']),
@@ -1584,17 +1586,17 @@
                                 'meta_data_tracking_number'
                             );
                             $provider = $woo->setOrderApi(
-                                $order,
-                                array('provider' => $result->provider),
+                                sanitize_text_field($_POST['order']),
+                                array('tracking_provider' => $result->provider),
                                 'meta_data_provider'
                             );
                             $tracking_link = $woo->setOrderApi(
-                                $order,
+                                sanitize_text_field($_POST['order']),
                                 array('tracking_link' => $result->label_url),
                                 'meta_data_tracking_link'
                             );
                             $tracking_url = $woo->setOrderApi(
-                                $order,
+                                sanitize_text_field($_POST['order']),
                                 array('tracking_url' => $result->tracking_url_provider),
                                 'meta_data_tracking_url'
                             );
