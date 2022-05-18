@@ -92,7 +92,6 @@ class ESHIP_Model {
     {
         $result = FALSE;
         if(current_user_can('manage_options')) {
-            //$adm = wp_get_current_user();
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'add_token') {
@@ -320,44 +319,47 @@ class ESHIP_Model {
     }
 
     public function updateCk($data, $id) {
-        $result = FALSE;
-        if(current_user_can('manage_options')) { 
-            $result = $this->db->update(ESHIP_TB,
-                array(
-                    'ck' => sanitize_text_field($data)
-                ),
-                array(
-                    'id' => sanitize_text_field($id)
-                ),
-                array(
-                    '%s'
-                ),
-                array('%d')
-            );
+        $result = $this->db->update(ESHIP_TB,
+            array(
+                'ck' => sanitize_text_field($data)
+            ),
+            array(
+                'id' => sanitize_text_field($id)
+            ),
+            array(
+                '%s'
+            ),
+            array('%d')
+        );
 
-            $this->db->flush();
+        $this->db->flush();
+        
+        if($result){
+            return $result;
+        } else {
+            return FALSE;
         }
-        return $result;
     }
 
     public function updateCs($data, $id) {
-        $result = FALSE;
-        if(current_user_can('manage_options')) { 
-            $result = $this->db->update(ESHIP_TB,
-                array(
-                    'cs' => sanitize_text_field($data)
-                ),
-                array(
-                    'id' => sanitize_text_field($id)
-                ),
-                array(
-                    '%s'
-                ),
-                array('%d')
-            );
-            $this->db->flush();
+        $result = $this->db->update(ESHIP_TB,
+            array(
+                'cs' => sanitize_text_field($data)
+            ),
+            array(
+                'id' => sanitize_text_field($id)
+            ),
+            array(
+                '%s'
+            ),
+            array('%d')
+        );
+        $this->db->flush();
+
+        if($result){
+            return $result;
+        } else {
+            return FALSE;
         }
-        
-        return $result;
     }
 }
