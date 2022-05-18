@@ -145,7 +145,7 @@
 
             if ($user_eship = $this->eship_model->get_data_user_eship()) {
                 $config_data = array(
-                    'btn' => 'updateDataEshipModalBtn',
+                    'btn'  => 'updateDataEshipModalBtn',
                     'form' => 'updateDataEshipModalForm',
                 );
             } else {
