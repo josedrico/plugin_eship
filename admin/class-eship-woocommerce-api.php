@@ -200,7 +200,7 @@ class ESHIP_Woocommerce_Api {
                     $data = array(
                         'meta_data' => array(
                             array(
-                                'key'    => 'provider',
+                                'key'    => 'tracking_provider',
                                 'value'  => $data['provider'],
                             )
                         )
