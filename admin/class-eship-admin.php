@@ -364,12 +364,12 @@
                 if (is_null($check_api_key) && empty($check_api_key['body'])) {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'test'      => $check_api_key,
-                            'show'      => FALSE,
-                            'message'   => 'Failed to establish connection with eShip.',
-                            'error'     => TRUE,
-                            'code'      => 500
+                            'result'  => NULL,
+                            'test'    => $check_api_key,
+                            'show'    => FALSE,
+                            'message' => 'Failed to establish connection with eShip.',
+                            'error'   => TRUE,
+                            'code'    => 500
                         ),
                         TRUE
                     );
