@@ -28,12 +28,12 @@
 
         public function __construct( $plugin_name, $version ) 
         {
-            $this->plugin_name      = $plugin_name;
-            $this->version          = $version;
-            $this->eship_quotation  = new ESHIP_Quotation();
-            $this->eship_model      = new ESHIP_Model();
-            $this->build_menupage   = new ESHIP_Build_Menupage();
-            $this->api_key_eship    = new ESHIP_Api();
+            $this->plugin_name     = $plugin_name;
+            $this->version         = $version;
+            $this->eship_quotation = new ESHIP_Quotation();
+            $this->eship_model     = new ESHIP_Model();
+            $this->build_menupage  = new ESHIP_Build_Menupage();
+            $this->api_key_eship   = new ESHIP_Api();
         }
 
         /*
@@ -171,12 +171,12 @@
                 if (! isset($exist_api_key['body'])) {
                     $this->response(
                         array(
-                                'result'    => NULL,
-                                'test'      => $exist_api_key,
-                                'show'      => FALSE,
-                                'message'   => 'Failed to establish connection with eShip.',
-                                'error'     => TRUE,
-                                'code'      => 500
+                                'result'  => NULL,
+                                'test'    => $exist_api_key,
+                                'show'    => FALSE,
+                                'message' => 'Failed to establish connection with eShip.',
+                                'error'   => TRUE,
+                                'code'    => 500
                             ),
                         TRUE
                     );
@@ -198,12 +198,12 @@
 
                         $this->response(
                             array(
-                                'result'    => NULL,
-                                'test'      => $exist_api_key,
-                                'show'      => FALSE,
-                                'message'   => $message,
-                                'error'     => TRUE,
-                                'code'      => 404
+                                'result'  => NULL,
+                                'test'    => $exist_api_key,
+                                'show'    => FALSE,
+                                'message' => $message,
+                                'error'   => TRUE,
+                                'code'    => 404
                             ),
                             TRUE
                         );
@@ -216,11 +216,11 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'typeAction!. This data cannot be empty.',
-                                        'error'     => TRUE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'typeAction!. This data cannot be empty.',
+                                        'error'   => TRUE,
+                                        'code'    => 404
                                     )
                                 );
                             }
@@ -230,11 +230,11 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'token!. This data cannot be empty.',
-                                        'error'     => FALSE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'token!. This data cannot be empty.',
+                                        'error'   => FALSE,
+                                        'code'    => 404
                                     )
                                 );
                             }
@@ -244,11 +244,11 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'Phone!. This data cannot be empty.',
-                                        'error'     => FALSE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'Phone!. This data cannot be empty.',
+                                        'error'   => FALSE,
+                                        'code'    => 404
                                     )
                                 );
                             }
@@ -258,11 +258,11 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'Phone!. This data cannot be empty.',
-                                        'error'     => FALSE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'Phone!. This data cannot be empty.',
+                                        'error'   => FALSE,
+                                        'code'    => 404
                                     )
                                 );
                             }
@@ -272,11 +272,11 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'Phone!. This data cannot be empty.',
-                                        'error'     => FALSE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'Phone!. This data cannot be empty.',
+                                        'error'   => FALSE,
+                                        'code'    => 404
                                     )
                                 );
                             }
@@ -286,22 +286,22 @@
                             } else {
                                 $this->response(
                                     array(
-                                        'result'    => NULL,
-                                        'show'      => FALSE,
-                                        'message'   => 'Phone!. This data cannot be empty.',
-                                        'error'     => FALSE,
-                                        'code'      => 404
+                                        'result'  => NULL,
+                                        'show'    => FALSE,
+                                        'message' => 'Phone!. This data cannot be empty.',
+                                        'error'   => FALSE,
+                                        'code'    => 404
                                     )
                                 );
                             }
 
                             $data  = array(
-                                'typeAction'    => $type_action,
-                                'token'         => $token,
-                                'phone'         => $phone,
-                                'name'          => $name,
-                                'email'         => $email,
-                                'dimensions'    => $dimensions
+                                'typeAction' => $type_action,
+                                'token'      => $token,
+                                'phone'      => $phone,
+                                'name'       => $name,
+                                'email'      => $email,
+                                'dimensions' => $dimensions
                             );
 
                             $insert_db = $this->eship_model->insert_data_store_eship($data);
@@ -311,24 +311,24 @@
                         if ($insert_db) {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'test'      => $api_eship,
-                                    'show'      => FALSE,
-                                    'message'   => 'Your service is connnect.',
-                                    'error'     => FALSE,
-                                    'code'      => 200
+                                    'result'  => NULL,
+                                    'test'    => $api_eship,
+                                    'show'    => FALSE,
+                                    'message' => 'Your service is connnect.',
+                                    'error'   => FALSE,
+                                    'code'    => 200
                                 ),
                                 TRUE
                             );
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'test'      => $exist_api_key,
-                                    'show'      => FALSE,
-                                    'message'   => $message,
-                                    'error'     => TRUE,
-                                    'code'      => 500
+                                    'result'  => NULL,
+                                    'test'    => $exist_api_key,
+                                    'show'    => FALSE,
+                                    'message' => $message,
+                                    'error'   => TRUE,
+                                    'code'    => 500
                                 ),
                                 TRUE
                             );
@@ -338,14 +338,14 @@
             } else  {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => array(
+                        'result'  => NULL,
+                        'test'    => array(
                             $exist_api_key
                         ),
-                        'show'      => FALSE,
-                        'message'   => 'Api Key is neccesary',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'show'    => FALSE,
+                        'message' => 'Api Key is neccesary',
+                        'error'   => TRUE,
+                        'code'    => 404
                     ),
                     TRUE
                 );
@@ -384,12 +384,12 @@
 
                         $this->response(
                             array(
-                                'result'    => NULL,
-                                'test'      => $api_eship,
-                                'show'      => FALSE,
-                                'message'   => $message,
-                                'error'     => TRUE,
-                                'code'      => 404
+                                'result'  => NULL,
+                                'test'    => $api_eship,
+                                'show'    => FALSE,
+                                'message' => $message,
+                                'error'   => TRUE,
+                                'code'    => 404
                             ),
                             TRUE
                         );
@@ -399,11 +399,11 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => ' typeAction. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => ' typeAction. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
                         }
@@ -413,11 +413,11 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => 'token. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'token. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
                         }
@@ -427,25 +427,23 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => 'name. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'name. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
-                        }
-
-                        if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+                        }if (isset($_POST['phone']) && !empty($_POST['phone'])) {
                             $phone = sanitize_text_field($_POST['phone']);
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => 'phone. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'phone. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
                         }
@@ -455,11 +453,11 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => 'email. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'email. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
                         }
@@ -469,22 +467,22 @@
                         } else {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'show'      => FALSE,
-                                    'message'   => 'dimensions. This data cannot be empty.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'dimensions. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 )
                             );
                         }
 
                         $data  = array(
-                            'typeAction'    => $type_action,
-                            'token'         => $token,
-                            'phone'         => $phone,
-                            'name'          => $name,
-                            'email'         => $email,
-                            'user'          => $user_ut
+                            'typeAction' => $type_action,
+                            'token'      => $token,
+                            'phone'      => $phone,
+                            'name'       => $name,
+                            'email'      => $email,
+                            'user'       => $user_ut
                         );
 
                         $result = $this->eship_model->update_data_store_eship($data);
@@ -492,12 +490,12 @@
                         if ($result) {
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'test'      => $check_api_key,
-                                    'show'      => FALSE,
-                                    'message'   => 'Your data is updated.',
-                                    'error'     => FALSE,
-                                    'code'      => 201
+                                    'result'  => NULL,
+                                    'test'    => $check_api_key,
+                                    'show'    => FALSE,
+                                    'message' => 'Your data is updated.',
+                                    'error'   => FALSE,
+                                    'code'    => 201
                                 ),
                                 TRUE
                             );
@@ -505,14 +503,14 @@
 
                             $this->response(
                                 array(
-                                    'result'    => NULL,
-                                    'test'      => array(
+                                    'result'  => NULL,
+                                    'test'    => array(
                                         $check_api_key
                                     ),
-                                    'show'      => FALSE,
-                                    'message'   => 'No updated data.',
-                                    'error'     => TRUE,
-                                    'code'      => 404
+                                    'show'    => FALSE,
+                                    'message' => 'No updated data.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
                                 ),
                                 TRUE
                             );
@@ -544,24 +542,24 @@
                     if ($result) {
                         $this->response(
                             array(
-                                'result'    => NULL,
-                                'test'      => $check_api_key,
-                                'show'      => FALSE,
-                                'message'   => 'Your data is update.',
-                                'error'     => FALSE,
-                                'code'      => 201
+                                'result'  => NULL,
+                                'test'    => $check_api_key,
+                                'show'    => FALSE,
+                                'message' => 'Your data is update.',
+                                'error'   => FALSE,
+                                'code'    => 201
                             ),
                             TRUE
                         );
                     } else  {
                         $this->response(
                             array(
-                                'result'    => NULL,
-                                'test'      => $check_api_key,
-                                'show'      => FALSE,
-                                'message'   => 'Your data not is updated.',
-                                'error'     => TRUE,
-                                'code'      => 500
+                                'result'  => NULL,
+                                'test'    => $check_api_key,
+                                'show'    => FALSE,
+                                'message' => 'Your data not is updated.',
+                                'error'   => TRUE,
+                                'code'    => 500
                             ),
                             TRUE
                         );
@@ -570,14 +568,14 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => array(
+                        'result'  => array(
                             'resource' => 'eshipDimWeModal'
                         ),
-                        'test'      => $check_api_key,
-                        'show'      => FALSE,
-                        'message'   => 'Your dimensions of your packages are not configured, please create your dimensions.',
-                        'error'     => TRUE,
-                        'code'      => 500
+                        'test'    => $check_api_key,
+                        'show'    => FALSE,
+                        'message' => 'Your dimensions of your packages are not configured, please create your dimensions.',
+                        'error'   => TRUE,
+                        'code'    => 500
                     ),
                     TRUE
                 );
@@ -595,12 +593,12 @@
 
                 $this->response(
                     array(
-                        'result'    => $result,
-                        'test'      => $result,
-                        'show'      => FALSE,
-                        'message'   => 'Success.',
-                        'error'     => FALSE,
-                        'code'      => 200
+                        'result'  => $result,
+                        'test'    => $result,
+                        'show'    => FALSE,
+                        'message' => 'Success.',
+                        'error'   => FALSE,
+                        'code'    => 200
                     ),
                     TRUE
                 );
@@ -608,12 +606,12 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => $result,
-                        'show'      => FALSE,
-                        'message'   => 'You do not have any configuration registered. please register it.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'test'    => $result,
+                        'show'    => FALSE,
+                        'message' => 'You do not have any configuration registered. please register it.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     ),
                     TRUE
                 );
@@ -632,11 +630,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' typeAction. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' typeAction. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -647,11 +645,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' aliasEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' aliasEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -661,11 +659,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' lengthEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' lengthEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -675,11 +673,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' widthEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' widthEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -689,11 +687,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' heightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' heightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -704,11 +702,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' unitDimensionsEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' unitDimensionsEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -718,11 +716,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' weightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' weightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -732,11 +730,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' weightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' weightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -746,29 +744,29 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' statusEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' statusEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
 
                 $data = array(
-                    'typeAction'            => $type_action,
-                    'aliasEship'            => $aliasEship,
-                    'lengthEship'           => $lengthEship,
-                    'widthEship'            => $widthEship,
-                    'heightEship'           => $heightEship,
-                    'unitDimensionsEship'   => $unitDimensionsEship,
-                    'weightEship'           => $weightEship,
-                    'unitWeigthEship'       => $unitWeigthEship,
-                    'statusEship'           => $status_eship,
+                    'typeAction'          => $type_action,
+                    'aliasEship'          => $aliasEship,
+                    'lengthEship'         => $lengthEship,
+                    'widthEship'          => $widthEship,
+                    'heightEship'         => $heightEship,
+                    'unitDimensionsEship' => $unitDimensionsEship,
+                    'weightEship'         => $weightEship,
+                    'unitWeigthEship'     => $unitWeigthEship,
+                    'statusEship'         => $status_eship,
                 );
 
-                $result     = $this->eship_model->insert_dimensions_eship($data);
-                $id_token   = $this->eship_model->get_data_user_eship('id');
+                $result   = $this->eship_model->insert_dimensions_eship($data);
+                $id_token = $this->eship_model->get_data_user_eship('id');
 
                 $res = $this->eship_model->update_data_store_eship(array(
                     'id'         => $id_token,
@@ -779,29 +777,29 @@
                 if ($result) {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'test'      => array(
+                            'result'  => NULL,
+                            'test'    => array(
                                 $result,
                                 $res
                             ),
-                            'show'      => FALSE,
-                            'message'   => 'Your data was successfully registered.',
-                            'error'     => FALSE,
-                            'code'      => 201
+                            'show'    => FALSE,
+                            'message' => 'Your data was successfully registered.',
+                            'error'   => FALSE,
+                            'code'    => 201
                         ),
                         TRUE
                     );
                 } else  {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'test'      => array(
+                            'result'  => NULL,
+                            'test'    => array(
                                 $result
                             ),
-                            'show'      => FALSE,
-                            'message'   => 'Your data was not recorded.',
-                            'error'     => TRUE,
-                            'code'      => 500
+                            'show'    => FALSE,
+                            'message' => 'Your data was not recorded.',
+                            'error'   => TRUE,
+                            'code'    => 500
                         ),
                         TRUE
                     );
@@ -809,12 +807,12 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => NULL,
-                        'show'      => FALSE,
-                        'message'   => 'You do not have the necessary permissions.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'test'    => NULL,
+                        'show'    => FALSE,
+                        'message' => 'You do not have the necessary permissions.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     ),
                     TRUE
                 );
@@ -834,11 +832,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' typeAction. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' typeAction. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -848,11 +846,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' dimId. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' dimId. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -862,11 +860,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' status. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' status. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -886,11 +884,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' typeAction. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' typeAction. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -900,11 +898,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' aliasEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' aliasEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -914,11 +912,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' lengthEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' lengthEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -928,11 +926,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' widthEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' widthEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -942,11 +940,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' heightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' heightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -957,11 +955,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' unitDimensionsEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' unitDimensionsEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -971,11 +969,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' weightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' weightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -985,11 +983,11 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' weightEship. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' weightEship. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
@@ -1005,26 +1003,26 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'show'      => FALSE,
-                            'message'   => ' dim. This data cannot be empty.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'show'    => FALSE,
+                            'message' => ' dim. This data cannot be empty.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         )
                     );
                 }
 
                 $data = array(
-                    'typeAction'            => $type_action,
-                    'aliasEship'            => $aliasEship,
-                    'lengthEship'           => $lengthEship,
-                    'widthEship'            => $widthEship,
-                    'heightEship'           => $heightEship,
-                    'unitDimensionsEship'   => $unitDimensionsEship,
-                    'weightEship'           => $weightEship,
-                    'unitWeigthEship'       => $unitWeigthEship,
-                    'statusEship'           => $status_eship,
-                    'dim'                   => $dim,
+                    'typeAction'          => $type_action,
+                    'aliasEship'          => $aliasEship,
+                    'lengthEship'         => $lengthEship,
+                    'widthEship'          => $widthEship,
+                    'heightEship'         => $heightEship,
+                    'unitDimensionsEship' => $unitDimensionsEship,
+                    'weightEship'         => $weightEship,
+                    'unitWeigthEship'     => $unitWeigthEship,
+                    'statusEship'         => $status_eship,
+                    'dim'                 => $dim,
                 );
 
                 $result = $this->eship_model->update_dimensions_eship($data);
@@ -1033,38 +1031,38 @@
             if ($result == 1) {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => array(
+                        'result'  => NULL,
+                        'test'    => array(
                             $result
                         ),
-                        'show'      => FALSE,
-                        'message'   => 'Your data was successfully updated.',
-                        'error'     => FALSE,
-                        'code'      => 201
+                        'show'    => FALSE,
+                        'message' => 'Your data was successfully updated.',
+                        'error'   => FALSE,
+                        'code'    => 201
                     ),
                     TRUE
                 );
             } elseif ($result == 2) {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => $result,
-                        'show'      => FALSE,
-                        'message'   => 'Your dont have permisions.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'test'    => $result,
+                        'show'    => FALSE,
+                        'message' => 'Your dont have permisions.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     ),
                     TRUE
                 );
             } else  {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => $result,
-                        'show'      => FALSE,
-                        'message'   => 'Your data not is updated.',
-                        'error'     => TRUE,
-                        'code'      => 500
+                        'result'  => NULL,
+                        'test'    => $result,
+                        'show'    => FALSE,
+                        'message' => 'Your data not is updated.',
+                        'error'   => TRUE,
+                        'code'    => 500
                     ),
                     TRUE
                 );
@@ -1084,11 +1082,11 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'show'      => FALSE,
-                        'message'   => ' typeAction. This data cannot be empty.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'show'    => FALSE,
+                        'message' => ' typeAction. This data cannot be empty.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     )
                 );
             }
@@ -1098,11 +1096,11 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'show'      => FALSE,
-                        'message'   => ' delId. This data cannot be empty.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'show'    => FALSE,
+                        'message' => ' delId. This data cannot be empty.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     )
                 );
             }
@@ -1125,27 +1123,27 @@
 
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => array(
+                        'result'  => NULL,
+                        'test'    => array(
                             $result,
                             $res
                         ),
-                        'show'      => FALSE,
-                        'message'   => 'Your data was successfully updated.',
-                        'error'     => FALSE,
-                        'code'      => 201
+                        'show'    => FALSE,
+                        'message' => 'Your data was successfully updated.',
+                        'error'   => FALSE,
+                        'code'    => 201
                     ),
                     TRUE
                 );
             } else  {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => 'Test me',
-                        'show'      => FALSE,
-                        'message'   => 'Your data not was updated.',
-                        'error'     => TRUE,
-                        'code'      => 500
+                        'result'  => NULL,
+                        'test'    => 'Test me',
+                        'show'    => FALSE,
+                        'message' => 'Your data not was updated.',
+                        'error'   => TRUE,
+                        'code'    => 500
                     ),
                     TRUE
                 );
@@ -1220,10 +1218,10 @@
                 if (is_array($orders) && !empty($orders) && count($orders) >  0) {
 
                     for ($i = 0; $i < count($orders); $i++) {
-                        $result     = $this->eship_quotation->create($orders[$i]);
-                        $result     = json_decode($result);
-                        $order_woo  = new ESHIP_Woocommerce_Api();
-                        $order      = $order_woo->getOrderApi($orders[$i], 'date');
+                        $result             = $this->eship_quotation->create($orders[$i]);
+                        $result             = json_decode($result);
+                        $order_woo          = new ESHIP_Woocommerce_Api();
+                        $order              = $order_woo->getOrderApi($orders[$i], 'date');
                         $result->order_id   = $orders[$i];
                         $new_data           = new DateTime($order);
                         $result->date_final = $new_data->format('Y-m-d');
@@ -1232,26 +1230,26 @@
 
                     $this->response(
                         array(
-                            'result'    => $data,
-                            'test'      => array(
+                            'result'  => $data,
+                            'test'    => array(
                                 $data
                             ),
-                            'show'      => FALSE,
-                            'message'   => 'Success.',
-                            'error'     => FALSE,
-                            'code'      => 201
+                            'show'    => FALSE,
+                            'message' => 'Success.',
+                            'error'   => FALSE,
+                            'code'    => 201
                         ),
                         TRUE
                     );
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'test'      => $data,
-                            'show'      => FALSE,
-                            'message'   => 'Not orders.',
-                            'error'     => TRUE,
-                            'code'      => 404
+                            'result'  => NULL,
+                            'test'    => $data,
+                            'show'    => FALSE,
+                            'message' => 'Not orders.',
+                            'error'   => TRUE,
+                            'code'    => 404
                         ),
                         TRUE
                     );
@@ -1259,12 +1257,12 @@
             } else {
                 $this->response(
                     array(
-                        'result'    => NULL,
-                        'test'      => $data,
-                        'show'      => FALSE,
-                        'message'   => 'The field typeAction is missed.',
-                        'error'     => TRUE,
-                        'code'      => 404
+                        'result'  => NULL,
+                        'test'    => $data,
+                        'show'    => FALSE,
+                        'message' => 'The field typeAction is missed.',
+                        'error'   => TRUE,
+                        'code'    => 404
                     ),
                     TRUE
                 );
@@ -1278,10 +1276,10 @@
         {
             check_ajax_referer('eship_sec', 'nonce');
 
-            $shipments  = array();
-            $billings   = array();
-            $orders     = array();
-            $types      = array();
+            $shipments = array();
+            $billings  = array();
+            $orders    = array();
+            $types     = array();
 
             if(current_user_can('manage_options')) {
                 $result = FALSE;
@@ -1293,8 +1291,8 @@
                             $clean = sanitize_text_field($content[$i]['value']);
                             $order = explode("_", $clean);
                             array_push($shipments, $order[0]);
-                            $order_woo  = new ESHIP_Woocommerce_Api();
-                            $billing    = $order_woo->getOrderApi($order[1]);
+                            $order_woo = new ESHIP_Woocommerce_Api();
+                            $billing   = $order_woo->getOrderApi($order[1]);
                             array_push($orders, array('meta_data' => $billing->meta_data, 'id' => $billing->id));
                             if (! empty($billing->billing->firts_name) && !empty($billing->billing->last_name)) {
                                 $name_final = $billing->billing->firts_name;
@@ -1315,12 +1313,12 @@
                 } else {
                     $this->response(
                         array(
-                            'result'    => NULL,
-                            'test'      => NULL,
-                            'show'      => FALSE,
-                            'message'   => 'The field typeAction is missed.',
-                            'error'     => TRUE,
-                            'code'      => 400
+                            'result'  => NULL,
+                            'test'    => NULL,
+                            'show'    => FALSE,
+                            'message' => 'The field typeAction is missed.',
+                            'error'   => TRUE,
+                            'code'    => 400
                         ),
                         TRUE
                     );
@@ -1329,7 +1327,7 @@
                 if ($result) {
                     $this->response(
                         array(
-                            'result'    => array(
+                            'result' => array(
                                 'result' => $result,
                                 'res'    => $billings,
                                 'types'  => $types,
@@ -1341,32 +1339,32 @@
                                 'types'  => $types,
                                 'orders' => $orders
                             ),
-                            'show'      => FALSE,
-                            'message'   => 'Your shipping guides were generated.',
-                            'error'     => FALSE,
-                            'code'      => 201
+                            'show'    => FALSE,
+                            'message' => 'Your shipping guides were generated.',
+                            'error'   => FALSE,
+                            'code'    => 201
                         ),
                         TRUE
                     );
                 } else  {
                     $this->response(
                         array(
-                            'result'    => array(
+                            'result' => array(
                                 'result' => $result,
                                 'res'    => $billings,
                                 'types'  => $types,
                                 'orders' => $orders
                             ),
-                            'test'      => array(
+                            'test' => array(
                                 'result' => $result,
                                 'res'    => $billings,
                                 'types'  => $types,
                                 'orders' => $orders
                             ),
-                            'show'      => FALSE,
-                            'message'   => 'Your shipping guides were generated.',
-                            'error'     => TRUE,
-                            'code'      => 400
+                            'show'    => FALSE,
+                            'message' => 'Your shipping guides were generated.',
+                            'error'   => TRUE,
+                            'code'    => 400
                         ),
                         TRUE
                     );
@@ -1388,12 +1386,12 @@
             }
 
             $meta_box = array(
-                'id'        => 'woocommerce-order-eship',
-                'title'     => $register_title,
-                'callback'  => [$this, $register_view],
-                'view'      => 'shop_order',
-                'context'   => 'side',
-                'priority'  => 'high'
+                'id'       => 'woocommerce-order-eship',
+                'title'    => $register_title,
+                'callback' => [$this, $register_view],
+                'view'     => 'shop_order',
+                'context'  => 'side',
+                'priority' => 'high'
             );
 
             $add_meta_box = new ESHIP_Build_Add_Meta_Box($meta_box);
@@ -1469,20 +1467,20 @@
          * */
         public function view_register_eship()
         {
-            $text_modal_ak          = 'Connect to ESHIP';
-            $text_title_api_key     = 'Register API Key';
-            $text_api_key           = 'To obtain your eShip API key, you login into your eShip account 
+            $text_modal_ak        = 'Connect to ESHIP';
+            $text_title_api_key   = 'Register API Key';
+            $text_api_key         = 'To obtain your eShip API key, you login into your eShip account 
                                         <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
                                         "Settings" and click on "View your API Key".';
-            $id_api_key             = 'tokenEshipModal';
-            $btn_account_ak_modal   = 'Register API Key';
-            $title_eship_account    = 'I do not have an account of ESHIP';
-            $text_eship_account     = '';
-            $btn_account_ak         = 'I have ESHIP account';
-            $btn_account_ak_text    = '';
-            $btn_account            = 'Register Now';
-            $btn_account_link       = 'https://app.myeship.co/en/login';
-            $modal_token            =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
+            $id_api_key           = 'tokenEshipModal';
+            $btn_account_ak_modal = 'Register API Key';
+            $title_eship_account  = 'I do not have an account of ESHIP';
+            $text_eship_account   = '';
+            $btn_account_ak       = 'I have ESHIP account';
+            $btn_account_ak_text  = '';
+            $btn_account          = 'Register Now';
+            $btn_account_link     = 'https://app.myeship.co/en/login';
+            $modal_token          =  ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/_form_connection.php';
             require_once ESHIP_PLUGIN_DIR_PATH . 'admin/partials/connection/connection.php';
         }
 
