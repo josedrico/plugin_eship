@@ -191,10 +191,11 @@
 
                     if (isset($api_eship->error)) {
                         if ($api_eship->error == 'API Key authentication failed.') {
-                            $message = 'Your eShip api key is wrong. Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                            $message = 'Your eShip api key is wrong. Please validate that your api key is correct, connect to your Eship account, click on settings and in the API / Webhook section, click on "See your api key" to get it.';
                         } else  {
                             $message = $api_eship->error;
                         }
+
 
                         $this->response(
                             array(
@@ -208,8 +209,8 @@
                             TRUE
                         );
                     } else {
-                        if (empty($api_eship->consumer_secret)) {
-                            $message = 'Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                        if (empty($api_eship->consumer_secret) || empty($api_eship->consumer_key)) {
+                            $message = 'Enter your woocommerce and create your costumer secret and costumer key, with read and write permissions and register your connection on the eship site for woocommerce.';
                         } else {
                             if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
                                 $type_action = sanitize_text_field($_POST['typeAction']);
@@ -312,7 +313,10 @@
                             $this->response(
                                 array(
                                     'result'  => NULL,
-                                    'test'    => $api_eship,
+                                    'test'    => array(
+                                        $api_eship,
+                                        $exist_api_key
+                                    ),
                                     'show'    => FALSE,
                                     'message' => 'Your service is connnect.',
                                     'error'   => FALSE,
@@ -375,9 +379,10 @@
                     );
                 } else {
                     $api_eship = $check_api_key['body'];
-                    if (isset($api_eship->error)) {
-                        if ($api_eship->error == 'API Key authentication failed.') {
-                            $message = 'Your eShip api key is wrong. Please follow the instructions to connect your eShip account to this WooCommerce Store';
+                    $json = json_decode($api_eship);
+                    if (isset($json->error)) {
+                        if ($json->error == 'API Key authentication failed.') {
+                            $message = 'Your eShip api key is wrong. Please validate that your api key is correct, connect to your Eship account, click on settings and in the API / Webhook section, click on "See your api key" to get it.';
                         } else  {
                             $message = $api_eship->error;
                         }
@@ -434,7 +439,9 @@
                                     'code'    => 404
                                 )
                             );
-                        }if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+                        }
+
+                        if (isset($_POST['phone']) && !empty($_POST['phone'])) {
                             $phone = sanitize_text_field($_POST['phone']);
                         } else {
                             $this->response(
@@ -491,7 +498,9 @@
                             $this->response(
                                 array(
                                     'result'  => NULL,
-                                    'test'    => $check_api_key,
+                                    'test'    => [
+                                        $check_api_key
+                                    ],
                                     'show'    => FALSE,
                                     'message' => 'Your data is updated.',
                                     'error'   => FALSE,

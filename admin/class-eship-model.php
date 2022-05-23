@@ -97,15 +97,19 @@ class ESHIP_Model {
             if ($typeAction == 'add_token') {
 
                 $columns = [
-                    'dimensions'        => sanitize_text_field((int)$dimensions),
-                    'email'             => sanitize_email($email),
-                    'name'              => sanitize_text_field(strtoupper($name)),
-                    'phone'             => sanitize_text_field($phone),
-                    'api_key_eship'     => sanitize_text_field($token),
+                    'dimensions'    => sanitize_text_field((int)$dimensions),
+                    'email'         => sanitize_email($email),
+                    'name'          => sanitize_text_field(strtoupper($name)),
+                    'phone'         => sanitize_text_field($phone),
+                    'api_key_eship' => sanitize_text_field($token),
+                    'cs'            => sanitize_text_field($cs),
+                    'ck'            => sanitize_text_field($ck)
                 ];
 
                 $format = [
                     "%d",
+                    "%s",
+                    "%s",
                     "%s",
                     "%s",
                     "%s",
@@ -128,16 +132,19 @@ class ESHIP_Model {
 
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'api_key_eship'     => sanitize_text_field($token),
-                        'phone'             => sanitize_text_field($phone),
-                        'name'              => sanitize_text_field(strtoupper($name)),
-                        'email'             => sanitize_email($email),
-                        'dimensions'        => sanitize_text_field($dimensions)
+                        'api_key_eship' => sanitize_text_field($token),
+                        'phone'         => sanitize_text_field($phone),
+                        'name'          => sanitize_text_field(strtoupper($name)),
+                        'email'         => sanitize_email($email),
+                        'dimensions'    => sanitize_text_field($dimensions),
+                        'cs'            => sanitize_text_field($cs),
+                        'ck'            => sanitize_text_field($ck),
                     ),
                     array(
                         'id' => sanitize_text_field($user)
                     ),
                     array(
+                        '%s',
                         '%s',
                         '%s',
                         '%s',
