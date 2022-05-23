@@ -489,13 +489,43 @@
                             );
                         }
 
+                        if (isset($_POST['ck']) && !empty($_POST['ck'])) {
+                            $ck = sanitize_text_field($_POST['ck']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Costumer Key. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['cs']) && !empty($_POST['cs'])) {
+                            $cs = sanitize_text_field($_POST['cs']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Costumer Secret. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
                         $data  = array(
                             'typeAction' => $type_action,
                             'token'      => $token,
                             'phone'      => $phone,
                             'name'       => $name,
                             'email'      => $email,
-                            'user'       => $user_ut
+                            'user'       => $user_ut,
+                            'cs'         => $cs,
+                            'ck'         => $ck,
                         );
 
                         $result = $this->eship_model->update_data_store_eship($data);

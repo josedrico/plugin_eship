@@ -53,6 +53,26 @@
                                             <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='". esc_attr($user_eship[0]->api_key_eship) . "'": '';?>>
                                         </div>
                                     </div>
+                                    <?php if (isset($user_eship[0]->ck) && $user_eship[0]->ck != ''):?>
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-2">
+                                            <label for="ck-input-eship" class="col-form-label">
+                                                Costumer Key:
+                                            </label>
+                                            <input type="password" class="form-control" id="ck-input-eship" name="ckEship" <?php echo (isset($user_eship[0]->ck))? "value='". esc_attr($user_eship[0]->ck) . "'": '';?>>
+                                        </div>
+                                    </div>
+                                    <?php endif;?>
+                                    <?php if (isset($user_eship[0]->cs) && $user_eship[0]->cs != ''):?>
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-2">
+                                            <label for="cs-input-eship" class="col-form-label">
+                                                Costumer Secret:
+                                            </label>
+                                            <input type="password" class="form-control" id="cs-input-eship" name="csEship" <?php echo (isset($user_eship[0]->cs))? "value='". esc_attr($user_eship[0]->cs) . "'": '';?>>
+                                        </div>
+                                    </div>
+                                    <?php endif;?>
                                     <div class="col-12 col-md-6">
                                         <div class="mb-2">
                                             <label for="phone-input-eship" class="col-form-label">

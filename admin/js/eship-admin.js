@@ -29,12 +29,13 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                console.log('ajaxEship', data);
+                //console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
+                        console.log('ajaxEship', data);
                         swal({
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
-                            text: (typeof data.msgText != 'undefined' && data.msgText != '')? data.msgText : '',
+                            text: (typeof data.msgText != 'undefined')? data.msgText : '',
                             icon: "error",
                         }).then((value) => {
                             location.reload();
@@ -169,6 +170,8 @@
     function modalUpdateTokenEship() {
         $('#updateDataEshipModalBtn').on('click', function () {
             let formDataToken = $('#token-input-eship').val();
+            let formCkToken = $('#ck-input-eship').val();
+            let formCsToken = $('#cs-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
@@ -188,6 +191,12 @@
                     },
                     emailCompanyEship: {
                         required: true
+                    },
+                    ckEship: {
+                        required: true
+                    },
+                    csEship: {
+                        required: true
                     }
                 },
                 success: function(label) {
@@ -204,6 +213,8 @@
                             phone: formPhoneCompany,
                             name: formNameCompany,
                             email: formEmailCompany,
+                            ck: formCkCompany,
+                            cs: formCsCompany,
                             user,
                             typeAction: 'update_token'
                         },
