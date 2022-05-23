@@ -191,9 +191,11 @@
 
                     if (isset($api_eship->error)) {
                         if ($api_eship->error == 'API Key authentication failed.') {
-                            $message = 'Your eShip api key is wrong. Please validate that your api key is correct, connect to your Eship account, click on settings and in the API / Webhook section, click on "See your api key" to get it.';
+                            $message = 'Your API key is incorrect, please check again.';
+                            $msg_text = 'To obtain your API key, you must log in to eShip, go to Settings and click on “See your API Key”.';
                         } else  {
                             $message = $api_eship->error;
+                            $msg_text = '';
                         }
 
 
@@ -203,6 +205,7 @@
                                 'test'    => $exist_api_key,
                                 'show'    => FALSE,
                                 'message' => $message,
+                                'msgText' => $msg_text,
                                 'error'   => TRUE,
                                 'code'    => 404
                             ),
@@ -382,9 +385,11 @@
                     $json = json_decode($api_eship);
                     if (isset($json->error)) {
                         if ($json->error == 'API Key authentication failed.') {
-                            $message = 'Your eShip api key is wrong. Please validate that your api key is correct, connect to your Eship account, click on settings and in the API / Webhook section, click on "See your api key" to get it.';
+                            $message = 'Your API key is incorrect, please check again.';
+                            $msg_text = 'To obtain your API key, you must log in to eShip, go to Settings and click on “See your API Key”.';
                         } else  {
                             $message = $api_eship->error;
+                            $msg_text = '';
                         }
 
                         $this->response(
@@ -393,6 +398,7 @@
                                 'test'    => $api_eship,
                                 'show'    => FALSE,
                                 'message' => $message,
+                                'msgText' => $msg_text,
                                 'error'   => TRUE,
                                 'code'    => 404
                             ),
@@ -1666,6 +1672,7 @@
                     'test'      => $data['test'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
+                    'msgText'   => (isset($data['msgText']))? $data['msgText'] : '',
                     'error'     => $data['error'],
                     'code'      => $data['code']
                 );
@@ -1674,6 +1681,7 @@
                     'result'    => $data['result'],
                     'show'      => $data['show'],
                     'message'   => $data['message'],
+                    'msgText'   => (isset($data['msgText']))? $data['msgText'] : '',
                     'error'     => $data['error'],
                     'code'      => $data['code']
                 );

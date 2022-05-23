@@ -29,11 +29,12 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                //console.log('ajaxEship', data);
+                console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
                         swal({
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
+                            text: (typeof data.msgText != 'undefined' && data.msgText != '')? data.msgText : '',
                             icon: "error",
                         }).then((value) => {
                             location.reload();
@@ -41,6 +42,7 @@
                     } else {
                         swal({
                             title: "Done! " + ((typeof data.message != 'undefined')? data.message : ''),
+                            text: (typeof data.msgText != 'undefined')? data.msgText : '',
                             icon: "success",
                         }).then((value) => {
                             location.reload();
