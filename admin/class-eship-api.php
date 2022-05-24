@@ -35,7 +35,7 @@ class ESHIP_Api {
         $this->api_key = $tb->get_data_user_eship('token');
     }
 
-    public function post($uri, $body, $timeout = 45)
+    public function post($uri, $body, $timeout = 45, $api = FALSE)
     {
         return  wp_remote_post(
             $this->url . $uri,
@@ -47,7 +47,7 @@ class ESHIP_Api {
                 'blocking'    => true,
                 'headers'     => array(
                     'content-Type'  => 'Application/json',
-                    'api-key'       => $this->api_key
+                    'api-key'       => ($api)? $api : $this->api_key
                 ),
                 'body'      => $body,
                 'cookies'   => array()

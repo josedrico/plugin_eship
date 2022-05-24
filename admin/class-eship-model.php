@@ -102,8 +102,8 @@ class ESHIP_Model {
                     'name'          => sanitize_text_field(strtoupper($name)),
                     'phone'         => sanitize_text_field($phone),
                     'api_key_eship' => sanitize_text_field($token),
-                    'cs'            => sanitize_text_field($cs),
-                    'ck'            => sanitize_text_field($ck)
+                    'cs'            => ((isset($cs))? sanitize_text_field($cs) : ''),
+                    'ck'            => ((isset($cs))? sanitize_text_field($ck) : '')
                 ];
 
                 $format = [

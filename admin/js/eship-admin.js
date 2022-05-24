@@ -125,6 +125,8 @@
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
+            let formCkCompany = $('#ck-input-eship').val();
+            let formCsCompany = $('#cs-input-eship').val();
 
             $("#tokenEshipModalForm").validate({
                 rules: {
@@ -157,7 +159,9 @@
                             name: formNameCompany,
                             email: formEmailCompany,
                             dimensions: 1,
-                            typeAction: 'add_token'
+                            typeAction: 'add_token',
+                            cs: (typeof formCsCompany != 'undefined')? formCsCompany : '',
+                            ck: (typeof formCkCompany != 'undefined')? formCkCompany : '',
                         },
                         type: 'json'
                     };
@@ -170,8 +174,8 @@
     function modalUpdateTokenEship() {
         $('#updateDataEshipModalBtn').on('click', function () {
             let formDataToken = $('#token-input-eship').val();
-            let formCkToken = $('#ck-input-eship').val();
-            let formCsToken = $('#cs-input-eship').val();
+            let formCkCompany = $('#ck-input-eship').val();
+            let formCsCompany = $('#cs-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();

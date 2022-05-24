@@ -213,104 +213,107 @@
                         );
                     } else {
                         if (empty($api_eship->consumer_secret) || empty($api_eship->consumer_key)) {
-                            $message = 'Enter your woocommerce and create your costumer secret and costumer key, with read and write permissions and register your connection on the eship site for woocommerce.';
-                        } else {
-                            if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
-                                $type_action = sanitize_text_field($_POST['typeAction']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'typeAction!. This data cannot be empty.',
-                                        'error'   => TRUE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            if (isset($_POST['token']) && !empty($_POST['token'])) {
-                                $token = sanitize_text_field($_POST['token']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'token!. This data cannot be empty.',
-                                        'error'   => FALSE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            if (isset($_POST['name']) && !empty($_POST['name'])) {
-                                $name = sanitize_text_field($_POST['name']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'Phone!. This data cannot be empty.',
-                                        'error'   => FALSE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            if (isset($_POST['phone']) && !empty($_POST['phone'])) {
-                                $phone = sanitize_text_field($_POST['phone']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'Phone!. This data cannot be empty.',
-                                        'error'   => FALSE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            if (isset($_POST['email']) && !empty($_POST['email'])) {
-                                $email = sanitize_email($_POST['email']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'Phone!. This data cannot be empty.',
-                                        'error'   => FALSE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            if (isset($_POST['dimensions']) && !empty($_POST['dimensions'])) {
-                                $dimensions = sanitize_text_field($_POST['dimensions']);
-                            } else {
-                                $this->response(
-                                    array(
-                                        'result'  => NULL,
-                                        'show'    => FALSE,
-                                        'message' => 'Phone!. This data cannot be empty.',
-                                        'error'   => FALSE,
-                                        'code'    => 404
-                                    )
-                                );
-                            }
-
-                            $data  = array(
-                                'typeAction' => $type_action,
-                                'token'      => $token,
-                                'phone'      => $phone,
-                                'name'       => $name,
-                                'email'      => $email,
-                                'dimensions' => $dimensions
-                            );
-
-                            $insert_db = $this->eship_model->insert_data_store_eship($data);
-                            $message = 'Fail to insert data on table';
+                            $eship_user= TRUE;
+                            $message = 'Enter your woocommerce and create your consumer secret and consumer key, with read and write permissions.';
                         }
+
+
+                        if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
+                            $type_action = sanitize_text_field($_POST['typeAction']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'typeAction!. This data cannot be empty.',
+                                    'error'   => TRUE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['token']) && !empty($_POST['token'])) {
+                            $token = sanitize_text_field($_POST['token']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'token!. This data cannot be empty.',
+                                    'error'   => FALSE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['name']) && !empty($_POST['name'])) {
+                            $name = sanitize_text_field($_POST['name']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Phone!. This data cannot be empty.',
+                                    'error'   => FALSE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['phone']) && !empty($_POST['phone'])) {
+                            $phone = sanitize_text_field($_POST['phone']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Phone!. This data cannot be empty.',
+                                    'error'   => FALSE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['email']) && !empty($_POST['email'])) {
+                            $email = sanitize_email($_POST['email']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Phone!. This data cannot be empty.',
+                                    'error'   => FALSE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        if (isset($_POST['dimensions']) && !empty($_POST['dimensions'])) {
+                            $dimensions = sanitize_text_field($_POST['dimensions']);
+                        } else {
+                            $this->response(
+                                array(
+                                    'result'  => NULL,
+                                    'show'    => FALSE,
+                                    'message' => 'Phone!. This data cannot be empty.',
+                                    'error'   => FALSE,
+                                    'code'    => 404
+                                )
+                            );
+                        }
+
+                        $data  = array(
+                            'typeAction' => $type_action,
+                            'token'      => $token,
+                            'phone'      => $phone,
+                            'name'       => $name,
+                            'email'      => $email,
+                            'dimensions' => $dimensions,
+                            'ck'         => (isset($_POST['ck'])?  sanitize_text_field($_POST['ck']): ''),
+                            'cs'         => (isset($_POST['cs'])? sanitize_text_field($_POST['cs']) : '')
+                        );
+
+                        $insert_db = $this->eship_model->insert_data_store_eship($data);
 
                         if ($insert_db) {
                             $this->response(
@@ -318,20 +321,25 @@
                                     'result'  => NULL,
                                     'test'    => array(
                                         $api_eship,
-                                        $exist_api_key
+                                        $exist_api_key,
+                                        (isset($res_eship_api)? $res_eship_api : '')
                                     ),
                                     'show'    => FALSE,
-                                    'message' => 'Your service is connnect.',
-                                    'error'   => FALSE,
-                                    'code'    => 200
+                                    'message' => (isset($eship_user))? $message : 'Your service is connnect.',
+                                    'error'   => (isset($eship_user))? TRUE : FALSE,
+                                    'code'    => (isset($eship_user))? 404 : 200
                                 ),
                                 TRUE
                             );
                         } else {
+                            $message = 'Fail to insert data on table';
                             $this->response(
                                 array(
                                     'result'  => NULL,
-                                    'test'    => $exist_api_key,
+                                    'test'    => [
+                                        $exist_api_key,
+                                        (isset($res_eship_api)? $res_eship_api : '')
+                                    ],
                                     'show'    => FALSE,
                                     'message' => $message,
                                     'error'   => TRUE,
@@ -503,6 +511,8 @@
                             );
                         }
 
+
+
                         if (isset($_POST['cs']) && !empty($_POST['cs'])) {
                             $cs = sanitize_text_field($_POST['cs']);
                         } else {
@@ -515,6 +525,32 @@
                                     'code'    => 404
                                 )
                             );
+                        }
+
+                        $res_eship_api = '';
+                        if ((isset($cs)) && (isset($ck))) {
+                            $eship_api = new ESHIP_Api();
+                            $json      = json_encode(array(
+                                'store_url'       => site_url(),
+                                'consumer_secret' => sanitize_text_field($cs),
+                                'consumer_key'    => sanitize_text_field($ck)
+                            ));
+                            $res_eship_api = wp_remote_retrieve_body($eship_api->post('credentials-woo', $json, 45, sanitize_text_field($_POST['token'])));
+
+                            if ($res_eship_api != 'true') {
+                                $message = 'Your Consumer key or Consumer secret is incorret.';
+                                $this->response(
+                                    array(
+                                        'result'  => NULL,
+                                        'test'    => $res_eship_api,
+                                        'show'    => FALSE,
+                                        'message' => $message,
+                                        'error'   => TRUE,
+                                        'code'    => 404
+                                    ),
+                                    TRUE
+                                );
+                            }
                         }
 
                         $data  = array(
