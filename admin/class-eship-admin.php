@@ -214,7 +214,7 @@
                     } else {
                         if (empty($api_eship->consumer_secret) || empty($api_eship->consumer_key)) {
                             $eship_user= TRUE;
-                            $message = 'Enter your woocommerce and create your consumer secret and consumer key, with read and write permissions.';
+                            $message = 'Your eShip account is not connected to any Woocommerce store. Please enter your customer secret and customer key with read/write permissions.';
                         }
 
 
@@ -499,33 +499,33 @@
 
                         if (isset($_POST['ck']) && !empty($_POST['ck'])) {
                             $ck = sanitize_text_field($_POST['ck']);
-                        } else {
+                        } /*else {
                             $this->response(
                                 array(
                                     'result'  => NULL,
                                     'show'    => FALSE,
-                                    'message' => 'Costumer Key. This data cannot be empty.',
+                                    'message' => 'Consumer Key. This data cannot be empty.',
                                     'error'   => TRUE,
                                     'code'    => 404
                                 )
                             );
-                        }
+                        }*/
 
 
 
                         if (isset($_POST['cs']) && !empty($_POST['cs'])) {
                             $cs = sanitize_text_field($_POST['cs']);
-                        } else {
+                        } /*else {
                             $this->response(
                                 array(
                                     'result'  => NULL,
                                     'show'    => FALSE,
-                                    'message' => 'Costumer Secret. This data cannot be empty.',
+                                    'message' => 'Consumer Secret. This data cannot be empty.',
                                     'error'   => TRUE,
                                     'code'    => 404
                                 )
                             );
-                        }
+                        }*/
 
                         $res_eship_api = '';
                         if ((isset($cs)) && (isset($ck))) {
