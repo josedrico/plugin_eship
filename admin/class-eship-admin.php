@@ -191,11 +191,13 @@
 
                     if (isset($api_eship->error)) {
                         if ($api_eship->error == 'API Key authentication failed.') {
-                            $message = 'Your API key is incorrect, please check again.';
-                            $msg_text = 'To obtain your API key, you must log in to eShip, go to Settings and click on “See your API Key”.';
+                            $message    = 'Your API key is incorrect, please check again.';
+                            $msg_text   = 'To obtain your API key, you must log in to eShip, go to Settings and click on “See your API Key”. Important! It\'s necessary to be subscribed to a paid plan to access this service.';
+                            $html       = "<a href='https://myeship.co/#pricing'>Click here.</a>";
                         } else  {
-                            $message = $api_eship->error;
-                            $msg_text = '';
+                            $message    = $api_eship->error;
+                            $msg_text   = '';
+                            $html       = '';
                         }
 
 
@@ -206,6 +208,7 @@
                                 'show'    => FALSE,
                                 'message' => $message,
                                 'msgText' => $msg_text,
+                                'html'    => $html,
                                 'error'   => TRUE,
                                 'code'    => 404
                             ),

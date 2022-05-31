@@ -36,6 +36,7 @@
                         swal({
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                             text: (typeof data.msgText != 'undefined')? data.msgText : '',
+                            html: (typeof data.html != 'undefined')? data.html : '',
                             icon: "error",
                         }).then((value) => {
                             location.reload();

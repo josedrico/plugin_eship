@@ -10,6 +10,8 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Create and print shipping labels using preferential rates.
 
+** Important! It's necessary to be subscribed to a paid plan to access this service. [Click here](https://myeship.co/#pricing) **
+
 == Description ==
 
 === NEW: Your clients can now compare and select your eShip rates in the checkout page! ===
