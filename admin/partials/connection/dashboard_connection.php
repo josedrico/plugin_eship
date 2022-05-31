@@ -41,7 +41,9 @@
 
                                     <div class="col-12 mt-2 mb-2">
                                         <div class="alert alert-secondary" role="alert">
-                                            To obtain your API key, login into your eShip account <a href="<?php echo esc_url('https://app.myeship.co/');?>" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key
+                                            To obtain your API key, login into your eShip account <a href="<?php echo esc_url('https://app.myeship.co/');?>" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key.
+                                            <br><b>Important! It's necessary to be subscribed to a paid plan to access this service.</b>
+                                            <a href="https://myeship.co/#pricing" target="_blank">Click here.</a>
                                         </div>
                                     </div>
                                     <?php endif;?>
