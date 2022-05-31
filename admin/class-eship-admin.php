@@ -396,11 +396,13 @@
                     $json = json_decode($api_eship);
                     if (isset($json->error)) {
                         if ($json->error == 'API Key authentication failed.') {
-                            $message = 'Your API key is incorrect, please check again.';
+                            $message  = 'Your API key is incorrect, please check again.';
                             $msg_text = 'To obtain your API key, you must log in to eShip, go to Settings and click on “See your API Key”.';
+                            $html     = "<a href='https://myeship.co/#pricing'>Click here.</a>";
                         } else  {
-                            $message = $api_eship->error;
+                            $message  = $api_eship->error;
                             $msg_text = '';
+                            $html     = "";
                         }
 
                         $this->response(
@@ -1555,7 +1557,9 @@
             $text_title_api_key   = 'Register API Key';
             $text_api_key         = 'To obtain your eShip API key, you login into your eShip account 
                                         <a href="https://app.myeship.co/" target="_blank">(app.myeship.co)</a>, go to 
-                                        "Settings" and click on "View your API Key".';
+                                        "Settings" and click on "View your API Key".
+                                        <b>Important! It\'s necessary to be subscribed to a paid plan to access this service.</b>
+                                        <a href="https://myeship.co/#pricing" target="_blank">Click here.</a>';
             $id_api_key           = 'tokenEshipModal';
             $btn_account_ak_modal = 'Register API Key';
             $title_eship_account  = 'I do not have an account of ESHIP';
