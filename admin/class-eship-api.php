@@ -66,7 +66,7 @@ class ESHIP_Api {
 
     public function getCredentials($data = FALSE) {
         if ($data) {
-            return wp_remote_get($this->url . 'credentials-woo', array(
+            return wp_remote_get($this->url . 'cred-woo', array(
                 'headers' => array(
                     'content-Type'  => 'Application/json',
                     'api-key'       => $data
