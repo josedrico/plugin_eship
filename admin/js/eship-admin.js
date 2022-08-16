@@ -29,7 +29,7 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                console.log('ajaxEship', data);
+                //console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
                         //console.log('ajaxEship', data);
@@ -54,7 +54,7 @@
                 }
             },
             error: function (error) {
-                console.log(error);
+                //console.log(error);
                 swal({
                     title: "Error! " + error,
                     icon: "error",
@@ -167,7 +167,7 @@
                         },
                         type: 'json'
                     };
-                    console.log('insert', $data);
+                    //console.log('insert', $data);
                     ajaxEship($data);
                 }
             });
