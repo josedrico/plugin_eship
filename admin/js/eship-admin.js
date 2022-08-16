@@ -87,7 +87,7 @@
 
     function messageApi(data, id = false) {
         return `<div ${(id)? "id=" + id : ''} class="alert ${(data.bg != undefined)? data.bg : 'alert-danger'} alert-dismissible fade show ${(data.margin != 'undefined')? data.margin : FALSE}" role="alert">
-                ${(data.svg != 'undefined')? data.svg : FALSE } ${data.Error}
+                ${(typeof data.svg != 'undefined')? data.svg : '' } ${data.Error}
             </div>`;
     }
 
@@ -800,11 +800,24 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    //console.log('getQuotationEship', data);
+                    console.log('getQuotationEship', data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
+                        let msg = '';
+
+                        let arr = [];
+                        msg = (data.result.message).split('.');
+                        msg.map(function (el) {
+                            if(typeof el != 'undefined' || el != '') {
+                                arr.push(`<span class="fs-6">${el.toUpperCase()}.</span><br>`);
+                            }
+                        });
+
+                        msg = arr.join('');
+
                         $('#orders-list').append(messageApi({
-                            Error: data.result
+                            Error: msg,
+                            svg: '<span class="dashicons dashicons-info-outline"></span>',
                         }));
                     } else {
                         if (typeof data.result.object_id != 'undefined') {
