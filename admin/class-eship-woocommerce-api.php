@@ -50,8 +50,9 @@ class ESHIP_Woocommerce_Api {
         $eship_api = new ESHIP_Api();
         $api = $eship_api->getCredentials();
 
-        if (isset($api['body'])) {
-            $res = json_decode($api['body']);
+        if (isset($api->body)) {
+            $res = json_decode($api->body);
+
             switch ($type) {
                 case 'cs':
                     $tb = new ESHIP_Model();
@@ -78,7 +79,6 @@ class ESHIP_Woocommerce_Api {
         } else  {
             return FALSE;
         }
-
     }
 
     private function setConsumerKey()
