@@ -1584,16 +1584,23 @@
                 $result = json_decode($result);
 
                 if ($result && !(isset($result->error))) {
-                    $woo          = new ESHIP_Woocommerce_Api();
-                    $update_order = FALSE;
-                    if ($result->object_id) {
-                        $update_order = $woo->setOrderApi(
-                            $post_order,
-                            array(
-                                'object_id' => $result->object_id
-                            ),
-                            'meta_data_object_id'
-                        );
+                    if ($result->status == 400) {
+                        $message = $result->message;
+                        $error = TRUE;
+                    } else {
+                        $woo          = new ESHIP_Woocommerce_Api();
+                        $update_order = FALSE;
+                        if ($result->object_id) {
+                            $update_order = $woo->setOrderApi(
+                                $post_order,
+                                array(
+                                    'object_id' => $result->object_id
+                                ),
+                                'meta_data_object_id'
+                            );
+                            $message = 'Your quote is created';
+                            $error = FALSE;
+                        }
                     }
 
                     $this->response(
@@ -1605,8 +1612,8 @@
                                 'order'     => $post_order
                             ),
                             'show'      => FALSE,
-                            'message'   => 'Your quote is created',
-                            'error'     => FALSE,
+                            'message'   => $message,
+                            'error'     => $error,
                             'code'      => 201
                         ),
                         TRUE
