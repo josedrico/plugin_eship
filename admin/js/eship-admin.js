@@ -29,10 +29,10 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                //console.log('ajaxEship', data);
+                console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
-                        console.log('ajaxEship', data);
+                        //console.log('ajaxEship', data);
                         swal({
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
                             text: (typeof data.msgText != 'undefined')? data.msgText : '',
@@ -42,6 +42,7 @@
                             location.reload();
                         });
                     } else {
+                        //console.log('ajaxEship', data);
                         swal({
                             title: "Done! " + ((typeof data.message != 'undefined')? data.message : ''),
                             text: (typeof data.msgText != 'undefined')? data.msgText : '',
@@ -166,6 +167,7 @@
                         },
                         type: 'json'
                     };
+                    console.log('insert', $data);
                     ajaxEship($data);
                 }
             });
