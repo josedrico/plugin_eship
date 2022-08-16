@@ -181,13 +181,11 @@
                         TRUE
                     );
                 } else {
-
                     if (!$this->eship_model->get_data_user_eship('token')) {
                         $api_eship = json_decode($exist_api_key['body']);
                     } else {
                         $api_eship = FALSE;
                     }
-
 
                     if (isset($api_eship->error)) {
                         if ($api_eship->error == 'API Key authentication failed.') {
@@ -199,7 +197,6 @@
                             $msg_text   = '';
                             $html       = '';
                         }
-
 
                         $this->response(
                             array(
@@ -219,7 +216,6 @@
                             $eship_user= TRUE;
                             $message = 'Your eShip account is not connected to any Woocommerce store. Please enter your customer secret and customer key with read/write permissions.';
                         }
-
 
                         if (isset($_POST['typeAction']) && !empty($_POST['typeAction'])) {
                             $type_action = sanitize_text_field($_POST['typeAction']);
@@ -305,6 +301,9 @@
                             );
                         }
 
+                        $consumer_key    = (isset($api_eship->consumer_key) && ! empty($api_eship->consumer_key))? $api_eship->consumer_key : '' ;
+                        $consumer_secret = (isset($api_eship->consumer_secret) && ! empty($api_eship->consumer_secret))? $api_eship->consumer_secret : '';
+
                         $data  = array(
                             'typeAction' => $type_action,
                             'token'      => $token,
@@ -312,8 +311,8 @@
                             'name'       => $name,
                             'email'      => $email,
                             'dimensions' => $dimensions,
-                            'ck'         => (isset($_POST['ck'])?  sanitize_text_field($_POST['ck']): ''),
-                            'cs'         => (isset($_POST['cs'])? sanitize_text_field($_POST['cs']) : '')
+                            'ck'         => ((isset($_POST['ck']) && !empty($_POST['ck']))?  sanitize_text_field($_POST['ck']): $consumer_key),
+                            'cs'         => ((isset($_POST['cs']) && !empty($_POST['cs']))? sanitize_text_field($_POST['cs']) : $consumer_secret)
                         );
 
                         $insert_db = $this->eship_model->insert_data_store_eship($data);
