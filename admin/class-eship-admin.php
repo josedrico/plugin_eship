@@ -1298,15 +1298,17 @@
             $data = array();
 
             if (isset($_POST['typeAction']) && sanitize_text_field($_POST['typeAction']) == 'add_quotations_orders') {
-                $clean = sanitize_text_field($_POST['orders']);
+                $clean  = sanitize_text_field($_POST['orders']);
                 $orders = (!empty($clean))? explode(',', $clean) : 0;
-                if (is_array($orders) && !empty($orders) && count($orders) >  0) {
+                $error  = array();
+
+                if (!empty($orders) && count($orders) > 0) {
 
                     for ($i = 0; $i < count($orders); $i++) {
-                        $result             = $this->eship_quotation->create($orders[$i]);
-                        $result             = json_decode($result);
-                        $order_woo          = new ESHIP_Woocommerce_Api();
-                        $order              = $order_woo->getOrderApi($orders[$i], 'date');
+                        $result     = $this->eship_quotation->create($orders[$i]);
+                        $result     = json_decode($result);
+                        $order_woo  = new ESHIP_Woocommerce_Api();
+                        $order      = $order_woo->getOrderApi($orders[$i], 'date');
                         $result->order_id   = $orders[$i];
                         $new_data           = new DateTime($order);
                         $result->date_final = $new_data->format('Y-m-d');
@@ -1315,14 +1317,12 @@
 
                     $this->response(
                         array(
-                            'result'  => $data,
-                            'test'    => array(
-                                $data
-                            ),
-                            'show'    => FALSE,
-                            'message' => 'Success.',
-                            'error'   => FALSE,
-                            'code'    => 201
+                            'result'   => $data,
+                            'resError' => $error,
+                            'show'     => FALSE,
+                            'message'  => 'Success',
+                            'error'    => FALSE,
+                            'code'     => 201
                         ),
                         TRUE
                     );
@@ -1378,13 +1378,13 @@
                             array_push($shipments, $order[0]);
                             $order_woo = new ESHIP_Woocommerce_Api();
                             $billing   = $order_woo->getOrderApi($order[1]);
-                            array_push($orders, array('meta_data' => $billing->meta_data, 'id' => $billing->id));
-                            if (! empty($billing->billing->firts_name) && !empty($billing->billing->last_name)) {
-                                $name_final = $billing->billing->firts_name;
-                                $last_name  = $billing->billing->last_name;
+                            array_push($orders, array('meta_data' => $billing['result']->meta_data, 'id' => $billing['result']->id));
+                            if (! empty($billing['result']->billing->firts_name) && !empty($billing['result']->billing->last_name)) {
+                                $name_final = $billing['result']->billing->firts_name;
+                                $last_name  = $billing['result']->billing->last_name;
                             } else  {
-                                $name_final = $billing->shipping->first_name;
-                                $last_name  = $billing->shipping->last_name;
+                                $name_final = $billing['result']->shipping->first_name;
+                                $last_name  = $billing['result']->shipping->last_name;
                             }
 
                             $name = $name_final . ' ' . $last_name;
@@ -1496,10 +1496,10 @@
                     $order          = sanitize_text_field($_GET['post']);
                     $pdf            = new ESHIP_Woocommerce_Api();
                     $pdf_exist      = $pdf->getOrderApi($order);
-                    $check_metadata = $pdf_exist->meta_data;
+                    $check_metadata = $pdf_exist['result']->meta_data;
 
-                    if (! empty($pdf_exist->meta_data) && count($pdf_exist->meta_data) > 0) {
-                        foreach ($pdf_exist->meta_data  as $key) {
+                    if (! empty($pdf_exist['result']->meta_data) && count($pdf_exist['result']->meta_data) > 0) {
+                        foreach ($pdf_exist['result']->meta_data  as $key) {
                             if ($key->key == 'tracking_number') {
                                 $pdf_arr['tracking_number'] = $key->value;
                             }
@@ -1583,21 +1583,53 @@
                 $result = $this->eship_quotation->create($post_order);
                 $result = json_decode($result);
 
-                if ($result && !(isset($result->error))) {
-                    if ($result->status == 400) {
+                if ($result) {
+                    if ($result->status == 400 || (isset($result->error))) {
                         $message = $result->message;
                         $error = TRUE;
                     } else {
                         $woo          = new ESHIP_Woocommerce_Api();
-                        $update_order = FALSE;
+                        $update_order = [];
+
                         if ($result->object_id) {
-                            $update_order = $woo->setOrderApi(
-                                $post_order,
-                                array(
-                                    'object_id' => $result->object_id
+                            array_push($update_order,
+                                $woo->setOrderApi(
+                                    $post_order,
+                                    array(
+                                        'object_id' => $result->object_id
+                                    ),
+                                    'meta_data_object_id'
                                 ),
-                                'meta_data_object_id'
+                                $woo->setOrderApi(
+                                    $post_order,
+                                    array(
+                                        'tracking_number' => $result->tracking_number
+                                    ),
+                                    'meta_data_tracking_number'
+                                ),
+                                $woo->setOrderApi(
+                                    $post_order,
+                                    array(
+                                        'provider' => $result->provider
+                                    ),
+                                    'meta_data_provider'
+                                ),
+                                $woo->setOrderApi(
+                                    $post_order,
+                                    array(
+                                        'tracking_link' => $result->label_url
+                                    ),
+                                    'meta_data_tracking_link'
+                                ),
+                                $woo->setOrderApi(
+                                    $post_order,
+                                    array(
+                                        'tracking_url' => $result->tracking_url_provider
+                                    ),
+                                    'meta_data_tracking_linkmeta_data_tracking_url'
+                                )
                             );
+
                             $message = 'Your quote is created';
                             $error = FALSE;
                         }

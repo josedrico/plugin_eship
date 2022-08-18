@@ -50,6 +50,11 @@ class ESHIP_Woocommerce_Api {
         $eship_api = new ESHIP_Api();
         $api = $eship_api->getCredentials();
 
+        if (is_array($api)) {
+            $api = json_encode($api);
+            $api = json_decode($api);
+        }
+
         if (isset($api->body)) {
             $res = json_decode($api->body);
 
@@ -153,7 +158,11 @@ class ESHIP_Woocommerce_Api {
                         }
 
                     default:
-                        return $order;
+                        return array(
+                            'error'   => FALSE,
+                            'message' => 'Order Woocommerce',
+                            'result'  => $order,
+                        );
                 }
             } else {
                 return array(

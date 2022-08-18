@@ -638,7 +638,6 @@
                     dataType: 'json',
                     success: function (data) {
                         $('#ordersQuotationsEshipModalToggleBtn').attr('disabled', false);
-                        //console.log('modalQuotationsEship', data);
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
@@ -659,10 +658,11 @@
 
                             return html;
                         };
-
+                        //console.log(data);
                         if (! data.error) {
                             let newArr = [];
                             $.each(data.result, function (i,o) {
+                                //console.log(o);
                                 let provArr = [];
                                 $.each(o.rates, function (index, prov) {
                                     provArr.push(prov.provider);
@@ -800,7 +800,7 @@
                 },
                 dataType: 'json',
                 success: function (data) {
-                    console.log('getQuotationEship', data);
+                    //console.log('getQuotationEship', data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
                         let msg = '';
@@ -919,7 +919,7 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        //console.log('getShipmentEship', data);
+                        console.log('getShipmentEship', data);
 
                         let newObj = [];
 

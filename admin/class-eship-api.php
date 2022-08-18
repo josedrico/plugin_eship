@@ -57,9 +57,11 @@ class ESHIP_Api {
 
     public function get($uri) {
         return wp_remote_get($this->url . $uri, array(
+            'timeout'  => 45,
+            'blocking' => true,
             'headers' => array(
-                'content-Type'  => 'Application/json',
-                'api-key'       => $this->api_key
+                'content-Type' => 'Application/json',
+                'api-key'      => $this->api_key
             )
         ));
     }
@@ -67,13 +69,17 @@ class ESHIP_Api {
     public function getCredentials($data = FALSE) {
         if ($data) {
             return wp_remote_get($this->url . 'cred-woo', array(
+                'timeout'  => 45,
+                'blocking' => true,
                 'headers' => array(
                     'content-Type'  => 'Application/json',
                     'api-key'       => $data
                 )
             ));
         } else {
-            return wp_remote_get($this->url . 'credentials-woo', array(
+            return wp_remote_get($this->url . 'cred-woo', array(
+                'timeout'  => 45,
+                'blocking' => true,
                 'headers' => array(
                     'content-Type'  => 'Application/json',
                     'api-key'       => $this->api_key
