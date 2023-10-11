@@ -29,18 +29,23 @@
             dataType: $data.type,
             success: function (data) {
                 $('#loader-light').hide();
-                console.log('ajaxEship', data);
+                //console.log('ajaxEship', data);
                 if (!data.show) {
                     if (data.error) {
+                        //console.log('ajaxEship', data);
                         swal({
                             title: "Error! " + ((typeof data.message != 'undefined')? data.message : ''),
+                            text: (typeof data.msgText != 'undefined')? data.msgText : '',
+                            html: (typeof data.html != 'undefined')? data.html : '',
                             icon: "error",
                         }).then((value) => {
                             location.reload();
                         });
                     } else {
+                        //console.log('ajaxEship', data);
                         swal({
                             title: "Done! " + ((typeof data.message != 'undefined')? data.message : ''),
+                            text: (typeof data.msgText != 'undefined')? data.msgText : '',
                             icon: "success",
                         }).then((value) => {
                             location.reload();
@@ -49,7 +54,7 @@
                 }
             },
             error: function (error) {
-                console.log(error);
+                //console.log(error);
                 swal({
                     title: "Error! " + error,
                     icon: "error",
@@ -82,7 +87,7 @@
 
     function messageApi(data, id = false) {
         return `<div ${(id)? "id=" + id : ''} class="alert ${(data.bg != undefined)? data.bg : 'alert-danger'} alert-dismissible fade show ${(data.margin != 'undefined')? data.margin : FALSE}" role="alert">
-                ${(data.svg != 'undefined')? data.svg : FALSE } ${data.Error}
+                ${(typeof data.svg != 'undefined')? data.svg : '' } ${data.Error}
             </div>`;
     }
 
@@ -122,6 +127,8 @@
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
+            let formCkCompany = $('#ck-input-eship').val();
+            let formCsCompany = $('#cs-input-eship').val();
 
             $("#tokenEshipModalForm").validate({
                 rules: {
@@ -154,10 +161,13 @@
                             name: formNameCompany,
                             email: formEmailCompany,
                             dimensions: 1,
-                            typeAction: 'add_token'
+                            typeAction: 'add_token',
+                            cs: (typeof formCsCompany != 'undefined')? formCsCompany : '',
+                            ck: (typeof formCkCompany != 'undefined')? formCkCompany : '',
                         },
                         type: 'json'
                     };
+                    //console.log('insert', $data);
                     ajaxEship($data);
                 }
             });
@@ -167,6 +177,8 @@
     function modalUpdateTokenEship() {
         $('#updateDataEshipModalBtn').on('click', function () {
             let formDataToken = $('#token-input-eship').val();
+            let formCkCompany = $('#ck-input-eship').val();
+            let formCsCompany = $('#cs-input-eship').val();
             let formPhoneCompany = $('#phone-input-eship').val();
             let formNameCompany = $('#name-input-eship').val();
             let formEmailCompany = $('#email-input-eship').val();
@@ -186,6 +198,12 @@
                     },
                     emailCompanyEship: {
                         required: true
+                    },
+                    ckEship: {
+                        required: true
+                    },
+                    csEship: {
+                        required: true
                     }
                 },
                 success: function(label) {
@@ -202,6 +220,8 @@
                             phone: formPhoneCompany,
                             name: formNameCompany,
                             email: formEmailCompany,
+                            ck: formCkCompany,
+                            cs: formCsCompany,
                             user,
                             typeAction: 'update_token'
                         },
@@ -618,7 +638,6 @@
                     dataType: 'json',
                     success: function (data) {
                         $('#ordersQuotationsEshipModalToggleBtn').attr('disabled', false);
-                        console.log('modalQuotationsEship', data);
                         $('#spinner-eship-orders').remove();
 
                         let selectFun = function (data) {
@@ -639,10 +658,11 @@
 
                             return html;
                         };
-
+                        //console.log(data);
                         if (! data.error) {
                             let newArr = [];
                             $.each(data.result, function (i,o) {
+                                //console.log(o);
                                 let provArr = [];
                                 $.each(o.rates, function (index, prov) {
                                     provArr.push(prov.provider);
@@ -713,13 +733,13 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log('modalShipmentsEship', data);
+                        //console.log('modalShipmentsEship', data);
                         $('#spinner-eship-orders-pdf').remove();
                         let status = data.result;
-                        console.log('status', status.result.status);
+                        //console.log('status', status.result.status);
                         if (! data.error && status.result.status == "SUCCESS"){
                             let result = data.result;
-                            console.log('result', result);
+                            //console.log('result', result);
                             let newArr = [];
                             let nameUser = result.res;
                             let types = result.types;
@@ -783,8 +803,21 @@
                     //console.log('getQuotationEship', data);
                     $('#spinner-load-data-q').remove();
                     if (data.error) {
+                        let msg = '';
+
+                        let arr = [];
+                        msg = (data.result.message).split('.');
+                        msg.map(function (el) {
+                            if(typeof el != 'undefined' || el != '') {
+                                arr.push(`<span class="fs-6">${el.toUpperCase()}.</span><br>`);
+                            }
+                        });
+
+                        msg = arr.join('');
+
                         $('#orders-list').append(messageApi({
-                            Error: data.result
+                            Error: msg,
+                            svg: '<span class="dashicons dashicons-info-outline"></span>',
                         }));
                     } else {
                         if (typeof data.result.object_id != 'undefined') {
@@ -816,7 +849,7 @@
             $('.message-api').show();
         } else {
             if (typeof result.rates != 'undefined') {
-                console.log('eshipBtTbQuotation', result.rates);
+                //console.log('eshipBtTbQuotation', result.rates);
                 $.each(result.rates, function (index, object) {
                     let heigth = '';
                     let width = 'w-25'
@@ -886,8 +919,6 @@
                     },
                     dataType: 'json',
                     success: function (data) {
-                        console.log('getShipmentEship', data);
-
                         let newObj = [];
 
                         if (data.result.status != 'ERROR') {
