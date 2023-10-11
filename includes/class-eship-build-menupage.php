@@ -4,7 +4,7 @@
  * Registrar todas los menús y submenús de mi plugin
  * 
  * @link       https://eship.com
- * @since      1.0.0
+ * @since     1.0.1
  *
  * @package    ESHIP
  * @subpackage ESHIP/includes
@@ -16,7 +16,7 @@
  * tienen que ser llamados junto con el gancho
  * de acción 'admin_menu'
  * 
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal <jleal@segmail.co>

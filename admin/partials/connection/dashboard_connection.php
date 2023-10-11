@@ -41,7 +41,9 @@
 
                                     <div class="col-12 mt-2 mb-2">
                                         <div class="alert alert-secondary" role="alert">
-                                            To obtain your API key, login into your eShip account <a href="<?php echo esc_url('https://app.myeship.co/');?>" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key
+                                            To obtain your API key, login into your eShip account <a href="<?php echo esc_url('https://app.myeship.co/');?>" target="_blank">(app.myeship.co)</a>, go to "Settings" and click on "See your API Key.
+                                            <br><b>Important! It's necessary to be subscribed to a paid plan to access this service.</b>
+                                            <a href="https://myeship.co/#pricing" target="_blank">Click here.</a>
                                         </div>
                                     </div>
                                     <?php endif;?>
@@ -53,6 +55,25 @@
                                             <input type="password" class="form-control" id="token-input-eship" name="apiKeyEship" <?php echo (isset($user_eship[0]->api_key_eship))? "value='". esc_attr($user_eship[0]->api_key_eship) . "'": '';?>>
                                         </div>
                                     </div>
+                                    <?php if (isset($user_eship[0]->api_key_eship) && $user_eship[0]->api_key_eship != ''):?>
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-2">
+                                            <label for="ck-input-eship" class="col-form-label">
+                                                Consumer Key (ck):
+                                            </label>
+                                            <input type="password" class="form-control" id="ck-input-eship" name="ckEship" <?php echo (isset($user_eship[0]->ck))? "value='". esc_attr($user_eship[0]->ck) . "'": '';?>>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="mb-2">
+                                            <label for="cs-input-eship" class="col-form-label">
+                                                Consumer Secret (cs):
+                                            </label>
+                                            <input type="password" class="form-control" id="cs-input-eship" name="csEship" <?php echo (isset($user_eship[0]->cs))? "value='". esc_attr($user_eship[0]->cs) . "'": '';?>>
+                                        </div>
+                                    </div>
+                                    <?php endif;?>
                                     <div class="col-12 col-md-6">
                                         <div class="mb-2">
                                             <label for="phone-input-eship" class="col-form-label">

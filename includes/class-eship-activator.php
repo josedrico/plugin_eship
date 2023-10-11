@@ -4,7 +4,7 @@
  * Se activa en la activación del plugin
  *
  * @link       https://beziercode.com.co
- * @since      1.0.0
+ * @since     1.0.1
  *
  * @package    BCPortfolioGallery
  * @subpackage BCPortfolioGallery/includes
@@ -13,7 +13,7 @@
 /**
  * Ésta clase define todo lo necesario durante la activación del plugin
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal <jleal@segmail.co>
@@ -31,6 +31,8 @@ class ESHIP_Activator {
             phone varchar(20) NOT NULL,
             name varchar(255) NOT NULL,
             dimensions smallint(1) NOT NULL,
+            ck varchar(255),
+            cs varchar(255),
             PRIMARY KEY (id)
         );";
 

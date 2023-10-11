@@ -3,7 +3,7 @@
  * Clase que administra y controla las cargas de las demás clases
  *
  * @link       https://eship.com
- * @since      1.0.0
+ * @since     1.0.1
  *
  * @package    ESHIP
  * @subpackage ESHIP/includes
@@ -11,7 +11,7 @@
 
 /**
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal <jleal@segmail.co>

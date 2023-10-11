@@ -2,7 +2,7 @@
 /**
  * Ésta clase define todo lo necesario durante la desactivación del plugin
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal <jleal@segmail.co>

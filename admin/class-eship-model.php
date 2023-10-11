@@ -3,7 +3,7 @@ namespace EshipAdmin;
 /**
  * Class for the model for the wordpress database
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @author     juanmaleal
  *
@@ -66,6 +66,18 @@ class ESHIP_Model {
                     } else  {
                         return FALSE;
                     }
+                case 'ck':
+                    if (isset($results[0]->ck)) {
+                        return $results[0]->ck;
+                    } else  {
+                        return FALSE;
+                    }
+                case 'cs':
+                    if (isset($results[0]->cs)) {
+                        return $results[0]->cs;
+                    } else  {
+                        return FALSE;
+                    }
                 default:
                     if (isset($results) && count($results) > 0) {
                         return $results;
@@ -80,21 +92,24 @@ class ESHIP_Model {
     {
         $result = FALSE;
         if(current_user_can('manage_options')) {
-            //$adm = wp_get_current_user();
             extract($data, EXTR_OVERWRITE);
 
             if ($typeAction == 'add_token') {
 
                 $columns = [
-                    'dimensions'        => sanitize_text_field((int)$dimensions),
-                    'email'             => sanitize_email($email),
-                    'name'              => sanitize_text_field(strtoupper($name)),
-                    'phone'             => sanitize_text_field($phone),
-                    'api_key_eship'     => sanitize_text_field($token),
+                    'dimensions'    => sanitize_text_field((int)$dimensions),
+                    'email'         => sanitize_email($email),
+                    'name'          => sanitize_text_field(strtoupper($name)),
+                    'phone'         => sanitize_text_field($phone),
+                    'api_key_eship' => sanitize_text_field($token),
+                    'cs'            => ((isset($cs))? sanitize_text_field($cs) : ''),
+                    'ck'            => ((isset($cs))? sanitize_text_field($ck) : '')
                 ];
 
                 $format = [
                     "%d",
+                    "%s",
+                    "%s",
                     "%s",
                     "%s",
                     "%s",
@@ -117,16 +132,19 @@ class ESHIP_Model {
 
                 $result = $this->db->update(ESHIP_TB,
                     array(
-                        'api_key_eship'     => sanitize_text_field($token),
-                        'phone'             => sanitize_text_field($phone),
-                        'name'              => sanitize_text_field(strtoupper($name)),
-                        'email'             => sanitize_email($email),
-                        'dimensions'        => sanitize_text_field($dimensions)
+                        'api_key_eship' => sanitize_text_field($token),
+                        'phone'         => sanitize_text_field($phone),
+                        'name'          => sanitize_text_field(strtoupper($name)),
+                        'email'         => sanitize_email($email),
+                        'dimensions'    => sanitize_text_field($dimensions),
+                        'cs'            => sanitize_text_field($cs),
+                        'ck'            => sanitize_text_field($ck),
                     ),
                     array(
                         'id' => sanitize_text_field($user)
                     ),
                     array(
+                        '%s',
                         '%s',
                         '%s',
                         '%s',
@@ -285,5 +303,70 @@ class ESHIP_Model {
         }
 
         return $result;
+    }
+
+    public function createColumnCk() {
+        $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . ESHIP_TB ."' AND column_name = 'ck'";
+        $row = $this->db->get_results($sql);
+        if (empty($row)) {
+            return $this->db->query("ALTER TABLE " . ESHIP_TB . " ADD ck varchar(255) DEFAULT NULL");
+        } else  {
+            return FALSE;
+        }
+    }
+
+    public function createColumnCs() {
+        $sql = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '" . ESHIP_TB ."' AND column_name = 'cs'";
+        $row = $this->db->get_results($sql);
+        if (empty($row)) {
+            return $this->db->query("ALTER TABLE " . ESHIP_TB . " ADD cs varchar(255) DEFAULT NULL");
+        } else  {
+            return FALSE;
+        }
+    }
+
+    public function updateCk($data, $id) {
+        $result = $this->db->update(ESHIP_TB,
+            array(
+                'ck' => sanitize_text_field($data)
+            ),
+            array(
+                'id' => sanitize_text_field($id)
+            ),
+            array(
+                '%s'
+            ),
+            array('%d')
+        );
+
+        $this->db->flush();
+        
+        if($result){
+            return $result;
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function updateCs($data, $id) {
+        $result = $this->db->update(ESHIP_TB,
+            array(
+                'cs' => sanitize_text_field($data)
+            ),
+            array(
+                'id' => sanitize_text_field($id)
+            ),
+            array(
+                '%s'
+            ),
+            array('%d')
+        );
+        $this->db->flush();
+
+        if($result){
+            return $result;
+        } else {
+            return FALSE;
+        }
     }
 }

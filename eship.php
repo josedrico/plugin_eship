@@ -11,7 +11,7 @@
  * Plugin Name:       EShip
  * Plugin URI:        https://myeship.co/
  * Description:       Create and print shipping labels using preferential rates.
- * Version:           1.0.0
+ * Version:          1.0.1
  * Requires at least: 5.6
  * Requires PHP:      7.2.5
  * Author:            SEGMAIL

@@ -3,7 +3,7 @@ namespace EshipAdmin;
 /**
  * Class for connection to the eShip api rest
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @author     juanmaleal
  *
@@ -35,7 +35,7 @@ class ESHIP_Api {
         $this->api_key = $tb->get_data_user_eship('token');
     }
 
-    public function post($uri, $body, $timeout = 45)
+    public function post($uri, $body, $timeout = 45, $api = FALSE)
     {
         return  wp_remote_post(
             $this->url . $uri,
@@ -47,7 +47,7 @@ class ESHIP_Api {
                 'blocking'    => true,
                 'headers'     => array(
                     'content-Type'  => 'Application/json',
-                    'api-key'       => $this->api_key
+                    'api-key'       => ($api)? $api : $this->api_key
                 ),
                 'body'      => $body,
                 'cookies'   => array()
@@ -57,28 +57,24 @@ class ESHIP_Api {
 
     public function get($uri) {
         return wp_remote_get($this->url . $uri, array(
+            'timeout'  => 45,
+            'blocking' => true,
             'headers' => array(
-                'content-Type'  => 'Application/json',
-                'api-key'       => $this->api_key
+                'content-Type' => 'Application/json',
+                'api-key'      => $this->api_key
             )
         ));
     }
 
     public function getCredentials($data = FALSE) {
-        if ($data) {
-            return wp_remote_get($this->url . 'credentials-woo', array(
-                'headers' => array(
-                    'content-Type'  => 'Application/json',
-                    'api-key'       => $data
-                )
-            ));
-        } else {
-            return wp_remote_get($this->url . 'credentials-woo', array(
-                'headers' => array(
-                    'content-Type'  => 'Application/json',
-                    'api-key'       => $this->api_key
-                )
-            ));
-        }
+
+        return wp_remote_get($this->url . 'cred-woo', array(
+            'timeout'  => 45,
+            'blocking' => true,
+            'headers' => array(
+                'content-Type'  => 'Application/json',
+                'api-key'       => ($data)?  $data : $this->api_key
+            )
+        ));
     }
 }

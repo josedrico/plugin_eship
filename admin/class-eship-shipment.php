@@ -4,7 +4,7 @@ namespace EshipAdmin;
 /**
  * Class that controls the generation of shipping guides.
  *
- * @since      1.0.0
+ * @since     1.0.1
  * @package    ESHIP
  * @author     juanmaleal
  *

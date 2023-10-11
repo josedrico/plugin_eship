@@ -4,7 +4,7 @@
  * Registrar todas las acciones y filtros para el complemento
  *
  * @link       https://eship.com
- * @since      1.0.0
+ * @since     1.0.1
  *
  * @package    ESHIP
  * @subpackage ESHIP/includes
@@ -17,7 +17,7 @@
  * en todo el plugin, y registrarlos con la API de WordPress. 
  * Llame a la función run para ejecutar la lista de acciones y filtros.
  *
- *   @since      1.0.0
+ *   @since     1.0.1
  * @package    ESHIP
  * @subpackage ESHIP/includes
  * @author     Juan Manuel Leal Oliva <jleal@segmail.com>
